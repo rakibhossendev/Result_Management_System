@@ -39,11 +39,10 @@ Attendance
         </div>
     </div>
     <div class="alert alert-info text-center">
-        <div class="progress mt-3">
-            <div class="progress-bar bg-success" style="width: {{ percentage }}%">
-                {{ percentage }}%
-            </div>
-        </div>
+        <strong>
+            Attendance :
+            {{ percentage }}%
+        </strong>
     </div>
     <table class="table table-bordered table-striped">
         <thead>
@@ -54,7 +53,7 @@ Attendance
             </tr>
         </thead>
         <tbody>
-            {% for item in attendance.items %}
+        {% for item in attendance.items %}
             <tr>
                 <td>{{ loop.index + attendance.per_page * (attendance.page-1) }}</td>
                 <td>
@@ -62,17 +61,17 @@ Attendance
                 </td>
                 <td>
                     {% if item.status == "P" %}
-                    <span class="badge bg-success">
-                        Present
-                    </span>
+                        <span class="badge bg-success">
+                            Present
+                        </span>
                     {% else %}
-                    <span class="badge bg-danger">
-                        Absent
-                    </span>
+                        <span class="badge bg-danger">
+                            Absent
+                        </span>
                     {% endif %}
                 </td>
             </tr>
-            {% endfor %}
+        {% endfor %}
         </tbody>
     </table>
     <nav>
@@ -80,7 +79,10 @@ Attendance
             {% if attendance.has_prev %}
 
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('student_attendance.attendance', page=attendance.prev_num) }}">
+                <a
+                    class="page-link"
+                    href="{{ url_for('student_attendance.attendance', page=attendance.prev_num) }}"
+                >
                     Previous
                 </a>
             </li>
@@ -89,24 +91,30 @@ Attendance
 
             {% for page in attendance.iter_pages() %}
 
-            {% if page %}
+                {% if page %}
 
-            <li class="page-item {% if page==attendance.page %}active{% endif %}">
+                <li class="page-item {% if page==attendance.page %}active{% endif %}">
 
-                <a class="page-link" href="{{ url_for('student_attendance.attendance', page=page) }}">
-                    {{ page }}
-                </a>
+                    <a
+                        class="page-link"
+                        href="{{ url_for('student_attendance.attendance', page=page) }}"
+                    >
+                        {{ page }}
+                    </a>
 
-            </li>
+                </li>
 
-            {% endif %}
+                {% endif %}
 
             {% endfor %}
 
             {% if attendance.has_next %}
 
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('student_attendance.attendance', page=attendance.next_num) }}">
+                <a
+                    class="page-link"
+                    href="{{ url_for('student_attendance.attendance', page=attendance.next_num) }}"
+                >
                     Next
                 </a>
             </li>
