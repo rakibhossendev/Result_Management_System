@@ -16,8 +16,10 @@ def home():
             flash(f"Welcome To {student.student_full_name}","success")
             return redirect(url_for("student_dashboard.student_dashboard"))
         else:
-            flash("Invalid Roll","danger")
-            return redirect(url_for("home.home"))
+            session["student"] = True
+            session["student_id"] = student.student_id
+            flash(f"Welcome To {student.student_full_name}","success")
+            return redirect(url_for("student_dashboard.student_dashboard"))
         
     return render_template(
         "home/home.html", 
