@@ -735,3 +735,39 @@ body::before {
     display: none;
   }
 }
+
+/* Styles for Dark Mode toggle button */
+
+.theme-toggle-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: var(--z-fixed);
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all var(--transition-normal) var(--ease-smooth);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .theme-toggle-float {
+  background: rgba(31, 41, 55, 0.9);
+  border-color: var(--border-light);
+}
+
+.theme-toggle-float:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
+.theme-toggle-float:active {
+  transform: scale(0.95);
+}

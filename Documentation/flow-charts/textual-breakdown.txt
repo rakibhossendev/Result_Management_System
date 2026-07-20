@@ -1,0 +1,98 @@
+Textual Breakdown of Data & Control Flow
+
+To completely grasp the pipeline, follow this sequential flow of how a request is processed:
+1. The Entry Point (run.py)
+
+    The server starts.
+
+    It calls the App Factory (create_app() in app/__init__.py).
+
+    Data loaded here: Configuration (config.py) and Extensions (extensions.py - SQLAlchemy).
+
+2. Blueprint Registration
+
+    The app factory registers all Blueprints (Admin, Principal, Teacher, Auth) and mounts them to URL prefixes (/admin, /principal, /teacher).
+
+3. The HTTP Request & Routing
+
+    A user types a URL (e.g., /principal/dashboard).
+
+    Flask routes the request to the specific function inside the Principal Blueprint.
+
+4. Authentication & Session Interception
+
+    Before the role-specific logic runs, the system checks the session cookie.
+
+    Current Logic (Flawed):
+
+        If no session exists, redirect to /login.
+
+        During login, the system queries the Admin, Principal, and Teacher tables separately.
+
+        If an admin logs in, it sets session["user_id"]. If a Principal logs in, it sets session["principal_id"] (and a temp_principal_id is mentioned in the README—likely used during shift selection).
+
+        Note: It does not use password hashing, so the credentials are compared to plain-text stored values.
+
+5. Role-Based Pipeline Execution
+
+Based on the session variable, the request is funneled into one of three pipelines:
+
+    Admin Pipeline (/admin/*):
+
+        Input: Forms to create Principals.
+
+        Action: Queries the Principal model. Executes db.session.add() or delete().
+
+        Output: Redirects to the Principal list view.
+
+    Principal Pipeline (/principal/*):
+
+        Input: Forms for Teachers, Departments, Subjects, and Curriculum.
+
+        Action:
+
+            When adding a Teacher, the Principal's ID is automatically assigned as a foreign key to the Teacher model.
+
+            When assigning a Subject, the system updates the Curriculum junction table (linking Department, Semester, and Subject).
+
+        Output: Updated lists of teachers/subjects.
+
+    Teacher Pipeline (/teacher/*):
+
+        Input: Forms for Students, Attendance date/status, and Marks.
+
+        Action:
+
+            Adds Students linked to the Teacher's ID.
+
+            Attendance: Saves a record per student per date in the Attendance table.
+
+            Marks: Saves grades/topics in the MarksTopic table (likely linked to Student and Subject).
+
+        Output: Tables showing lists of students or attendance history.
+
+6. The Data Persistence Step (ORM)
+
+    All CRUD operations pass through SQLAlchemy Models (located in app/models/).
+
+    The models translate Python objects into SQL queries.
+
+    The SQLite engine writes/reads the data from database.db.
+
+7. The View Rendering Step (Response)
+
+    After fetching data (e.g., Students.query.all()), the route renders a Jinja2 template (located in templates/).
+
+    The template receives the data and generates an HTML page.
+
+    The HTML is sent back to the user's browser as an HTTP response.
+
+Critical "Gotchas" in this Pipeline (Based on README)
+
+As you study this codebase to eventually implement RAG and Agentic AI, pay close attention to these specific data-flow flaws:
+
+    Session Mix-up: The README mentions session["temp_principal_id"] and session["principal_id"]. This suggests a two-step login flow (maybe selecting a shift after login). Trace how this temporary ID is cleared or promoted—this is a frequent source of bugs.
+
+    Broken Authentication Logic: The login route apparently mishandles Principal vs. Teacher flows. When you add AI agents, they will rely heavily on strict role-based permissions. You will likely need to refactor this to a clean RBAC (Role-Based Access Control) system first.
+
+    Data Integrity: There is no cascade logic mentioned. If a Principal is deleted, do their Teachers get orphaned? If a Teacher is deleted, do their Students and Marks vanish? Check the db.relationship() definitions in the models—this will impact your RAG knowledge graph later.
