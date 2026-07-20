@@ -38,6 +38,7 @@ def login():
 
         flash("Invalid Username Or Password","danger")
 
+    # teacher login
         teacher = TeacherAddInfo.query.filter_by(username=username,password=password).first()
         student = AddStudentInfo.query.filter_by(teacher_id=teacher.teacher_id)
         teacher = TeacherAddInfo.query.filter_by(

@@ -1,8 +1,0 @@
-## .venv and __pycache__ should never be pushed in GitHub.
-These directories are completely unneccesary. These are created on user's machine automatically. These contain huge binary files and bloats GitHub repo. I've removed the directories from both Git cache and GitHub repo.
-
-When someone will push code next, they are recommanded to run these commands:
-```
-git rm -r --cached .venv
-git rm -r --cached "**/__pycache__"
-```
