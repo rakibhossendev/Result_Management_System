@@ -4,37 +4,40 @@
    ============================================ */
 
 :root {
-  /* Primary Colors */
+  --white: var(--bg-surface);
+  --off-white: var(--bg-body);
+  --medium-gray: var(--text-muted);
+  /* Backgrounds */
+  --bg-body: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: #f1f3f5;
+
+  /* Text */
+  --text-primary: #1a1a1a;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border-light: #e9ecef;
+  --border-medium: #d1d5db;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  /* Accent colors (unchanged) */
   --primary-color: #0066cc;
   --primary-light: #e6f0ff;
-  --primary-dark: #004299;
-  --primary-hover: #0052a3;
-  
-  /* Secondary Colors */
   --secondary-color: #00d4ff;
-  --secondary-light: #e0f9ff;
-  --secondary-dark: #0099cc;
-  
-  /* Neutral Colors */
-  --white: #ffffff;
-  --off-white: #f8f9fa;
-  --light-gray: #e9ecef;
-  --medium-gray: #6c757d;
-  --dark-gray: #343a40;
-  --text-dark: #1a1a1a;
-  
-  /* Accent Colors */
   --success-color: #10b981;
-  --success-light: #d1fae5;
-  --danger-color: #ef4444;
-  --danger-light: #fee2e2;
   --warning-color: #f59e0b;
-  --warning-light: #fef3c7;
-  --info-color: #3b82f6;
-  --info-light: #dbeafe;
-  
-  /* Background Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  --danger-color: #ef4444;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #0066cc, #00d4ff);
   --gradient-subtle: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
   --gradient-overlay: linear-gradient(180deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
   
@@ -83,6 +86,34 @@
   --z-modal: 1040;
   --z-popover: 1050;
   --z-tooltip: 1070;
+}
+
+/* ----- Dark Theme ----- */
+[data-theme="dark"] {
+  --white: var(--bg-surface);
+
+  --bg-body: #111827;
+  --bg-surface: #1f2937;
+  --bg-elevated: #374151;
+  --bg-input: #374151;
+  --bg-hover: #4b5563;
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-inverse: #1a1a1a;
+
+  --border-light: #374151;
+  --border-medium: #4b5563;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+
+  /* Adjust accent colors for better contrast */
+  --primary-light: #1e3a5f;
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --danger-color: #f87171;
 }
 
 /* Dark Mode Support (Optional) */
