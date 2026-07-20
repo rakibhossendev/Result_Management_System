@@ -39,10 +39,11 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <button id="theme-toggle" aria-label="Toggle dark mode">
-          <span class="theme-icon">🌙</span>
-        </button>
       </div>
+      <!-- Floating Theme Toggle -->
+      <button class="theme-toggle-float" id="theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon">🌙</span>
+      </button>
     </nav>
   {% endblock %}
 
@@ -106,31 +107,41 @@
       });
     });
 
-    // Dark-Light mode toggle
-    const toggleBtn = document.getElementById('theme-toggle');
-    const currentTheme = localStorage.getItem('theme') || 
-                        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-    // Apply initial theme
-    if (currentTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      toggleBtn.querySelector('.theme-icon').textContent = '☀️';
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-      toggleBtn.querySelector('.theme-icon').textContent = '🌙';
-    }
-
-    // Toggle on click
-    toggleBtn.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-        toggleBtn.querySelector('.theme-icon').textContent = '🌙';
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-        toggleBtn.querySelector('.theme-icon').textContent = '☀️';
+    // Dark mode toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (!toggleBtn) return;
+      
+      const icon = toggleBtn.querySelector('.theme-icon');
+      
+      // ── 1. Get saved theme or system preference ──
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+      
+      // ── 2. Apply theme ──
+      applyTheme(currentTheme);
+      
+      // ── 3. Toggle on click ──
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent any parent click events
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        applyTheme(newTheme);
+      });
+      
+      function applyTheme(theme) {
+        // Set data attribute
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          icon.textContent = '☀️';
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          icon.textContent = '🌙';
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('theme', theme);
       }
     });
   </script>
