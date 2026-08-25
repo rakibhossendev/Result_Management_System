@@ -3,7 +3,14 @@ from dotenv import load_dotenv
 import json
 from flask import Blueprint, render_template, request, jsonify, session
 from mistralai.client import Mistral
-from app.ai.tools import get_student_data, get_student_by_roll
+from app.ai.tools import (
+    get_student_data, 
+    get_student_by_roll,
+    get_student_attendance,
+    get_student_marks,
+    get_class_attendance,
+    get_class_marks_summary
+)
 
 
 ai_bp = Blueprint("ai", __name__, url_prefix="")
@@ -74,6 +81,94 @@ TOOLS_SCHEMA = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_student_attendance",
+            "description": (
+                "Fetch all attendance records for a student by their roll number. "
+                "Scoped to the current teacher. Returns a list of dates and statuses."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "student_roll": {
+                        "type": "integer",
+                        "description": "The student's roll number (unique, user-facing ID).",
+                    },
+                },
+                "required": ["student_roll"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_student_marks",
+            "description": (
+                "Fetch all marks for a student by roll number. Scoped to the current teacher. "
+                "Returns subject, topic, full marks, and obtained marks."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "student_roll": {
+                        "type": "integer",
+                        "description": "The student's roll number.",
+                    },
+                },
+                "required": ["student_roll"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_class_attendance",
+            "description": (
+                "Fetch attendance summary for all students in a given semester and group. "
+                "Scoped to the current teacher. Returns each student's attendance percentage."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "semester": {
+                        "type": "integer",
+                        "description": "Semester number (e.g., 1, 2, 3).",
+                    },
+                    "group": {
+                        "type": "string",
+                        "description": "Group letter (single character, e.g., 'A').",
+                    },
+                },
+                "required": ["semester", "group"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_class_marks_summary",
+            "description": (
+                "Fetch marks summary for all students in a given semester and group. "
+                "Scoped to the current teacher. Returns average, min, max per subject."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "semester": {
+                        "type": "integer",
+                        "description": "Semester number.",
+                    },
+                    "group": {
+                        "type": "string",
+                        "description": "Group letter (single character).",
+                    },
+                },
+                "required": ["semester", "group"],
+            },
+        },
+    },
 ]
 
 
@@ -97,6 +192,37 @@ def dispatch_tool_call(tool_name, arguments):
             teacher_id=teacher_id,
         )
         return result if result is not None else {"error": "student not found"}
+
+    if tool_name == "get_student_attendance":
+        result = get_student_attendance(
+            student_roll=arguments.get("student_roll"),
+            teacher_id=teacher_id,
+        )
+        return result if result is not None else {"error": "student not found"}
+
+    if tool_name == "get_student_marks":
+        result = get_student_marks(
+            student_roll=arguments.get("student_roll"),
+            teacher_id=teacher_id,
+        )
+        return result if result is not None else {"error": "student not found"}
+
+    if tool_name == "get_class_attendance":
+        result = get_class_attendance(
+            semester=arguments.get("semester"),
+            group=arguments.get("group"),
+            teacher_id=teacher_id,
+        )
+        return result if result is not None else {"error": "no data found"}
+
+    if tool_name == "get_class_marks_summary":
+        result = get_class_marks_summary(
+            semester=arguments.get("semester"),
+            group=arguments.get("group"),
+            teacher_id=teacher_id,
+        )
+        return result if result is not None else {"error": "no data found"}
+
     return {"error": f"unknown tool: {tool_name}"}
 
 @ai_bp.route("/ask", methods=["GET"])

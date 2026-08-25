@@ -141,11 +141,50 @@ Key files and directories:
 - `templates/` — HTML templates for each role
 - `static/` — CSS and JS assets
 
+## How To Use The AI Features
+
+The app includes an AI assistant that helps teachers query student data through conversation (e.g., "Show me student 322053's details" or "What's the attendance for group B?").
+
+### Setup (One-time)
+
+1. **Get a Mistral API key** (free):
+   - Visit [console.mistral.ai](https://console.mistral.ai)
+   - Sign up, go to **API Keys**, click **Create API Key**, and copy it
+
+2. **Create `.env` file** in your project root (same folder as `run.py`):
+   ```
+   MISTRAL_API_KEY=your-key-here
+   ```
+
+### Using the Assistant
+
+1. Start the app: `python run.py`
+2. Log in as a teacher
+3. Visit `http://localhost:5000/ask`
+4. Ask questions like:
+   - "Tell me about student 322053"
+   - "What's the CGPA for student 322056?"
+
+### Troubleshooting
+
+| Error | Fix |
+|-------|-----|
+| "MISTRAL_API_KEY is not set" | Check your `.env` file exists and has the correct key |
+| "401 Unauthorized" | Your API key is wrong; regenerate it at console.mistral.ai |
+| "student not found" | Make sure the student exists in your teacher's class. And log in as the teacher. |
+
+## Adding Sample Students For Testing Purpose
+
+- Make a teacher with ID 01 and make sure your principal ID is 2006
+- run `sqlite3 instance/database.db < import_students.sql` in your terminal
+
+The shell command will load 45 students in the database. Now you can test AI features with this data or test the software.
+
 ## Known Issues and Review Notes
 
 The current code contains some areas to improve before final release:
 
-- Passwords are stored in plain text. Add password hashing with `werkzeug.security.generate_password_hash` and `check_password_hash`.
+- Passwords are stored in plain text. Add password hashing with `werkzeug.security.generate_password_hash` and `check_password_hash`. - Problem Solved ✅
 - Authentication logic in `app/routes/auth/login.py` is not fully robust and mixes principal and teacher login flows incorrectly.
 - `requirements.txt` is incomplete and should include `Flask-WTF`, `WTForms`, and `Flask-SQLAlchemy`.
 - Session management uses `session["temp_principal_id"]` and `session["principal_id"]`; verify principal/teacher workflows carefully.
@@ -153,7 +192,7 @@ The current code contains some areas to improve before final release:
 
 ## Future Improvements
 
-- Add password hashing and stronger authentication
+- Add password hashing and stronger authentication - Done ✅
 - Add input validation and error handling for all routes
 - Create a proper registration flow for principals, teachers, and students
 - Add a student-facing view for marks and attendance records
