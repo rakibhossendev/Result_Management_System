@@ -2,6 +2,7 @@ from flask import Blueprint, redirect, url_for, session, render_template,flash
 from app.models.principal import TeacherAddInfo
 from app.utils.principalForm import AddTeacherForm
 from app.extensions import db
+from werkzeug.security import generate_password_hash
 
 edit_teacher_bp = Blueprint(
     "edit_teacher",
@@ -45,7 +46,7 @@ def edit_teacher(teacher_id):
             teacher.phone = form.phone.data
             teacher.email = form.email.data
             teacher.username = form.username.data
-            teacher.password_hash = form.password.data
+            teacher.password_hash = generate_password_hash(form.password.data)
 
             db.session.commit()
             flash("Teacher data edited!","success")
