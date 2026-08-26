@@ -38,12 +38,12 @@ def create_app():
     from .routes.student.attendance import student_attendance_bp
     from .routes.admin.upload_cgpa import upload_cgpa_bp
     from .routes.student.view_cgpa import view_student_cgpa_bp
-
     # API
     from .routes.api.student_data import student_data_api
-
     # AI
     from .routes.ai.routes import ai_bp
+    # change password
+    from app.routes.admin.change_password import admin_change_password_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(login_bp)
@@ -75,9 +75,9 @@ def create_app():
     app.register_blueprint(student_attendance_bp)
     app.register_blueprint(upload_cgpa_bp)
     app.register_blueprint(view_student_cgpa_bp)
-
     # Register API and AI blueprints
     app.register_blueprint(student_data_api)
     app.register_blueprint(ai_bp)
+    app.register_blueprint(admin_change_password_bp) # change password bp
 
     return app

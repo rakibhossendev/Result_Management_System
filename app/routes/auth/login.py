@@ -38,7 +38,7 @@ def login():
             if admin and check_password_hash(admin.password_hash, password):
                 session.clear()
                 session["admin"] = True
-
+                session["admin_id"] = admin.id
                 flash("Admin Login Successful","success")
                 return redirect(url_for("admin_dashboard.admin_dashboard"))
     
