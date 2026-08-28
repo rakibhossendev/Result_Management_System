@@ -62,10 +62,14 @@ def attendance():
 
     student_data = []
 
+    # Existing attendance status
+    saved_attendance = {}
+
     try:
 
         if form.validate_on_submit():
 
+            # Selected students
             student_data = AddStudentInfo.query.filter_by(
                 teacher_id=teacher_id,
                 department_id=form.department_id.data,
@@ -74,14 +78,33 @@ def attendance():
             ).order_by(
                 AddStudentInfo.student_roll
             ).all()
+
+            # Get attendance for selected date
+            attendance_records = Attendance.query.filter(
+                Attendance.attendance_date == form.attendance_date.data,
+                Attendance.student_id.in_(
+                    [student.student_id for student in student_data]
+                )
+            ).all()
+
+            # Create dictionary:
+            # {student_id: "P/A"}
+            saved_attendance = {
+                record.student_id: record.status
+                for record in attendance_records
+            }
+
     except Exception:
+
         db.session.rollback()
-        flash("Somthing Worng","danger")
-        
+
+        flash("Something Wrong", "danger")
+
     return render_template(
         "teacher/attendance.html",
         form=form,
-        students=student_data
+        students=student_data,
+        saved_attendance=saved_attendance
     )
 
 
