@@ -7,177 +7,104 @@ Attendance
 {% block content %}
 
 <div class="container mt-4">
-
-<div class="card shadow">
-
-<div class="card-header bg-primary text-white">
-<h4>Take Attendance</h4>
-</div>
-
-<div class="card-body">
-
-<form method="POST">
-
-{{ form.hidden_tag() }}
-
-<div class="row">
-
-<div class="col-md-3">
-{{ form.attendance_date.label }}
-{{ form.attendance_date(class="form-control") }}
-</div>
-
-<div class="col-md-3">
-{{ form.department_id.label }}
-{{ form.department_id(class="form-select") }}
-</div>
-
-<div class="col-md-2">
-{{ form.semester.label }}
-{{ form.semester(class="form-select") }}
-</div>
-
-<div class="col-md-2">
-{{ form.group.label }}
-{{ form.group(class="form-select") }}
-</div>
-
-<div class="col-md-2 d-flex align-items-end">
-{{ form.submit(class="btn btn-primary w-100") }}
-</div>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-{% if students %}
-
-<form method="POST"
-action="{{ url_for('attendence.save_attendance') }}">
-
-<input
-type="hidden"
-name="attendance_date"
-value="{{ form.attendance_date.data }}">
-
-<input
-type="hidden"
-name="department_id"
-value="{{ form.department_id.data }}">
-
-<input
-type="hidden"
-name="semester"
-value="{{ form.semester.data }}">
-
-<input
-type="hidden"
-name="group"
-value="{{ form.group.data }}">
-
-<div class="card shadow mt-4">
-
-<div class="card-header bg-success text-white">
-<h5>Student List</h5>
-</div>
-
-<div class="card-body p-0">
-
-<table class="table table-bordered table-hover mb-0">
-
-<thead class="table-dark">
-
-<tr>
-
-<th width="15%">Roll</th>
-
-<th>Name</th>
-
-<th width="25%">Attendance</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for student in students %}
-
-<tr>
-
-<td>{{ student.student_roll }}</td>
-
-<td>{{ student.student_full_name }}</td>
-
-<td>
-
-<div class="form-check form-check-inline">
-
-<input
-class="form-check-input"
-type="radio"
-name="attendance_{{ student.student_id }}"
-value="P"
-checked>
-
-<label class="form-check-label">
-
-Present
-
-</label>
-
-</div>
-
-<div class="form-check form-check-inline">
-
-<input
-class="form-check-input"
-type="radio"
-name="attendance_{{ student.student_id }}"
-value="A">
-
-<label class="form-check-label">
-
-Absent
-
-</label>
-
-</div>
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<div class="mt-3 text-end">
-
-<button
-type="submit"
-class="btn btn-success">
-
-Save Attendance
-
-</button>
-
-</div>
-
-</form>
-
-{% endif %}
-
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Take Attendance</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ form.attendance_date.label }}
+                        {{ form.attendance_date(class="form-control") }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.department_id.label }}
+                        {{ form.department_id(class="form-select") }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ form.semester.label }}
+                        {{ form.semester(class="form-select") }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ form.group.label }}
+                        {{ form.group(class="form-select") }}
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        {{ form.submit(class="btn btn-primary w-100") }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if students %}
+
+    <form method="POST" action="{{ url_for('attendence.save_attendance') }}">
+        <input type="hidden" name="attendance_date" value="{{ form.attendance_date.data }}">
+        <input type="hidden" name="department_id" value="{{ form.department_id.data }}">
+        <input type="hidden" name="semester" value="{{ form.semester.data }}">
+        <input type="hidden" name="group" value="{{ form.group.data }}">
+        <div class="card shadow mt-4">
+            <div class="card-header bg-success text-white">
+                <h5>Student List</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th width="15%">Roll</th>
+                            <th>Name</th>
+                            <th width="25%">Attendance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>
+                                {{ student.student_roll }}
+                            </td>
+                            <td>
+                                {{ student.student_full_name }}
+                            </td>
+                            <td>
+                                <!-- Present -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                        name="attendance_{{ student.student_id }}" value="P" {% if
+                                        saved_attendance.get(student.student_id)=="P" %} checked {% endif %}>
+                                    <label class="form-check-label">
+                                        Present
+                                    </label>
+                                </div>
+
+                                <!-- Absent -->
+                                <div class="form-check form-check-inline">
+
+                                    <input class="form-check-input" type="radio"
+                                        name="attendance_{{ student.student_id }}" value="A" {% if
+                                        saved_attendance.get(student.student_id)=="A" or student.student_id not in
+                                        saved_attendance %} checked {% endif %}>
+
+                                    <label class="form-check-label">
+                                        Absent
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-3 text-end">
+            <button type="submit" class="btn btn-success">
+                Save Attendance
+            </button>
+        </div>
+    </form>
+    {% endif %}
 </div>
 
 {% endblock %}
