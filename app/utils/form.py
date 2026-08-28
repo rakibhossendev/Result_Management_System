@@ -4,8 +4,7 @@ from wtforms.validators import DataRequired, Length, Regexp, EqualTo
 
 
 class SearchForm(FlaskForm):
-    roll = StringField(
-        "Enter Roll Number",
+    roll = StringField("Enter Roll Number",
         validators=[
             DataRequired(),
             Length(min=1, max=10)
@@ -16,16 +15,14 @@ class SearchForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    username = StringField(
-        "Enter username",
+    username = StringField("Enter username",
         validators=[
             DataRequired(),
             Length(min=1, max=50)
         ]
     )
 
-    password = PasswordField(
-        "Password",
+    password = PasswordField("Password",
         validators=[
             DataRequired(),
             Length(min=1, max=32)
@@ -36,32 +33,28 @@ class LoginForm(FlaskForm):
 
 class PrincipalDataForm(FlaskForm):
 
-    principal_id = StringField(
-        "Enter id",
+    principal_id = StringField("Enter id",
         validators=[
             DataRequired(),
             Length(min=3, max=10)
         ]
     )
 
-    first_name = StringField(
-        "Enter First name",
+    first_name = StringField("Enter First name",
         validators=[
             DataRequired(),
             Length(min=1, max=50)
         ]
     )
 
-    last_name = StringField(
-        "Enter last name",
+    last_name = StringField("Enter last name",
         validators=[
             DataRequired(),
             Length(min=1, max=50)
         ]
     )
 
-    mobile_number = StringField(
-        "Enter Phone number",
+    mobile_number = StringField("Enter Phone number",
         validators=[
             DataRequired(),
             Length(min=11, max=11),
@@ -72,48 +65,42 @@ class PrincipalDataForm(FlaskForm):
         ]
     )
 
-    email = StringField(
-        "Enter email",
+    email = StringField("Enter email",
         validators=[
             DataRequired(),
             Length(min=1, max=50)
         ]
     )
 
-    institute = StringField(
-        "Enter Institute Name",
+    institute = StringField("Enter Institute Name",
         validators=[
             DataRequired(),
             Length(min=1, max=200)
         ]
     )
 
-    institute_code = StringField(
-        "Enter institute Code",
+    institute_code = StringField("Enter institute Code",
         validators=[
             DataRequired(),
             Length(min=1, max=20)
         ]
     )
     
-    username = StringField(
-        "Enter username",
+    username = StringField("Enter username",
         validators=[
             DataRequired(),
             Length(min=6,max=120)
         ]
     )
     
-    password = PasswordField(
-        "Enter a Strong Password",
+    password = PasswordField("Enter a Strong Password",
         validators=[
             DataRequired(),
             Length(min=6, max=32)
         ]
     )
 
-    retype_password = PasswordField(
-        "Retype password",
+    retype_password = PasswordField("Retype password",
         validators=[
             DataRequired(),
             EqualTo('password', message='Passwords must match')
@@ -122,10 +109,10 @@ class PrincipalDataForm(FlaskForm):
 
     submit = SubmitField("Add Principal")
 
+
 class ShiftSelectForm(FlaskForm):
     
-    shift = SelectField(
-        "Select Shift",
+    shift = SelectField("Select Shift",
         choices=[
             ("Morning", "Morning Shift"),
             ("Day", "Day Shift")
