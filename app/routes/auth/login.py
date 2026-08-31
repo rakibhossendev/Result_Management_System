@@ -73,7 +73,7 @@ def login():
 def logout():
     session.pop("admin", None)  
     flash("Logged out successfully!", "success")
-    return redirect(url_for("login.login"))
+    return redirect(url_for("home.home"))
 
 @login_bp.route("/logout_principal")
 def logout_principal():
