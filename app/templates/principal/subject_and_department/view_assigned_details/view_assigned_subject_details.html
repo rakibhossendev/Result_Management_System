@@ -1,0 +1,38 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4">Assigned Subjects</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Assigned Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects %}
+                <tr>
+                    <td>
+                        {{ subject.subject_code }}
+                    </td>
+                    <td>
+                        {{ subject.subject_name }}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('view_assigned.view_teachers',subject_id=subject.subject_id) }}" class="btn btn-primary btn-sm">Teacher</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">
+                        No subjects found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

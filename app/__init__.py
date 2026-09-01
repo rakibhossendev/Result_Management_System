@@ -44,6 +44,8 @@ def create_app():
     from .routes.ai.routes import ai_bp
     # change password
     from app.routes.admin.change_password import admin_change_password_bp
+    #Assigned Bp
+    from app.routes.principal.subject_and_department.view_assigned_details.view_assigned_subject_details import view_assigned_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(login_bp)
@@ -79,5 +81,6 @@ def create_app():
     app.register_blueprint(student_data_api)
     app.register_blueprint(ai_bp)
     app.register_blueprint(admin_change_password_bp) # change password bp
+    app.register_blueprint(view_assigned_bp)
 
     return app
