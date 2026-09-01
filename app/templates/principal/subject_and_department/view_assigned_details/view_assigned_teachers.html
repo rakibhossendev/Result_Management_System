@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4">Assigned Teachers</h3>
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Teacher</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for assignment in assignments %}
+
+                <tr>
+                    <td>
+                        {{ assignment.teacher.first_name }} {{ assignment.teacher.last_name }}
+                    </td>
+                    <td>
+                        {{ assignment.department.department_name }}
+                    </td>
+
+                    <td>
+                        {{ assignment.semester }}
+                    </td>
+
+                    <td>
+
+    <form
+        action="{{ url_for(
+            'view_assigned.delete_teacher_assignment',
+            assignment_id=assignment.assignment_id
+        ) }}"
+        method="POST"
+        style="display: inline;"
+    >
+
+        <button
+            type="submit"
+            class="btn btn-danger btn-sm"
+        >
+            Delete
+        </button>
+
+    </form>
+
+</td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="4" class="text-center">
+                        No teacher assigned to this subject.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <a href="{{ url_for('view_assigned.view_assigned') }}" class="btn btn-secondary mt-3">
+        Back
+    </a>
+
+</div>
+
+{% endblock %}
