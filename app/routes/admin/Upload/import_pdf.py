@@ -17,9 +17,7 @@ import_pdf_bp = Blueprint(
     url_prefix="/admin"
 )
 
-
 ALLOWED_EXTENSIONS = {"pdf"}
-
 # =========================================================
 # REGEX - COMPILED ONCE
 # =========================================================
