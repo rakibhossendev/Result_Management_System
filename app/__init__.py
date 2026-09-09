@@ -36,8 +36,15 @@ def create_app():
     from .routes.student.student_dashboard import student_dashboard_bp
     from .routes.student.marks_details import subjects_marks_bp
     from .routes.student.attendance import student_attendance_bp
-    from .routes.admin.upload_cgpa import upload_cgpa_bp
-    from .routes.student.view_cgpa import view_student_cgpa_bp
+
+    # cgpa
+    # from .routes.admin.Upload.upload_cgpa import upload_cgpa_bp
+    from .routes.admin.Upload.view_pdf_file import view_pdf_bp
+    from .routes.admin.Upload.import_pdf import import_pdf_bp
+    # from .routes.student.view_cgpa import view_student_cgpa_bp
+    from .routes.student.view_cgpa import view_cgpa_bp
+    from .routes.admin.Upload.upload_dashboard import upload_dashboard_bp
+  
     # API
     from .routes.api.student_data import student_data_api
     # AI
@@ -75,8 +82,14 @@ def create_app():
     app.register_blueprint(student_dashboard_bp)
     app.register_blueprint(subjects_marks_bp)
     app.register_blueprint(student_attendance_bp)
-    app.register_blueprint(upload_cgpa_bp)
-    app.register_blueprint(view_student_cgpa_bp)
+
+    # Cgpa register
+    # app.register_blueprint(upload_cgpa_bp)
+    app.register_blueprint(view_pdf_bp)
+    app.register_blueprint(import_pdf_bp)
+    # app.register_blueprint(view_student_cgpa_bp)
+    app.register_blueprint(view_cgpa_bp)
+    app.register_blueprint(upload_dashboard_bp)
     # Register API and AI blueprints
     app.register_blueprint(student_data_api)
     app.register_blueprint(ai_bp)

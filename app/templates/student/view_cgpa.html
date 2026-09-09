@@ -1,77 +1,209 @@
+
 {% extends "base/base.html" %}
 
 {% block title %}
 View CGPA
 {% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/student/cgpa.css') }}">
-{% endblock %}
-
 {% block content %}
-<div class="page-header">
-    <div class="page-header-left">
-        <div class="link-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 20V10M18 20V4M6 20V14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-        <div>
 
-            <h4 class="page-header-title">CGPA Report</h4>
-            <p class="page-header-sub">View your cumulative grade point average</p>
-        </div>
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">
+            Your CGPA
+        </h2>
+
+        <p class="text-muted mb-0">
+            Semester-wise GPA and current CGPA
+        </p>
     </div>
-    <a href="javascript:history.back()" class="btn-outline-pill">
-        <i class="bi bi-arrow-left"></i>&larr; Back to Dashboard
-    </a>
-</div>
 
-<div class="container py-5">
-    <div class="cgpa-wrapper">
-        <div class="cgpa-card">
 
-            <div class="cgpa-header">
-                <span class="eyebrow">Academic Record</span>
-                <h3>Student CGPA</h3>
-            </div>
+    {% if student %}
 
-            {% if student_cgpa.cgpa and student_cgpa.cgpa > 0 %}
-                {% set pct = (student_cgpa.cgpa / 4.0 * 100) | round(1) %}
-                <div class="cgpa-gauge" style="--cgpa-pct: {{ pct }};">
-                    <div class="cgpa-gauge-inner">
-                        <span class="value">{{ "%.2f"|format(student_cgpa.cgpa) }}</span>
-                        <span class="scale">out of 4.00</span>
-                    </div>
-                </div>
-            {% else %}
-                <div class="cgpa-gauge pending">
-                    <div class="cgpa-gauge-inner">
-                        <span class="pending-text">Not<br>Published</span>
-                    </div>
-                </div>
-            {% endif %}
+    <!-- Student Info -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
 
-            <div class="cgpa-stats">
-                <div class="cgpa-stat">
-                    <div class="label">Roll</div>
-                    <div class="value">{{ student_cgpa.student_roll }}</div>
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <small class="text-muted">
+                        Student Roll
+                    </small>
+
+                    <h5 class="fw-bold mb-0">
+                        {{ student.roll }}
+                    </h5>
                 </div>
-                <div class="cgpa-stat">
-                    <div class="label">Semester</div>
-                    <div class="value">{{ student_cgpa.semester }}</div>
+
+                <div class="text-end">
+                    <small class="text-muted">
+                        Current CGPA
+                    </small>
+
+                    <h2 class="fw-bold text-primary mb-0">
+                        {{ student.cgpa if student.cgpa is not none else "N/A" }}
+                    </h2>
                 </div>
-                <div class="cgpa-stat full">
-                    <div class="label">Name</div>
-                    <div class="value">{{ student_cgpa.student_full_name }}</div>
-                </div>
-                <div class="cgpa-stat full">
-                    <div class="label">Group</div>
-                    <div class="value">{{ student_cgpa.group }}</div>
-                </div>
+
             </div>
 
         </div>
     </div>
+
+
+    <!-- Semester GPA -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-4">
+                Semester Results
+            </h5>
+
+            <div class="row g-3">
+
+                {% for semester in range(1, 9) %}
+
+                {% set gpa = student["gpa" ~ semester] %}
+
+                <div class="col-6 col-md-3">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <small class="text-muted">
+                            Semester {{ semester }}
+                        </small>
+
+                        {% if gpa is not none %}
+
+                            <h4 class="fw-bold text-success mt-2 mb-0">
+                                {{ "%.2f"|format(gpa) }}
+                            </h4>
+
+                            <small class="text-success">
+                                Passed
+                            </small>
+
+                        {% else %}
+
+                            <h5 class="fw-bold text-danger mt-2 mb-0">
+                                Not Pass Yet
+                            </h5>
+
+                            <small class="text-danger">
+                                Result pending / failed
+                            </small>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Failed Subjects -->
+    {% if failed_subjects %}
+
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="fw-bold mb-0 text-danger">
+                    Failed Subjects
+                </h5>
+
+                <span class="badge bg-danger rounded-pill">
+                    {{ student.failed_count }}
+                </span>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for subject in failed_subjects %}
+
+                        <tr>
+
+                            <td>
+                                <span class="fw-semibold">
+                                    {{ subject.code }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ subject.name }}
+                            </td>
+
+                            <td>
+
+                                {% if subject.type == "T" %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Theory
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-info text-dark">
+                                        Practical
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    {% endif %}
+
+
+    {% else %}
+
+    <!-- No Data -->
+    <div class="alert alert-warning text-center">
+        CGPA information is not available yet.
+    </div>
+
+    {% endif %}
+
 </div>
+
 {% endblock %}
+

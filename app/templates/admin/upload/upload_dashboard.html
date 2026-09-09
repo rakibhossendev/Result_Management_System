@@ -1,0 +1,15 @@
+{% extends "base/base.html" %}
+{% block title %} Result Upload PDF {% endblock %}
+{% block content %}
+
+<div>
+    <h3>Upload Dashboard</h3>
+
+    <ul>
+        <li><a href="{{ url_for('import_pdf.upload_cgpa') }}">Import CGPA PDF</a></li>
+        <li><a href="{{ url_for('view_pdf.view_cgpa_pdfs') }}">Show Imported Files</a></li>
+        <li><a href="#">Show Fail or Success</a></li>
+    </ul>
+</div>
+
+{% endblock %}
