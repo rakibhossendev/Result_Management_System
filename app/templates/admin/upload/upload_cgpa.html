@@ -1,0 +1,111 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4">
+        Upload CGPA PDF
+    </h3>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Select PDF files
+            </label>
+
+            <input
+                type="file"
+                name="pdf_files"
+                class="form-control"
+                accept=".pdf"
+                multiple
+                required
+            >
+
+            <small class="text-muted">
+                You can upload multiple PDF files.
+            </small>
+
+        </div>
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Upload PDFs
+        </button>
+
+    </form>
+
+
+    <hr class="my-4">
+
+
+    <h5>
+        Uploaded PDF Files
+    </h5>
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>File Name</th>
+                    <th>Uploaded At</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for file in files %}
+
+                <tr>
+
+                    <td>
+                        {{ loop.index }}
+                    </td>
+
+                    <td>
+                        {{ file.filename }}
+                    </td>
+
+                    <td>
+                        {{ file.uploaded_at }}
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="3"
+                        class="text-center"
+                    >
+                        No PDF uploaded yet.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
