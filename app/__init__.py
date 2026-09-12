@@ -1,12 +1,21 @@
 from flask import Flask
 from .config import Config
 from .extensions import db
+from flask_cors import CORS
 
 
 def create_app():
     app = Flask(__name__)
+    CORS(
+        app,
+        origins=[
+            "http://localhost:5173",
+            "http://127.0.0.1:5173"
+        ]
+    )
     app.config.from_object(Config)
     db.init_app(app)
+
 
     from .routes.student.home import home_bp
     from .routes.auth.login import login_bp
@@ -46,7 +55,8 @@ def create_app():
     from .routes.admin.Upload.upload_dashboard import upload_dashboard_bp
   
     # API
-    from .routes.api.student_data import student_data_api
+    from .routes.api.student.student_data import student_data_api_bp
+    from .routes.api.student.student_auth import search_student_bp
     # AI
     from .routes.ai.routes import ai_bp
     # change password
@@ -90,9 +100,14 @@ def create_app():
     # app.register_blueprint(view_student_cgpa_bp)
     app.register_blueprint(view_cgpa_bp)
     app.register_blueprint(upload_dashboard_bp)
-    # Register API and AI blueprints
-    app.register_blueprint(student_data_api)
+
+    # Register API 
+    app.register_blueprint(student_data_api_bp)
+    app.register_blueprint(search_student_bp)
+
+    #AI 
     app.register_blueprint(ai_bp)
+
     app.register_blueprint(admin_change_password_bp) # change password bp
     app.register_blueprint(view_assigned_bp)
 
