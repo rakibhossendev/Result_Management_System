@@ -15,21 +15,21 @@ class AddStudentInfo(db.Model):
 
 class Attendance(db.Model):
     __tablename__ = "attendance"
-    attendance_id = db.Column(db.Integer,primary_key=True,autoincrement=True)
-    student_id = db.Column(db.Integer,db.ForeignKey("student_data.student_id"),nullable=False)
-    teacher_id = db.Column(db.Integer,db.ForeignKey("teacher_info.teacher_id"),nullable=False)
-    attendance_date = db.Column(db.Date,nullable=False)
-    status = db.Column(db.String(1),nullable=False)
-    created_at = db.Column(db.DateTime,default=db.func.now())
-    student = db.relationship("AddStudentInfo",backref="attendance")
-    __table_args__ = (
-        db.UniqueConstraint(
-            "student_id",
-            "attendance_date",
-            name="unique_student_attendance"
-        ),
-    )
 
+    attendance_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student_data.student_id"), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher_info.teacher_id"), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.subject_id"), nullable=False)
+    attendance_date = db.Column(db.Date, nullable=False)
+    status = db.Column(db.String(1), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+    student = db.relationship("AddStudentInfo", backref="attendance")
+    subject = db.relationship("Subjects", backref="attendance")
+
+    __table_args__ = (db.UniqueConstraint("student_id", "subject_id", "attendance_date", name="unique_student_subject_attendance"),)
+
+    
 class MarksTopic(db.Model):
     __tablename__ = "marks_topic"
     marks_topic_id = db.Column(db.Integer,primary_key=True)
