@@ -5,52 +5,135 @@ Attendance
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/student/attendance.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/student/attendance.css') }}">
 {% endblock %}
 
 {% block content %}
 
+<!-- =========================================================
+     Page Header
+     ========================================================= -->
 <div class="page-header">
     <div class="page-header-left">
         <div class="page-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
+                <path
+                    d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
         </div>
+
         <div>
-            <h4 class="page-header-title">Attendance Report</h4>
-            <p class="page-header-sub">View your attendance record</p>
+            <h4 class="page-header-title">
+                Attendance Report
+            </h4>
+            <p class="page-header-sub">
+                View your attendance record
+            </p>
         </div>
     </div>
+
     <div class="page-header-right">
-        <a href="{{ url_for('student_dashboard.student_dashboard') }}" class="btn-outline-pill">&larr; Back to Dashboard</a>
+        <a href="{{ url_for('student_dashboard.student_dashboard') }}" class="btn-outline-pill">
+            &larr; Back to Dashboard
+        </a>
     </div>
 </div>
 
 <div class="container mt-4">
+
+    <!-- =====================================================
+         Subject Selection
+         ===================================================== -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                Select Subject
+            </h5>
+        </div>
+
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('student_attendance.attendance') }}">
+                <div class="row align-items-end">
+                    <div class="col-md-9">
+                        <label for="subject_id" class="form-label">
+                            Subject
+                        </label>
+
+                        <select name="subject_id" id="subject_id" class="form-select" required>
+                            <option value="">
+                                -- Select Subject --
+                            </option>
+
+                            {% for subject in subjects %}
+                            <option value="{{ subject.subject_id }}" {% if selected_subject_id==subject.subject_id %}
+                                selected {% endif %}>
+                                {{ subject.subject_code }} - {{ subject.subject_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mt-3 mt-md-0">
+                        <button type="submit" class="btn btn-primary w-100">
+                            View Attendance
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         No Subject Selected
+         ===================================================== -->
+    {% if not selected_subject_id %}
+    <div class="alert alert-info text-center">
+        Please select a subject to view your attendance.
+    </div>
+    {% endif %}
+
+    {% if selected_subject_id %}
+
+    <!-- =====================================================
+         Attendance Statistics
+         ===================================================== -->
     <div class="row mb-4">
+        <!-- Total Class -->
         <div class="col-md-4">
             <div class="card text-center shadow">
                 <div class="card-body">
-                    <h6>Total Class</h6>
-                    <h3>{{ total_class }}</h3>
+                    <h6>
+                        Total Class
+                    </h6>
+                    <h3>
+                        {{ total_class }}
+                    </h3>
                 </div>
             </div>
         </div>
+
+        <!-- Present -->
         <div class="col-md-4">
             <div class="card text-center shadow border-success">
                 <div class="card-body">
-                    <h6>Present</h6>
+                    <h6>
+                        Present
+                    </h6>
                     <h3 class="text-success">
                         {{ total_present }}
                     </h3>
                 </div>
             </div>
         </div>
+
+        <!-- Absent -->
         <div class="col-md-4">
             <div class="card text-center shadow border-danger">
                 <div class="card-body">
-                    <h6>Absent</h6>
+                    <h6>
+                        Absent
+                    </h6>
                     <h3 class="text-danger">
                         {{ total_absent }}
                     </h3>
@@ -58,86 +141,136 @@ Attendance
             </div>
         </div>
     </div>
+
+    <!-- =====================================================
+         Attendance Percentage
+         ===================================================== -->
     <div class="alert alert-info text-center">
-    <p class="progress-heading">Attendance rate</p>
-    <div class="progress mt-3">
-        <div class="progress-bar bg-success" style="width: {{ percentage }}%">
-            {{ percentage }}%
+        <p class="progress-heading">
+            Attendance Rate
+        </p>
+
+        <div class="progress mt-3">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentage }}%;"
+                aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">
+                {{ percentage }}%
+            </div>
         </div>
     </div>
+
+    <!-- =====================================================
+         Attendance Table
+         ===================================================== -->
+    {% if attendance and attendance.items %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in attendance.items %}
+                <tr>
+                    <td>
+                        {{ loop.index + attendance.per_page * (attendance.page - 1) }}
+                    </td>
+
+                    <td>
+                        {{ item.attendance_date.strftime("%d %b %Y") }}
+                    </td>
+
+                    <td>
+                        {% if item.status == "P" %}
+                        <span class="badge bg-success">
+                            Present
+                        </span>
+                        {% else %}
+                        <span class="badge bg-danger">
+                            Absent
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in attendance.items %}
-            <tr>
-                <td>{{ loop.index + attendance.per_page * (attendance.page-1) }}</td>
-                <td>
-                    {{ item.attendance_date.strftime("%d %b %Y") }}
-                </td>
-                <td>
-                    {% if item.status == "P" %}
-                    <span class="badge bg-success">
-                        Present
-                    </span>
-                    {% else %}
-                    <span class="badge bg-danger">
-                        Absent
-                    </span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    {% else %}
+
+    <!-- =====================================================
+         No Attendance
+         ===================================================== -->
+    <div class="alert alert-warning text-center">
+        No attendance record found for this subject.
+    </div>
+
+    {% endif %}
+
+    <!-- =====================================================
+         Pagination
+         ===================================================== -->
+    {% if attendance and attendance.pages > 1 %}
     <nav>
         <ul class="pagination justify-content-center">
             {% if attendance.has_prev %}
-
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('student_attendance.attendance', page=attendance.prev_num) }}">
+                <a class="page-link" href="{{ url_for(
+                        'student_attendance.attendance',
+                        page=attendance.prev_num,
+                        subject_id=selected_subject_id
+                    ) }}">
                     Previous
                 </a>
             </li>
-
             {% endif %}
 
             {% for page in attendance.iter_pages() %}
-
             {% if page %}
-
-            <li class="page-item {% if page==attendance.page %}active{% endif %}">
-
-                <a class="page-link" href="{{ url_for('student_attendance.attendance', page=page) }}">
+            <li class="page-item {% if page == attendance.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for(
+                            'student_attendance.attendance',
+                            page=page,
+                            subject_id=selected_subject_id
+                        ) }}">
                     {{ page }}
                 </a>
-
             </li>
-
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    ...
+                </span>
+            </li>
             {% endif %}
-
             {% endfor %}
 
             {% if attendance.has_next %}
-
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('student_attendance.attendance', page=attendance.next_num) }}">
+                <a class="page-link" href="{{ url_for(
+                        'student_attendance.attendance',
+                        page=attendance.next_num,
+                        subject_id=selected_subject_id
+                    ) }}">
                     Next
                 </a>
             </li>
-
             {% endif %}
-
         </ul>
-
     </nav>
+    {% endif %}
+
+    {% endif %}
 
 </div>
-
 {% endblock %}
