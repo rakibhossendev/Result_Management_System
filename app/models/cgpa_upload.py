@@ -30,3 +30,4 @@ class StudentCGPA(db.Model):
     # 25931:T,26811:T,26932:T
     failed_subjects = db.Column(db.Text,nullable=True)
     failed_count = db.Column(db.Integer,default=0)
+    
