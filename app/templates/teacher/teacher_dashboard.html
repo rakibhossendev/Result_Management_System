@@ -1,6 +1,6 @@
 {% extends "base/base.html" %}
 {% block title %} Teacher Dashboard {% endblock %}
- 
+
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
@@ -10,87 +10,126 @@
 
 {% block content %}
 
-<!-- Background blobs -->
-<div class="dash-blob dash-blob-1"></div>
-<div class="dash-blob dash-blob-2"></div>
+<div class="dash-page">
 
-<!-- ── TOP HEADER ── -->
-<header class="dash-header">
-  <div class="dash-header-left">
-    <div class="dash-avatar">P</div>
-    <div>
-      <p class="dash-greeting">Good day,</p>
-      <h1 class="dash-title">Teacher Dashboard</h1>
-    </div>
-  </div>
-  <div class="dash-header-right">
-    <span class="dash-badge">Teacher</span>
-    <a href="{{ url_for('login.logout_principal') }}" class="btn btn-outline btn-sm">Sign out</a>
-  </div>
-</header>
-
-<!-- ── MAIN LAYOUT ── -->
-<div class="td-layout">
-
-    <!-- Left column: total students + help -->
-    <div class="dash-side td-side">
-
-        <div class="stat-card stat-primary anim-slide visible">
-            <div class="stat-icon">🎓</div>
-            <div class="stat-body">
-                <span class="stat-label">Total Students</span>
-                <span class="stat-value">{{ total_student }}</span>
+    <!-- ── TOP HEADER ── -->
+    <header class="dash-header">
+        <div class="dash-header-left">
+            <div class="dash-avatar">T</div>
+            <div>
+                <p class="dash-greeting">Good day,</p>
+                <h1 class="dash-title">Teacher Dashboard</h1>
             </div>
-            <div class="stat-glow"></div>
+        </div>
+        <div class="dash-header-right">
+            <span class="dash-badge">Teacher</span>
+            <a href="{{ url_for('login.logout_principal') }}" class="dash-signout">Sign out</a>
+        </div>
+    </header>
+
+    <!-- ── MAIN LAYOUT ── -->
+    <div class="td-layout">
+
+        <!-- Left column: total students + help -->
+        <div class="td-side">
+
+            <div class="td-stat">
+                <span class="td-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"/><path d="M12 6.5v13"/>
+                    </svg>
+                </span>
+                <div class="td-stat-body">
+                    <span class="td-stat-label">Total Students</span>
+                    <span class="td-stat-value">{{ total_student }}</span>
+                </div>
+                <div class="td-stat-pattern" aria-hidden="true">
+                    <svg viewBox="0 0 200 200" fill="none">
+                        <circle cx="170" cy="180" r="60" stroke="white" stroke-opacity=".14" stroke-width="1.5"/>
+                        <circle cx="170" cy="180" r="90" stroke="white" stroke-opacity=".09" stroke-width="1.5"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="td-help">
+                <span class="td-help-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/>
+                    </svg>
+                </span>
+                <p class="td-help-label">Need help?</p>
+                <p class="td-help-sub">Reach out to admin support if something isn't working as expected.</p>
+            </div>
+
         </div>
 
-        <div class="help-card">
-            <p class="help-label">Need help?</p>
-            <p class="help-sub">Reach out to admin support if something isn't working as expected.</p>
+        <!-- Right column: quick action tiles -->
+        <div class="td-actions">
+            <div class="td-actions-head">
+                <h2 class="td-actions-title">Quick Actions</h2>
+                <span class="td-actions-chip">Menu</span>
+            </div>
+
+            <div class="td-grid">
+
+                <a href="{{ url_for('attendence.attendance') }}"
+                   class="td-tile td-tile-wide td-tile-featured is-indigo" data-index="01">
+                    <span class="td-tile-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4M8 3v4M4 11h16"/>
+                        </svg>
+                    </span>
+                    <span class="td-tile-text">
+                        <span class="td-tile-name">Get Attendance</span>
+                        <span class="td-tile-desc">Mark or review attendance</span>
+                    </span>
+                    <span class="td-tile-arrow">&nearr;</span>
+                </a>
+
+                <a href="{{ url_for('add_student.add_student') }}" class="td-tile is-blue" data-index="02">
+                    <span class="td-tile-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                    </span>
+                    <span class="td-tile-text">
+                        <span class="td-tile-name">Add Student</span>
+                        <span class="td-tile-desc">Register a new student</span>
+                    </span>
+                    <span class="td-tile-arrow">&nearr;</span>
+                </a>
+
+                <a href="{{ url_for('show_student.show_student') }}" class="td-tile is-teal" data-index="03">
+                    <span class="td-tile-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/>
+                            <path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/>
+                        </svg>
+                    </span>
+                    <span class="td-tile-text">
+                        <span class="td-tile-name">View Students</span>
+                        <span class="td-tile-desc">Browse student records</span>
+                    </span>
+                    <span class="td-tile-arrow">&nearr;</span>
+                </a>
+
+                <a href="{{ url_for('get_marks_dashboard.get_marks_dashboard') }}"
+                   class="td-tile td-tile-wide is-amber" data-index="04">
+                    <span class="td-tile-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>
+                        </svg>
+                    </span>
+                    <span class="td-tile-text">
+                        <span class="td-tile-name">Assign Marks Dashboard</span>
+                        <span class="td-tile-desc">Enter and manage marks</span>
+                    </span>
+                    <span class="td-tile-arrow">&nearr;</span>
+                </a>
+
+            </div>
         </div>
 
-    </div>
-
-    <!-- Right column: quick action tiles -->
-    <div class="dash-panel td-actions">
-        <div class="panel-header">
-            <h2 class="panel-title">Quick Actions</h2>
-            <span class="panel-chip">Menu</span>
-        </div>
-        <div class="action-list">
-            <a href="{{ url_for('add_student.add_student') }}" class="action-item action-blue">
-                <div class="action-icon-wrap">➕</div>
-                <div class="action-text">
-                    <span class="action-name">Add Student</span>
-                    <span class="action-desc">Register a new student</span>
-                </div>
-                <span class="action-arrow">→</span>
-            </a>
-            <a href="{{ url_for('show_student.show_student') }}" class="action-item action-teal">
-                <div class="action-icon-wrap">👥</div>
-                <div class="action-text">
-                    <span class="action-name">View Students</span>
-                    <span class="action-desc">Browse student records</span>
-                </div>
-                <span class="action-arrow">→</span>
-            </a>
-            <a href="{{ url_for('attendence.attendance') }}" class="action-item action-indigo">
-                <div class="action-icon-wrap">🗓️</div>
-                <div class="action-text">
-                    <span class="action-name">Get Attendance</span>
-                    <span class="action-desc">Mark or review attendance</span>
-                </div>
-                <span class="action-arrow">→</span>
-            </a>
-            <a href="{{ url_for('get_marks_dashboard.get_marks_dashboard') }}" class="action-item action-amber">
-                <div class="action-icon-wrap">📝</div>
-                <div class="action-text">
-                    <span class="action-name">Assign Marks Dashboard</span>
-                    <span class="action-desc">Enter and manage marks</span>
-                </div>
-                <span class="action-arrow">→</span>
-            </a>
-        </div>
     </div>
 
 </div>

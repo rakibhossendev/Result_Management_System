@@ -6,45 +6,77 @@ Add Marks
 
 {% block content %}
 
-<div class="container mt-4">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/add_marks.css') }}">
 
-    <div class="card shadow">
+<div class="am-page">
 
-        <div class="card-header">
-            <h4>Add Marks</h4>
+    <!-- Student strip -->
+    <div class="am-top">
+        <div class="am-student">
+            {% set name_parts = student.student_full_name.split() %}
+            {% set initials = (name_parts[0][0] ~ (name_parts[-1][0] if name_parts|length > 1 else "")) | upper %}
+            <span class="am-avatar">{{ initials }}</span>
+            <div>
+                <h1 class="am-title">Add Marks</h1>
+                <p class="am-sub">{{ student.student_full_name }} &middot; Roll {{ student.student_roll }}</p>
+            </div>
         </div>
 
-        <div class="card-body">
+        <a href="{{ url_for('show_student.show_student') }}" class="am-back">
+            <span>&larr;</span> Back to Students
+        </a>
+    </div>
 
-            <h5>{{ student.student_roll }} - {{ student.student_full_name }}</h5>
+    <div class="am-grid">
 
-            <form method="POST">
-
+        <!-- Form card -->
+        <div class="am-card">
+            <form method="POST" class="am-form" novalidate>
                 {{ form.hidden_tag() }}
 
-                <!-- Subject -->
-                <div class="mb-3">
-                    {{ form.subject.label(class="form-label") }}
-                    {{ form.subject(class="form-select", id="subject") }}
+                <div class="am-field">
+                    {{ form.subject.label(class="am-label") }}
+                    {{ form.subject(class="am-select", id="subject") }}
                 </div>
 
-                <!-- Marks Topic -->
-                <div class="mb-3">
-                    {{ form.marks_topic.label(class="form-label") }}
-                    {{ form.marks_topic(class="form-select", id="marks_topic") }}
+                <div class="am-field">
+                    {{ form.marks_topic.label(class="am-label") }}
+                    {{ form.marks_topic(class="am-select", id="marks_topic") }}
                 </div>
 
-                <!-- Obtained Marks -->
-                <div class="mb-3">
-                    {{ form.get_marks.label(class="form-label") }}
-                    {{ form.get_marks(class="form-control") }}
+                <div class="am-field">
+                    {{ form.get_marks.label(class="am-label") }}
+                    {{ form.get_marks(class="am-input", id="get_marks") }}
                 </div>
 
-                {{ form.submit(class="btn btn-success") }}
-
+                {{ form.submit(class="am-submit") }}
             </form>
-
         </div>
+
+        <!-- Live preview card -->
+        <aside class="am-preview" id="am-preview">
+            <div class="am-preview-pattern" aria-hidden="true">
+                <svg viewBox="0 0 200 200" fill="none">
+                    <circle cx="170" cy="20" r="55" stroke="white" stroke-opacity=".14" stroke-width="1.5"/>
+                    <circle cx="170" cy="20" r="85" stroke="white" stroke-opacity=".09" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <span class="am-preview-tag" id="am-preview-tag">Draft</span>
+
+            <div class="am-preview-body">
+                <span class="am-preview-label">Subject</span>
+                <strong class="am-preview-value" id="am-preview-subject">&mdash;</strong>
+
+                <span class="am-preview-label">Topic</span>
+                <strong class="am-preview-value" id="am-preview-topic">&mdash;</strong>
+
+                <span class="am-preview-label">Marks</span>
+                <strong class="am-preview-value am-preview-marks" id="am-preview-marks">&mdash;</strong>
+            </div>
+
+            <p class="am-preview-hint">This updates as you fill in the form &mdash; nothing is saved until you submit.</p>
+        </aside>
 
     </div>
 
@@ -55,6 +87,13 @@ Add Marks
 
         const subject = document.getElementById("subject");
         const marksTopic = document.getElementById("marks_topic");
+        const marksInput = document.getElementById("get_marks");
+
+        const previewTag = document.getElementById("am-preview-tag");
+        const previewSubject = document.getElementById("am-preview-subject");
+        const previewTopic = document.getElementById("am-preview-topic");
+        const previewMarks = document.getElementById("am-preview-marks");
+        const previewCard = document.getElementById("am-preview");
 
         function resetMarksTopic(text = "Select Marks Topic") {
             marksTopic.innerHTML = "";
@@ -66,7 +105,27 @@ Add Marks
             marksTopic.appendChild(option);
         }
 
+        function updatePreview() {
+            const subjectText = subject.options[subject.selectedIndex]
+                ? subject.options[subject.selectedIndex].textContent
+                : "";
+            const topicText = marksTopic.options[marksTopic.selectedIndex]
+                ? marksTopic.options[marksTopic.selectedIndex].textContent
+                : "";
+            const marksValue = marksInput.value;
+
+            previewSubject.textContent = (subject.value && subjectText) ? subjectText : "\u2014";
+            previewTopic.textContent = (marksTopic.value && topicText) ? topicText : "\u2014";
+            previewMarks.textContent = marksValue !== "" ? marksValue : "\u2014";
+
+            const ready = subject.value && marksTopic.value && marksValue !== "";
+            previewTag.textContent = ready ? "Ready to submit" : "Draft";
+            previewTag.classList.toggle("is-ready", !!ready);
+            previewCard.classList.toggle("is-empty", !subject.value && !marksTopic.value && marksValue === "");
+        }
+
         resetMarksTopic();
+        updatePreview();
 
         let requestController = null;
 
@@ -75,6 +134,7 @@ Add Marks
             const subjectId = this.value;
 
             resetMarksTopic();
+            updatePreview();
 
             if (!subjectId) {
                 return;
@@ -132,9 +192,15 @@ Add Marks
                 console.error("Marks Topic Error:", error);
 
                 resetMarksTopic("Failed to load topics");
+
+            } finally {
+                updatePreview();
             }
 
         });
+
+        marksTopic.addEventListener("change", updatePreview);
+        marksInput.addEventListener("input", updatePreview);
 
     });
 

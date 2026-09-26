@@ -1,37 +1,119 @@
-{% extends "base/base.html" %} {% block title %} Add Student{% endblock %} {%
-block content %}
+{% extends "base/base.html" %}
+{% block title %}Edit Student{% endblock %}
 
-<div class="card form-box">
-  <form method="POST">
-    {{ form.hidden_tag() }}
+{% block content %}
 
-    <div class="mb-3">
-      {{ form.student_roll.label(class="ap-label")}} {{
-      form.student_roll(class="form-control")}}
-    </div>
-    <div class="mb-3">
-      {{ form.student_full_name.label(class="ap-label")}} {{
-      form.student_full_name(class="form-control")}}
-    </div>
-    <div class="mb-3">
-      {{ form.semester.label(class="ap-label")}} {{
-      form.semester(class="form-control")}}
-    </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_student.css') }}">
 
-    <div class="mb-3">
-      {{ form.sessions.label(class="ap-label")}} {{
-      form.sessions(class="form-control")}}
+<div class="es-page">
+    <div class="es-card">
+
+        <!-- Left: info panel -->
+        <aside class="es-aside">
+            <div class="es-aside-pattern" aria-hidden="true">
+                <svg viewBox="0 0 200 200" fill="none">
+                    <circle cx="170" cy="20" r="60" stroke="white" stroke-opacity=".14" stroke-width="1.5"/>
+                    <circle cx="170" cy="20" r="92" stroke="white" stroke-opacity=".09" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <span class="es-aside-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+            </span>
+
+            <h1 class="es-aside-title">Edit Student Record</h1>
+            <p class="es-aside-desc">Update this student's details below. Changes are saved once you submit the form.</p>
+
+            <ul class="es-aside-list">
+                <li>
+                    <span class="es-aside-dot"></span>
+                    Identity &mdash; roll number and full name
+                </li>
+                <li>
+                    <span class="es-aside-dot"></span>
+                    Academics &mdash; semester and session
+                </li>
+                <li>
+                    <span class="es-aside-dot"></span>
+                    Placement &mdash; department and group
+                </li>
+            </ul>
+
+            <a href="{{ url_for('show_student.show_student') }}" class="es-aside-back">
+                <span>&larr;</span> Back to Students
+            </a>
+        </aside>
+
+        <!-- Right: form -->
+        <div class="es-main">
+            <div class="es-main-head">
+                <h2 class="es-main-title">Student Information</h2>
+                <p class="es-main-sub">All fields are required unless noted.</p>
+            </div>
+
+            <form method="POST" class="es-form" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="es-row">
+                    <div class="es-field es-field-narrow">
+                        {{ form.student_roll.label(class="es-label") }}
+                        {{ form.student_roll(class="es-input") }}
+                        {% if form.student_roll.errors %}
+                        <span class="es-error">{{ form.student_roll.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="es-field es-field-wide">
+                        {{ form.student_full_name.label(class="es-label") }}
+                        {{ form.student_full_name(class="es-input") }}
+                        {% if form.student_full_name.errors %}
+                        <span class="es-error">{{ form.student_full_name.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="es-row">
+                    <div class="es-field">
+                        {{ form.semester.label(class="es-label") }}
+                        {{ form.semester(class="es-input") }}
+                        {% if form.semester.errors %}
+                        <span class="es-error">{{ form.semester.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="es-field">
+                        {{ form.sessions.label(class="es-label") }}
+                        {{ form.sessions(class="es-input") }}
+                        {% if form.sessions.errors %}
+                        <span class="es-error">{{ form.sessions.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="es-row">
+                    <div class="es-field">
+                        {{ form.department_id.label(class="es-label") }}
+                        {{ form.department_id(class="es-input") }}
+                        {% if form.department_id.errors %}
+                        <span class="es-error">{{ form.department_id.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="es-field">
+                        {{ form.group.label(class="es-label") }}
+                        {{ form.group(class="es-input") }}
+                        {% if form.group.errors %}
+                        <span class="es-error">{{ form.group.errors[0] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="es-actions">
+                    {{ form.submit(class="es-submit") }}
+                </div>
+            </form>
+        </div>
+
     </div>
-    <div class="mb-3">
-      {{ form.department_id.label }} {{
-      form.department_id(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.group.label(class="ap-label")}} {{
-      form.group(class="form-control")}}
-    </div>
-    <div class="mb-3">{{ form.submit(class="btn btn-primary") }}</div>
-  </form>
 </div>
 
 {% endblock %}
