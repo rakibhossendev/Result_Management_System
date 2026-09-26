@@ -9,137 +9,174 @@
 
 {% block content %}
 
-<!-- Decorative blobs -->
-<div class="dash-blob dash-blob-1"></div>
-<div class="dash-blob dash-blob-2"></div>
+<div class="dash-page">
 
-<!-- ── TOP HEADER ── -->
-<header class="dash-header">
-  <div class="dash-header-left">
-    <div class="dash-avatar">P</div>
-    <div>
-      <p class="dash-greeting">Good day,</p>
-      <h1 class="dash-title">Principal Dashboard</h1>
-    </div>
-  </div>
-  <div class="dash-header-right">
-    <span class="dash-badge">Principal</span>
-    <a href="{{ url_for('login.logout_principal') }}" class="btn btn-outline btn-sm">Sign out</a>
-  </div>
-</header>
-
-<!-- ── STATS ROW ── -->
-<section class="dash-stats" aria-label="Summary statistics">
-
-  <div class="stat-card stat-primary anim-slide" style="--delay:.05s">
-    <div class="stat-icon">👨‍🏫</div>
-    <div class="stat-body">
-      <span class="stat-label">Total Teachers</span>
-      <span class="stat-value">{{ total_teachers }}</span>
-    </div>
-    <div class="stat-glow"></div>
-  </div>
-
-  <div class="stat-card stat-indigo anim-slide" style="--delay:.12s">
-    <div class="stat-icon">🎓</div>
-    <div class="stat-body">
-      <span class="stat-label">Total Students</span>
-      <span class="stat-value">{{ total_students }}</span>
-    </div>
-    <div class="stat-glow"></div>
-  </div>
-
-  <div class="stat-card stat-amber anim-slide" style="--delay:.19s">
-    <div class="stat-icon">📋</div>
-    <div class="stat-body">
-      <span class="stat-label">Pending Results</span>
-      <span class="stat-value">—</span>
-    </div>
-    <div class="stat-glow"></div>
-  </div>
-
-</section>
-
-<!-- ── MAIN GRID ── -->
-<div class="dash-grid">
-
-  <!-- Quick Actions -->
-  <section class="dash-panel anim-slide" style="--delay:.33s" aria-label="Quick actions">
-    <div class="panel-header">
-      <h2 class="panel-title">Quick Actions</h2>
-      <span class="panel-chip">Management</span>
-    </div>
-
-    <nav class="action-list" aria-label="Dashboard navigation">
-
-      <a href="{{ url_for('add_teacher.add_teachers') }}" class="action-item action-blue">
-        <span class="action-icon-wrap">➕</span>
-        <div class="action-text">
-          <span class="action-name">Add Teacher</span>
-          <span class="action-desc">Register a new teacher to the system</span>
+    <!-- ── TOP HEADER ── -->
+    <header class="dash-header">
+        <div class="dash-header-left">
+            <div class="dash-avatar">P</div>
+            <div>
+                <p class="dash-greeting">Good day,</p>
+                <h1 class="dash-title">Principal Dashboard</h1>
+            </div>
         </div>
-        <span class="action-arrow">→</span>
-      </a>
-
-      <a href="{{ url_for('view_teachers.view_teachers') }}" class="action-item action-teal">
-        <span class="action-icon-wrap">📋</span>
-        <div class="action-text">
-          <span class="action-name">View Teachers</span>
-          <span class="action-desc">Browse the complete teacher roster</span>
+        <div class="dash-header-right">
+            <span class="dash-badge">Principal</span>
+            <a href="{{ url_for('login.logout_principal') }}" class="dash-signout">Sign out</a>
         </div>
-        <span class="action-arrow">→</span>
-      </a>
+    </header>
 
-      <a href="{{ url_for('edit_teacher.edit_teacher_view') }}" class="action-item action-indigo">
-        <span class="action-icon-wrap">✏️</span>
-        <div class="action-text">
-          <span class="action-name">Edit Teacher</span>
-          <span class="action-desc">Modify existing teacher details</span>
+    <!-- ── STAT RIBBON ── -->
+    <section class="pc-ribbon pc-rise" style="--delay:.02s" aria-label="Summary statistics">
+
+        <div class="pc-ribbon-item">
+            <span class="pc-ribbon-icon is-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/>
+                    <path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/>
+                </svg>
+            </span>
+            <div class="pc-ribbon-text">
+                <span class="pc-ribbon-value">{{ total_teachers }}</span>
+                <span class="pc-ribbon-label">Total Teachers</span>
+            </div>
         </div>
-        <span class="action-arrow">→</span>
-      </a>
 
-      <a href="{{ url_for('assign_subject_dashboard.assign_subject_dashboard') }}" class="action-item action-purple">
-        <span class="action-icon-wrap">📚</span>
-        <div class="action-text">
-          <span class="action-name">Assign Dashboard</span>
-          <span class="action-desc">Assign subjects to teachers</span>
+        <span class="pc-ribbon-divider" aria-hidden="true"></span>
+
+        <div class="pc-ribbon-item">
+            <span class="pc-ribbon-icon is-cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"/><path d="M12 6.5v13"/>
+                </svg>
+            </span>
+            <div class="pc-ribbon-text">
+                <span class="pc-ribbon-value">{{ total_students }}</span>
+                <span class="pc-ribbon-label">Total Students</span>
+            </div>
         </div>
-        <span class="action-arrow">→</span>
-      </a>
 
-    </nav>
-  </section>
+        <span class="pc-ribbon-divider" aria-hidden="true"></span>
 
-  <!-- System Overview Panel -->
-  <aside class="dash-side" aria-label="System overview">
+        <div class="pc-ribbon-item">
+            <span class="pc-ribbon-icon is-amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>
+                </svg>
+            </span>
+            <div class="pc-ribbon-text">
+                <span class="pc-ribbon-value">&mdash;</span>
+                <span class="pc-ribbon-label">Pending Results</span>
+            </div>
+        </div>
 
-    <!-- Help card -->
-    <div class="help-card anim-slide" style="--delay:.44s">
-      <p class="help-label">Need help?</p>
-      <p class="help-sub">View the full documentation or contact system support.</p>
-      <a href="#" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">Documentation</a>
+    </section>
+
+    <!-- ── SPOTLIGHT + MENU ── -->
+    <div class="pc-layout">
+
+        <!-- Spotlight: primary action -->
+        <a href="{{ url_for('add_teacher.add_teachers') }}" class="pc-spotlight pc-rise" style="--delay:.08s">
+            <div class="pc-spotlight-pattern" aria-hidden="true">
+                <svg viewBox="0 0 240 240" fill="none">
+                    <circle cx="200" cy="30" r="70" stroke="white" stroke-opacity=".14" stroke-width="1.5"/>
+                    <circle cx="200" cy="30" r="105" stroke="white" stroke-opacity=".09" stroke-width="1.5"/>
+                    <circle cx="200" cy="30" r="140" stroke="white" stroke-opacity=".05" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <span class="pc-spotlight-tag">Most used</span>
+
+            <span class="pc-spotlight-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>
+                </svg>
+            </span>
+
+            <div class="pc-spotlight-text">
+                <h2 class="pc-spotlight-title">Add a New Teacher</h2>
+                <p class="pc-spotlight-desc">Register a teacher and get them set up with the system in a few steps.</p>
+            </div>
+
+            <span class="pc-spotlight-cta">
+                Get started
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+            </span>
+        </a>
+
+        <!-- Menu: secondary actions -->
+        <nav class="pc-menu pc-rise" style="--delay:.14s" aria-label="More actions">
+            <div class="pc-menu-head">
+                <h2 class="pc-menu-title">More Actions</h2>
+                <span class="pc-menu-count">3</span>
+            </div>
+
+            <a href="{{ url_for('view_teachers.view_teachers') }}" class="pc-menu-item">
+                <span class="pc-menu-icon is-cyan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/>
+                        <path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/>
+                    </svg>
+                </span>
+                <span class="pc-menu-text">
+                    <span class="pc-menu-name">View Teachers</span>
+                    <span class="pc-menu-desc">Browse the complete roster</span>
+                </span>
+                <span class="pc-menu-chevron">&rsaquo;</span>
+            </a>
+
+            <a href="{{ url_for('edit_teacher.edit_teacher_view') }}" class="pc-menu-item">
+                <span class="pc-menu-icon is-indigo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                    </svg>
+                </span>
+                <span class="pc-menu-text">
+                    <span class="pc-menu-name">Edit Teacher</span>
+                    <span class="pc-menu-desc">Modify existing details</span>
+                </span>
+                <span class="pc-menu-chevron">&rsaquo;</span>
+            </a>
+
+            <a href="{{ url_for('assign_subject_dashboard.assign_subject_dashboard') }}" class="pc-menu-item">
+                <span class="pc-menu-icon is-purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                </span>
+                <span class="pc-menu-text">
+                    <span class="pc-menu-name">Assign Dashboard</span>
+                    <span class="pc-menu-desc">Assign subjects to teachers</span>
+                </span>
+                <span class="pc-menu-chevron">&rsaquo;</span>
+            </a>
+        </nav>
+
     </div>
 
-  </aside>
+    <!-- ── HELP BANNER ── -->
+    <a href="#" class="pc-banner pc-rise" style="--delay:.2s">
+        <span class="pc-banner-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/>
+            </svg>
+        </span>
+        <span class="pc-banner-text">
+            <strong>Need help?</strong>
+            <span>View the full documentation or contact system support.</span>
+        </span>
+        <span class="pc-banner-cta">
+            Documentation
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+        </span>
+    </a>
+
+    <p class="pc-foot">Result Management System &mdash; Principal Console</p>
+
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<script>
-  // Staggered entrance via Intersection Observer
-  document.addEventListener('DOMContentLoaded', () => {
-    const items = document.querySelectorAll('.anim-slide');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    items.forEach(el => io.observe(el));
-  });
-</script>
 {% endblock %}
