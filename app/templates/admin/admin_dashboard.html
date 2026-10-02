@@ -6,385 +6,196 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 {% endblock %}
 
 {% block content %}
 
-<!-- TOPBAR -->
-<nav class="dash-topbar">
-  <div class="dash-topbar-left">
-    <div class="dash-logo-mark">
-      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+{% macro ic(n) -%}
+{%- set I = {
+  'home':  '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  'users': '<path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/><path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/>',
+  'cap':   '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  'doc':   '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  'plus':  '<path d="M12 5v14M5 12h14"/>',
+  'edit':  '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
+  'list':  '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  'bell':  '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+  'pulse': '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  'grid':  '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  'chev':  '<path d="M9 18l6-6-6-6"/>',
+  'menu':  '<path d="M3 6h18M3 12h18M3 18h18"/>',
+  'help':  '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/>',
+  'arrow': '<path d="M5 12h14M13 6l6 6-6 6"/>'
+} -%}
+<svg viewBox="0 0 24 24" aria-hidden="true">{{ I[n]|safe }}</svg>
+{%- endmacro %}
+
+<div class="ad-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="ad-sidebar" id="ad-sidebar" aria-label="Main navigation">
+    <div class="ad-brand">
+      <span class="ad-brand-mark">{{ ic('pulse') }}</span>
+      <span>
+        <span class="ad-brand-name">Result Management</span>
+        <span class="ad-brand-sub">Admin portal</span>
+      </span>
     </div>
-    <div>
-      <p class="dash-sys-name">Result Management System</p>
-      <p class="dash-sys-sub">Admin portal</p>
+
+    <nav class="ad-nav">
+      <p class="ad-nav-group">General</p>
+      <a href="#top" class="ad-nav-link is-current" aria-current="page">{{ ic('grid') }}Dashboard</a>
+      <p class="ad-nav-group">Manage</p>
+      <a href="{{ url_for('admin_dashboard.view_principals') }}" class="ad-nav-link">{{ ic('list') }}Principals</a>
+    </nav>
+
+    <div class="ad-side-foot">
+      <span class="ad-avatar">A</span>
+      <span class="ad-user-text"><span class="ad-user-name">Admin</span><span class="ad-user-role">Super Admin</span></span>
     </div>
-  </div>
-  <div class="dash-topbar-right">
-    <button class="dash-notif-btn" aria-label="Notifications">
-      <svg viewBox="0 0 24 24">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </aside>
+  <div class="ad-scrim" id="ad-scrim" aria-hidden="true"></div>
+
+  <div class="ad-main" id="top">
+
+  <!-- TOP BAR -->
+  <header class="ad-topbar">
+    <div class="ad-topbar-left">
+      <button type="button" class="ad-icon-btn ad-menu-btn" id="ad-menu" aria-label="Toggle menu" aria-controls="ad-sidebar" aria-expanded="true">{{ ic('menu') }}</button>
+      <nav class="ad-breadcrumb" aria-label="Breadcrumb">Home {{ ic('chev') }} <span>Admin dashboard</span></nav>
+    </div>
+    <div class="ad-topbar-right">
+      <button class="ad-icon-btn" type="button" aria-label="Notifications">{{ ic('bell') }}<span class="ad-notif-dot"></span></button>
+      <a href="{{ url_for('login.logout') }}" class="ad-signout">Sign out</a>
+    </div>
+  </header>
+
+  <main class="ad-page">
+
+    <!-- HERO -->
+    <section class="ad-hero ad-rise" aria-label="Overview">
+      <svg class="ad-hero-art" viewBox="0 0 240 240" fill="none" aria-hidden="true">
+        <circle cx="200" cy="40" r="70" stroke="white" stroke-opacity=".16" stroke-width="1.5"/>
+        <circle cx="200" cy="40" r="105" stroke="white" stroke-opacity=".1" stroke-width="1.5"/>
+        <circle cx="200" cy="40" r="140" stroke="white" stroke-opacity=".06" stroke-width="1.5"/>
       </svg>
-      <span class="dash-notif-dot"></span>
-    </button>
-    <div class="dash-avatar-wrap">
-      <div class="dash-avatar">AD</div>
-      <div>
-        <p class="dash-av-name">Admin</p>
-        <p class="dash-av-role">Super Admin</p>
-      </div>
-    </div>
-    <a href="{{ url_for('login.logout') }}" class="dash-signout-btn">
-      <svg viewBox="0 0 24 24">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
-      <span>Sign out</span>
-    </a>
-  </div>
-</nav>
 
-<!-- PAGE -->
-<main class="dash-page">
-
-  <!-- Breadcrumb -->
-  <nav class="dash-breadcrumb" aria-label="Breadcrumb">
-    Home
-    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-    <span>Admin Dashboard</span>
-  </nav>
-
-  <!-- Page Header -->
-  <div class="dash-page-hdr">
-    <div>
-      <h1>Admin Dashboard</h1>
-      <p>Welcome back. Here's what's happening across the system today.</p>
-    </div>
-    <div class="dash-page-hdr-right">
-      <a href="{{ url_for('add_principal.add_principal') }}" class="dash-btn-primary">
-        <svg viewBox="0 0 24 24">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        Add principal
-      </a>
-    </div>
-  </div>
-
-  <!-- STATS -->
-  <div class="dash-stats anim-slide" style="display:grid !important; grid-template-columns:repeat(4,1fr) !important;">
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-icon-box si-blue">
-          <svg viewBox="0 0 24 24">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
-          </svg>
-        </div>
-        <span class="stat-badge badge-up">Active</span>
-      </div>
-      <span class="stat-value">{{ total }}</span>
-      <span class="stat-label">Total principals</span>
-      <div class="stat-accent acc-blue"></div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-icon-box si-teal">
-          <svg viewBox="0 0 24 24">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-        </div>
-        <span class="stat-badge badge-idle">Pending</span>
-      </div>
-      <span class="stat-value">—</span>
-      <span class="stat-label">Total teachers</span>
-      <div class="stat-accent acc-teal"></div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-icon-box si-indigo">
-          <svg viewBox="0 0 24 24">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-          </svg>
-        </div>
-        <span class="stat-badge badge-pending">Pending</span>
-      </div>
-      <span class="stat-value">—</span>
-      <span class="stat-label">Total students</span>
-      <div class="stat-accent acc-indigo"></div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-card-top">
-        <div class="stat-icon-box si-amber">
-          <svg viewBox="0 0 24 24">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-          </svg>
-        </div>
-        <span class="stat-badge badge-idle">Awaiting</span>
-      </div>
-      <span class="stat-value">—</span>
-      <span class="stat-label">Pending results</span>
-      <div class="stat-accent acc-amber"></div>
-    </div>
-  </div>
-
-  <!-- MAIN GRID -->
-  <div class="dash-grid">
-
-    <!-- Quick Actions -->
-    <div class="dash-panel anim-slide" style="transition-delay:.1s">
-      <div class="panel-header">
-        <div class="panel-header-left">
-          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span class="panel-title">Quick actions</span>
-          <span class="panel-sub">Management</span>
-        </div>
-        <span class="panel-chip">Admin</span>
+      <div class="ad-hero-main">
+        <p class="ad-hero-greet">Welcome back, Admin</p>
+        <h1 class="ad-hero-title">Admin Dashboard</h1>
+        <p class="ad-hero-sub">Register principals and keep an eye on the whole system from one place.</p>
+        <a href="{{ url_for('add_principal.add_principal') }}" class="ad-cta">{{ ic('plus') }}Add principal</a>
       </div>
 
-      <ul class="action-list">
-        <li>
-          <a href="{{ url_for('add_principal.add_principal') }}" class="action-item">
-            <span class="action-num">1</span>
-            <div class="action-icon-wrap ai-blue">
-              <svg viewBox="0 0 24 24">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-            </div>
-            <div class="action-body">
-              <span class="action-name">Add principal</span>
-              <span class="action-desc">Register a new principal to the system</span>
-            </div>
-            <div class="action-arrow">
-              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </a>
-        </li>
-
-        <li>
-          <a href="{{ url_for('admin_dashboard.edit_and_view_principal') }}" class="action-item">
-            <span class="action-num">2</span>
-            <div class="action-icon-wrap ai-teal">
-              <svg viewBox="0 0 24 24">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-              </svg>
-            </div>
-            <div class="action-body">
-              <span class="action-name">Edit principal info</span>
-              <span class="action-desc">Modify existing principal details</span>
-            </div>
-            <div class="action-arrow">
-              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </a>
-        </li>
-
-        <li>
-          <a href="{{ url_for('admin_dashboard.view_principals') }}" class="action-item">
-            <span class="action-num">3</span>
-            <div class="action-icon-wrap ai-indigo">
-              <svg viewBox="0 0 24 24">
-                <line x1="8" y1="6" x2="21" y2="6"/>
-                <line x1="8" y1="12" x2="21" y2="12"/>
-                <line x1="8" y1="18" x2="21" y2="18"/>
-                <line x1="3" y1="6" x2="3.01" y2="6"/>
-                <line x1="3" y1="12" x2="3.01" y2="12"/>
-                <line x1="3" y1="18" x2="3.01" y2="18"/>
-              </svg>
-            </div>
-            <div class="action-body">
-              <span class="action-name">All principals</span>
-              <span class="action-desc">View and manage all principals</span>
-            </div>
-            <div class="action-arrow">
-              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="action-item">
-            <span class="action-num">4</span>
-            <div class="action-icon-wrap ai-slate">
-              <svg viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <div class="action-body">
-              <span class="action-name">All teachers</span>
-              <span class="action-desc">Browse the complete teacher roster</span>
-            </div>
-            <div class="action-arrow">
-              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="action-item">
-            <span class="action-num">5</span>
-            <div class="action-icon-wrap ai-amber">
-              <svg viewBox="0 0 24 24">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-              </svg>
-            </div>
-            <div class="action-body">
-              <span class="action-name">All students</span>
-              <span class="action-desc">Manage the full student directory</span>
-            </div>
-            <div class="action-arrow">
-              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
-          </a>
-        </li>
+      <ul class="ad-status" aria-label="System health">
+        {% for name, state, tone in [('Database','Online','ok'),('Auth service','Active','ok'),('Result engine','Idle','warn'),('Notifications','Running','ok')] %}
+        <li class="ad-chip"><span class="ad-dot is-{{ tone }}"></span>{{ name }}<strong>{{ state }}</strong></li>
+        {% endfor %}
       </ul>
-    </div>
+    </section>
 
-    <!-- Sidebar -->
-    <aside class="dash-side">
-
-      <!-- System Health -->
-      <div class="dash-panel anim-slide" style="transition-delay:.2s">
-        <div class="panel-header">
-          <div class="panel-header-left">
-            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span class="panel-title">System health</span>
-          </div>
-          <span class="panel-sub">All systems</span>
+    <!-- STATS -->
+    {% set stats = [
+      ('Principals',      total|default(none),           'home',  'blue',   'Registered accounts'),
+      ('Teachers',        total_teachers|default(none),  'users', 'cyan',   'Registered accounts'),
+      ('Students',        total_students|default(none),  'cap',   'indigo', 'Registered accounts'),
+      ('Pending results', pending_results|default(none), 'doc',   'amber',  'Awaiting review')
+    ] %}
+    <section class="ad-stats" aria-label="Summary statistics">
+      {% for label, value, icon, tone, note in stats %}
+      <div class="ad-stat is-{{ tone }} ad-rise" style="--delay:{{ 0.06 + loop.index0 * 0.04 }}s">
+        <span class="ad-tile">{{ ic(icon) }}</span>
+        <div class="ad-stat-text">
+          <span class="ad-stat-label">{{ label }}</span>
+          <span class="ad-stat-value{{ ' is-empty' if value is none }}">{{ value if value is not none else '—' }}</span>
+          <span class="ad-stat-note">{{ note if value is not none else 'Not connected yet' }}</span>
         </div>
-        <ul class="health-list">
-          <li class="health-item">
-            <div class="health-item-left">
-              <span class="health-pulse hp-green"></span>Database
-            </div>
-            <span class="health-tag tag-ok">Online</span>
-          </li>
-          <li class="health-item">
-            <div class="health-item-left">
-              <span class="health-pulse hp-green"></span>Auth service
-            </div>
-            <span class="health-tag tag-ok">Active</span>
-          </li>
-          <li class="health-item">
-            <div class="health-item-left">
-              <span class="health-pulse hp-amber"></span>Result engine
-            </div>
-            <span class="health-tag tag-warn">Idle</span>
-          </li>
-          <li class="health-item">
-            <div class="health-item-left">
-              <span class="health-pulse hp-green"></span>Notifications
-            </div>
-            <span class="health-tag tag-ok">Running</span>
-          </li>
-        </ul>
       </div>
+      {% endfor %}
+    </section>
 
-      <!-- Recent Activity -->
-      <div class="dash-panel anim-slide" style="transition-delay:.26s">
-        <div class="panel-header">
-          <div class="panel-header-left">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            <span class="panel-title">Recent activity</span>
-          </div>
-        </div>
-        <ul class="activity-list">
-          <li class="activity-item">
-            <span class="activity-dot dot-blue"></span>
-            <div>
-              <p class="activity-text">Admin logged in</p>
-              <p class="activity-time">Just now</p>
-            </div>
-          </li>
-          <li class="activity-item">
-            <span class="activity-dot dot-teal"></span>
-            <div>
-              <p class="activity-text">Principal record updated</p>
-              <p class="activity-time">2 hours ago</p>
-            </div>
-          </li>
-          <li class="activity-item">
-            <span class="activity-dot dot-amber"></span>
-            <div>
-              <p class="activity-text">New result published</p>
-              <p class="activity-time">Yesterday</p>
-            </div>
-          </li>
-          <li class="activity-item">
-            <span class="activity-dot dot-indigo"></span>
-            <div>
-              <p class="activity-text">Student batch imported</p>
-              <p class="activity-time">3 days ago</p>
-            </div>
-          </li>
-        </ul>
-      </div>
+    <!-- ACTIONS + ACTIVITY -->
+    <div class="ad-grid">
 
-      <!-- Help Card -->
-      <div class="help-card anim-slide" style="transition-delay:.32s">
-        <div class="help-card-top">
-          <div class="help-icon">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-          </div>
-          <p class="help-label">Need assistance?</p>
-        </div>
-        <p class="help-sub">Access documentation, FAQs, and system support for the result management platform.</p>
-        <a href="#" class="help-btn">
-          <svg viewBox="0 0 24 24">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-          </svg>
-          View documentation
+      <div class="ad-col">
+        <section class="ad-panel ad-rise" style="--delay:.16s" aria-label="Quick actions">
+          <header class="ad-panel-head"><h2 class="ad-panel-title">Quick actions</h2></header>
+          {% for name, desc, icon, tone, href in [
+            ('Edit principal info', 'Update details for an existing principal', 'edit', 'blue',   url_for('admin_dashboard.edit_and_view_principal')),
+            ('All principals',      'View and manage every principal',          'list', 'indigo', url_for('admin_dashboard.view_principals'))
+          ] %}
+          <a href="{{ href }}" class="ad-action is-{{ tone }}">
+            <span class="ad-tile is-sm">{{ ic(icon) }}</span>
+            <span class="ad-action-body">
+              <span class="ad-action-name">{{ name }}</span>
+              <span class="ad-action-desc">{{ desc }}</span>
+            </span>
+            <span class="ad-chevron">&rsaquo;</span>
+          </a>
+          {% endfor %}
+        </section>
+
+        <a href="#" class="ad-help ad-rise" style="--delay:.2s">
+          <span class="ad-help-icon">{{ ic('help') }}</span>
+          <span class="ad-help-text"><strong>Need help?</strong><span>Read the documentation or contact support.</span></span>
+          <span class="ad-help-cta">Documentation {{ ic('arrow') }}</span>
         </a>
       </div>
 
-    </aside>
+      <section class="ad-panel ad-rise" style="--delay:.2s" aria-label="Recent activity">
+        <header class="ad-panel-head"><h2 class="ad-panel-title">Recent activity</h2></header>
+        <ol class="ad-activity-list">
+          {% for text, time, tone in [('Admin signed in','Just now','blue'),('Principal record updated','2 hours ago','cyan'),('Result published','Yesterday','amber'),('Student batch imported','3 days ago','indigo')] %}
+          <li class="ad-activity-item is-{{ tone }}">
+            <span class="ad-activity-dot"></span>
+            <div><p class="ad-activity-text">{{ text }}</p><p class="ad-activity-time">{{ time }}</p></div>
+          </li>
+          {% endfor %}
+        </ol>
+      </section>
+
+    </div>
+
+    <p class="ad-foot">Result Management System &mdash; Admin Console</p>
+  </main>
   </div>
+</div>
 
-</main>
-
-{% endblock %}
-
-{% block extra_js %}
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const items = document.querySelectorAll('.anim-slide');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('visible'), i * 80);
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.08 });
-    items.forEach(el => io.observe(el));
+(function () {
+  var shell = document.querySelector('.ad-shell');
+  var btn = document.getElementById('ad-menu');
+  var scrim = document.getElementById('ad-scrim');
+  var sidebar = document.getElementById('ad-sidebar');
+  if (!shell || !btn || !sidebar) return;
+
+  var mobile = window.matchMedia('(max-width: 900px)');
+  // phones/tablets: sidebar slides over the page (class is-open)
+  // desktop: sidebar slides away to give more room (class is-collapsed)
+  var cls = function () { return mobile.matches ? 'is-open' : 'is-collapsed'; };
+  var isOpen = function () { return mobile.matches ? shell.classList.contains('is-open') : !shell.classList.contains('is-collapsed'); };
+
+  function sync() { btn.setAttribute('aria-expanded', isOpen() ? 'true' : 'false'); }
+  function set(open) {
+    if (mobile.matches) shell.classList.toggle('is-open', open);
+    else shell.classList.toggle('is-collapsed', !open);
+    sync();
+  }
+
+  btn.addEventListener('click', function () { set(!isOpen()); });
+  scrim.addEventListener('click', function () { set(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mobile.matches && isOpen()) { set(false); btn.focus(); }
   });
+  sidebar.addEventListener('click', function (e) {
+    if (mobile.matches && e.target.closest('a')) set(false);
+  });
+  (mobile.addEventListener ? mobile.addEventListener('change', function () { shell.classList.remove('is-open'); sync(); }) : mobile.addListener(function () { shell.classList.remove('is-open'); sync(); }));
+  sync();
+})();
 </script>
+
 {% endblock %}
