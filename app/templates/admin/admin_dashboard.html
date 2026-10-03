@@ -28,7 +28,9 @@
   'chev':  '<path d="M9 18l6-6-6-6"/>',
   'menu':  '<path d="M3 6h18M3 12h18M3 18h18"/>',
   'help':  '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/>',
-  'arrow': '<path d="M5 12h14M13 6l6 6-6 6"/>'
+  'arrow': '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  'upload':'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  'lock':  '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'
 } -%}
 <svg viewBox="0 0 24 24" aria-hidden="true">{{ I[n]|safe }}</svg>
 {%- endmacro %}
@@ -48,8 +50,13 @@
     <nav class="ad-nav">
       <p class="ad-nav-group">General</p>
       <a href="#top" class="ad-nav-link is-current" aria-current="page">{{ ic('grid') }}Dashboard</a>
+
       <p class="ad-nav-group">Manage</p>
       <a href="{{ url_for('admin_dashboard.view_principals') }}" class="ad-nav-link">{{ ic('list') }}Principals</a>
+      <a href="{{ url_for('upload_dashboard.upload_dashboard') }}" class="ad-nav-link">{{ ic('upload') }}Manage result</a>
+
+      <p class="ad-nav-group">Account</p>
+      <a href="{{ url_for('admin_change_password.change_password') }}" class="ad-nav-link">{{ ic('lock') }}Change password</a>
     </nav>
 
     <div class="ad-side-foot">
@@ -117,33 +124,27 @@
       {% endfor %}
     </section>
 
-    <!-- ACTIONS + ACTIVITY -->
+    <!-- QUICK ACTIONS + ACTIVITY (equal size) -->
     <div class="ad-grid">
 
-      <div class="ad-col">
-        <section class="ad-panel ad-rise" style="--delay:.16s" aria-label="Quick actions">
-          <header class="ad-panel-head"><h2 class="ad-panel-title">Quick actions</h2></header>
-          {% for name, desc, icon, tone, href in [
-            ('Edit principal info', 'Update details for an existing principal', 'edit', 'blue',   url_for('admin_dashboard.edit_and_view_principal')),
-            ('All principals',      'View and manage every principal',          'list', 'indigo', url_for('admin_dashboard.view_principals'))
-          ] %}
-          <a href="{{ href }}" class="ad-action is-{{ tone }}">
-            <span class="ad-tile is-sm">{{ ic(icon) }}</span>
-            <span class="ad-action-body">
-              <span class="ad-action-name">{{ name }}</span>
-              <span class="ad-action-desc">{{ desc }}</span>
-            </span>
-            <span class="ad-chevron">&rsaquo;</span>
-          </a>
-          {% endfor %}
-        </section>
-
-        <a href="#" class="ad-help ad-rise" style="--delay:.2s">
-          <span class="ad-help-icon">{{ ic('help') }}</span>
-          <span class="ad-help-text"><strong>Need help?</strong><span>Read the documentation or contact support.</span></span>
-          <span class="ad-help-cta">Documentation {{ ic('arrow') }}</span>
+      <section class="ad-panel ad-rise" style="--delay:.16s" aria-label="Quick actions">
+        <header class="ad-panel-head"><h2 class="ad-panel-title">Quick actions</h2></header>
+        {% for name, desc, icon, tone, href in [
+          ('Edit principal info', 'Update details for an existing principal',     'edit',   'blue',   url_for('admin_dashboard.edit_and_view_principal')),
+          ('All principals',      'View and manage every principal',              'list',   'indigo', url_for('admin_dashboard.view_principals')),
+          ('Upload dashboard',    'Visit here to control result',                 'upload', 'cyan',   url_for('upload_dashboard.upload_dashboard')),
+          ('Change password',     'Change password using username and password', 'lock',   'amber',  url_for('admin_change_password.change_password'))
+        ] %}
+        <a href="{{ href }}" class="ad-action is-{{ tone }}">
+          <span class="ad-tile is-sm">{{ ic(icon) }}</span>
+          <span class="ad-action-body">
+            <span class="ad-action-name">{{ name }}</span>
+            <span class="ad-action-desc">{{ desc }}</span>
+          </span>
+          <span class="ad-chevron">&rsaquo;</span>
         </a>
-      </div>
+        {% endfor %}
+      </section>
 
       <section class="ad-panel ad-rise" style="--delay:.2s" aria-label="Recent activity">
         <header class="ad-panel-head"><h2 class="ad-panel-title">Recent activity</h2></header>
@@ -158,6 +159,13 @@
       </section>
 
     </div>
+
+    <!-- HELP BANNER -->
+    <a href="#" class="ad-help ad-rise" style="--delay:.24s">
+      <span class="ad-help-icon">{{ ic('help') }}</span>
+      <span class="ad-help-text"><strong>Need help?</strong><span>View the full documentation or contact system support.</span></span>
+      <span class="ad-help-cta">Documentation {{ ic('arrow') }}</span>
+    </a>
 
     <p class="ad-foot">Result Management System &mdash; Admin Console</p>
   </main>
@@ -175,7 +183,6 @@
   var mobile = window.matchMedia('(max-width: 900px)');
   // phones/tablets: sidebar slides over the page (class is-open)
   // desktop: sidebar slides away to give more room (class is-collapsed)
-  var cls = function () { return mobile.matches ? 'is-open' : 'is-collapsed'; };
   var isOpen = function () { return mobile.matches ? shell.classList.contains('is-open') : !shell.classList.contains('is-collapsed'); };
 
   function sync() { btn.setAttribute('aria-expanded', isOpen() ? 'true' : 'false'); }
