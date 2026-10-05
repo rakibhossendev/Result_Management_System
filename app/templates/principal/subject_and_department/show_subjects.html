@@ -1,54 +1,124 @@
-{% extends "base/base.html" %} {% block title %} All Subjects {% endblock %} 
+{% extends "base/base.html" %}
+{% block title %}All Subjects{% endblock %}
 
-{%block content %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/show_sub_dep.css') }}">
+{% endblock %}
 
-<div class="container mt-4">
-  <h2>All Subjects</h2>
+{% block content %}
 
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Subject Code</th>
-        <th>Subject Name</th>
-        <th>Action</th>
-        <th>Details</th>
-      </tr>
-    </thead>
+{% set subjects = all_subject|list %}
 
-    <tbody>
-      {% for subject in all_subject %}
+<div class="sl-page">
 
-      <tr>
-        <td>{{ subject.subject_code}}</td>
-        <td>{{ subject.subject_name}}</td>
-        <td>
-          <a
-            href="{{ url_for('assign_subject_dashboard.edit_subject',subject_id=subject.subject_id )}}"
-            ><button class="btn btn-primary btn-sm">Edit</button></a
-          >
-          <form
-            action="{{ url_for('assign_subject_dashboard.delete_subject',
-                         subject_id=subject.subject_id) }}"
-            method="POST"
-            style="display: inline"
-          >
-            <button
-              type="submit"
-              class="btn btn-danger btn-sm"
-              onclick="
-                return confirm('Are you sure you want to delete this subject?');
-              "
-            >
-              Delete
+  <!-- HEADER: title (left) + back button (right) -->
+  <header class="sl-header sl-rise">
+    <div class="sl-brand">
+      <span class="sl-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      <div>
+        <h1 class="sl-title">All subjects</h1>
+        <p class="sl-lead">View, edit and delete subjects.</p>
+      </div>
+    </div>
+    <a href="{{ url_for('assign_subject_dashboard.assign_subject_dashboard') }}" class="sl-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to dashboard
+    </a>
+  </header>
+
+  <!-- TOP BAR: search (left) + count (right) -->
+  <div class="sl-top sl-rise" style="animation-delay:.06s">
+    <label class="sl-find">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="sl-search" placeholder="Search by subject code or name" autocomplete="off" aria-label="Search subjects"{% if not subjects %} disabled{% endif %}>
+    </label>
+
+    <div class="sl-count" aria-live="polite">
+      <strong class="sl-count-num" data-shown>{{ subjects|length }}</strong>
+      <span class="sl-count-label" data-label>Total subjects</span>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <section class="sl-card sl-rise" style="animation-delay:.12s" aria-label="Subject list">
+    {% if subjects %}
+    <ul class="sl-list">
+      {% for subject in subjects %}
+      <li class="sl-row" data-search="{{ (subject.subject_code ~ ' ' ~ subject.subject_name)|lower }}">
+        <span class="sl-code">{{ subject.subject_code }}</span>
+        <span class="sl-name">{{ subject.subject_name }}</span>
+
+        <div class="sl-actions">
+          {# TODO: point View at your subject details route, e.g. url_for('...', subject_id=subject.subject_id) #}
+          <a href="#" class="sl-view">View <span>&rsaquo;</span></a>
+
+          <a href="{{ url_for('assign_subject_dashboard.edit_subject', subject_id=subject.subject_id) }}" class="sl-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            Edit
+          </a>
+
+          <form action="{{ url_for('assign_subject_dashboard.delete_subject', subject_id=subject.subject_id) }}" method="POST">
+            <button type="submit" class="sl-del" aria-label="Delete {{ subject.subject_name }}" title="Delete"
+                    onclick="return confirm('Are you sure you want to delete this subject?');">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
             </button>
           </form>
-        </td>
-
-        <td><a href="#">View</a></td>
-      </tr>
-
+        </div>
+      </li>
       {% endfor %}
-    </tbody>
-  </table>
+    </ul>
+
+    <!-- shown when the search matches nothing -->
+    <div class="sl-empty" id="sl-nomatch" hidden>
+      <span class="sl-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+      <p class="sl-empty-title">No matching subjects</p>
+      <p class="sl-empty-sub">Try a different code or name.</p>
+    </div>
+
+    {% else %}
+
+    <!-- no subjects at all -->
+    <div class="sl-empty">
+      <span class="sl-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+      <p class="sl-empty-title">No subjects yet</p>
+      <p class="sl-empty-sub">Subjects you add will show up here.</p>
+    </div>
+    {% endif %}
+  </section>
+
 </div>
+
+{% if subjects %}
+<script>
+(function () {
+  var input   = document.getElementById('sl-search');
+  var rows    = document.querySelectorAll('.sl-row');
+  var shown   = document.querySelector('[data-shown]');
+  var label   = document.querySelector('[data-label]');
+  var nomatch = document.getElementById('sl-nomatch');
+  if (!input) return;
+
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase();
+    var visible = 0;
+
+    rows.forEach(function (row) {
+      var match = !q || row.getAttribute('data-search').indexOf(q) !== -1;
+      row.hidden = !match;
+      if (match) visible++;
+    });
+
+    if (shown) shown.textContent = visible;
+    if (label) label.textContent = q ? 'Matching subjects' : 'Total subjects';
+    if (nomatch) nomatch.hidden = visible !== 0;
+  });
+})();
+</script>
+{% endif %}
+
 {% endblock %}

@@ -1,51 +1,124 @@
-{% extends "base/base.html" %} {% block title %} All department {% endblock %}
+{% extends "base/base.html" %}
+{% block title %}All Departments{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/show_sub_dep.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<div class="container mt-4">
-  <h2>All department</h2>
+{% set departments = all_department|list %}
 
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Department ID</th>
-        <th>Department Name</th>
-        <th>Action</th>
-      </tr>
-    </thead>
+<div class="sl-page">
 
-    <tbody>
-      {% for department in all_department %}
+  <!-- HEADER: title (left) + back button (right) -->
+  <header class="sl-header sl-rise">
+    <div class="sl-brand">
+      <span class="sl-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v16"/><path d="M10 8h4"/><path d="M10 12h4"/><path d="M10 21v-4h4v4"/></svg>
+      </span>
+      <div>
+        <h1 class="sl-title">All departments</h1>
+        <p class="sl-lead">View, edit and delete departments.</p>
+      </div>
+    </div>
+    <a href="{{ url_for('assign_subject_dashboard.assign_subject_dashboard') }}" class="sl-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to dashboard
+    </a>
+  </header>
 
-      <tr>
-        <td>{{department.department_code}}</td>
-        <td>{{department.department_name}}</td>
-        <td>
-          <a
-            href="{{ url_for('assign_subject_dashboard.edit_department',department_id=department.department_id )}}"
-          >
-            <button class="btn btn-primary btn-sm">Edit</button></a
-          >
-          <form
-            action="{{ url_for('assign_subject_dashboard.delete_department',
-                         department_id=department.department_id) }}"
-            method="POST"
-            style="display: inline"
-          >
-            <button
-              type="submit"
-              class="btn btn-danger btn-sm"
-              onclick="
-                return confirm('Are you sure you want to delete this subject?');
-              "
-            >
-              Delete
+  <!-- TOP BAR: search (left) + count (right) -->
+  <div class="sl-top sl-rise" style="animation-delay:.06s">
+    <label class="sl-find">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="sl-search" placeholder="Search by department code or name" autocomplete="off" aria-label="Search departments"{% if not departments %} disabled{% endif %}>
+    </label>
+
+    <div class="sl-count" aria-live="polite">
+      <strong class="sl-count-num" data-shown>{{ departments|length }}</strong>
+      <span class="sl-count-label" data-label>Total departments</span>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <section class="sl-card sl-rise" style="animation-delay:.12s" aria-label="Department list">
+    {% if departments %}
+    <ul class="sl-list">
+      {% for department in departments %}
+      <li class="sl-row" data-search="{{ (department.department_code ~ ' ' ~ department.department_name)|lower }}">
+        <span class="sl-code">{{ department.department_code }}</span>
+        <span class="sl-name">{{ department.department_name }}</span>
+
+        <div class="sl-actions">
+          {# TODO: point View at your department details route, e.g. url_for('...', department_id=department.department_id) #}
+          <a href="#" class="sl-view">View <span>&rsaquo;</span></a>
+
+          <a href="{{ url_for('assign_subject_dashboard.edit_department', department_id=department.department_id) }}" class="sl-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            Edit
+          </a>
+
+          <form action="{{ url_for('assign_subject_dashboard.delete_department', department_id=department.department_id) }}" method="POST">
+            <button type="submit" class="sl-del" aria-label="Delete {{ department.department_name }}" title="Delete"
+                    onclick="return confirm('Are you sure you want to delete this department?');">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
             </button>
           </form>
-        </td>
-      </tr>
-
+        </div>
+      </li>
       {% endfor %}
-    </tbody>
-  </table>
+    </ul>
+
+    <!-- shown when the search matches nothing -->
+    <div class="sl-empty" id="sl-nomatch" hidden>
+      <span class="sl-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+      <p class="sl-empty-title">No matching departments</p>
+      <p class="sl-empty-sub">Try a different code or name.</p>
+    </div>
+
+    {% else %}
+
+    <!-- no departments at all -->
+    <div class="sl-empty">
+      <span class="sl-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v16"/><path d="M10 8h4"/><path d="M10 12h4"/><path d="M10 21v-4h4v4"/></svg></span>
+      <p class="sl-empty-title">No departments yet</p>
+      <p class="sl-empty-sub">Departments you add will show up here.</p>
+    </div>
+    {% endif %}
+  </section>
+
 </div>
+
+{% if departments %}
+<script>
+(function () {
+  var input   = document.getElementById('sl-search');
+  var rows    = document.querySelectorAll('.sl-row');
+  var shown   = document.querySelector('[data-shown]');
+  var label   = document.querySelector('[data-label]');
+  var nomatch = document.getElementById('sl-nomatch');
+  if (!input) return;
+
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase();
+    var visible = 0;
+
+    rows.forEach(function (row) {
+      var match = !q || row.getAttribute('data-search').indexOf(q) !== -1;
+      row.hidden = !match;
+      if (match) visible++;
+    });
+
+    if (shown) shown.textContent = visible;
+    if (label) label.textContent = q ? 'Matching departments' : 'Total departments';
+    if (nomatch) nomatch.hidden = visible !== 0;
+  });
+})();
+</script>
+{% endif %}
+
 {% endblock %}
