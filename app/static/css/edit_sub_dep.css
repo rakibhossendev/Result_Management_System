@@ -1,0 +1,132 @@
+/* ============================================
+   EDIT_SUBJECT.CSS  (edit subject: header + form card)
+   Builds on colors.css + styles.css. All classes: .es-
+   ============================================ */
+
+:root {
+  --es-sky:     #5aabf6;
+  --es-blue:    #2f86e0;
+  --es-blue-d:  #2a6fb8;
+  --es-cyan:    #2bb5ec;
+  --es-ring:    rgba(47, 134, 224, .25);
+  --es-ink:     var(--text-dark, #1a1a1a);
+  --es-muted:   var(--medium-gray, #6c757d);
+  --es-soft:    #6b7a90;
+  --es-line:    #dde7f3;
+  --es-tint:    #e8f3fd;
+  --es-danger:  #dc2626;
+  --es-head:    'Poppins', sans-serif;
+}
+
+@keyframes es-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.es-rise { animation: es-rise .5s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* ── PAGE + HEADER ────────────────────────── */
+.es-page { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 3rem; color: var(--es-ink); }
+
+.es-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.es-brand { display: flex; align-items: center; gap: 1rem; }
+.es-icon { width: 48px; height: 48px; flex-shrink: 0; display: grid; place-items: center; border-radius: 14px; background: #fff; border: 1px solid var(--es-line); color: var(--es-blue); }
+.es-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.es-title {
+  display: inline-block; margin: 0; padding-bottom: .1em;
+  font-family: var(--es-head); font-size: 1.6rem; font-weight: 700; line-height: 1.2;
+  background: linear-gradient(90deg, var(--es-blue) 0%, var(--es-cyan) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.es-lead { margin: .1rem 0 0; font-size: .9rem; color: var(--es-soft); }
+
+.es-back {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .6rem 1.15rem; border: 1.5px solid var(--es-line); border-radius: 999px;
+  background: #fff; font-size: .86rem; font-weight: 600; color: var(--es-muted); text-decoration: none;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.es-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.es-back:hover { color: var(--es-blue-d); border-color: #b7cde8; background: var(--es-tint); }
+.es-back:focus-visible, .es-cancel:focus-visible, .es-submit:focus-visible { outline: 3px solid var(--es-ring); outline-offset: 2px; }
+
+/* ── FORM CARD ────────────────────────────── */
+.es-card {
+  background: #fff; border: 1px solid var(--es-line); border-radius: 20px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .05), 0 20px 48px rgba(47, 134, 224, .08);
+}
+.es-card form { margin: 0; }
+
+.es-body { padding: 1.75rem 1.75rem 1.5rem; }
+
+/* code (narrow) + name (wide) */
+.es-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 1.25rem; }
+
+.es-field { display: flex; flex-direction: column; gap: .5rem; min-width: 0; }
+
+.es-label {
+  margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--es-soft);
+}
+
+/* input with a leading icon */
+.es-control { position: relative; display: block; }
+.es-control svg {
+  position: absolute; left: 16px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%);
+  fill: none; stroke: var(--es-soft); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+  transition: stroke .15s;
+}
+.es-input {
+  display: block; width: 100%; height: 50px; padding: 0 1.1rem 0 2.9rem;
+  border: 1.5px solid var(--es-line); border-radius: 14px; background: #f8fbff;
+  font: inherit; font-size: .95rem; font-weight: 500; color: var(--es-ink);
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.es-input::placeholder { color: #9aa8bb; font-weight: 400; }
+.es-input:hover { border-color: #b7cde8; background: #fff; }
+.es-input:focus { outline: none; background: #fff; border-color: var(--es-blue); box-shadow: 0 0 0 4px var(--es-ring); }
+.es-control:focus-within svg { stroke: var(--es-blue); }
+
+/* error state */
+.es-field--error .es-input { border-color: #fca5a5; background: #fff8f8; }
+.es-field--error .es-input:focus { border-color: var(--es-danger); box-shadow: 0 0 0 4px rgba(220, 38, 38, .15); }
+.es-field--error .es-control svg { stroke: var(--es-danger); }
+.es-error { margin: 0; font-size: .82rem; font-weight: 500; color: var(--es-danger); }
+
+/* ── FOOTER: cancel + save ────────────────── */
+.es-footer {
+  display: flex; align-items: center; justify-content: flex-end; gap: .75rem;
+  padding: 1.1rem 1.75rem; border-top: 1px solid var(--es-line); background: #f8fbff;
+}
+
+.es-cancel {
+  display: inline-flex; align-items: center; height: 44px; padding: 0 1.4rem;
+  border: 1.5px solid var(--es-line); border-radius: 999px; background: #fff;
+  font-size: .88rem; font-weight: 600; color: var(--es-muted); text-decoration: none;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.es-cancel:hover { color: var(--es-blue-d); border-color: #b7cde8; background: var(--es-tint); }
+
+/* WordPress-style: the WTForms submit renders as <input type="submit"> */
+.es-submit {
+  height: 44px; padding: 0 1.9rem; border: 0; border-radius: 999px; cursor: pointer;
+  background: linear-gradient(135deg, var(--es-sky) 0%, var(--es-blue) 60%, var(--es-blue-d) 100%);
+  font: inherit; font-size: .88rem; font-weight: 700; color: #fff;
+  box-shadow: 0 10px 24px rgba(47, 134, 224, .25);
+  transition: transform .15s, box-shadow .15s, filter .15s;
+}
+.es-submit:hover { filter: brightness(1.06); box-shadow: 0 14px 28px rgba(47, 134, 224, .32); }
+.es-submit:active { transform: scale(.97); }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 640px) {
+  .es-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .es-page { padding: 1.25rem 1rem 2rem; }
+  .es-title { font-size: 1.35rem; }
+  .es-body { padding: 1.35rem 1.15rem 1.15rem; }
+  .es-footer { padding: 1rem 1.15rem; }
+  .es-cancel, .es-submit { flex: 1; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .es-rise { animation: none; }
+  .es-page * { transition: none !important; }
+}
