@@ -1,18 +1,162 @@
-{% extends "base/base.html"%}
-{% block title%} Teacher Details {% endblock %}
+{% extends "base/base.html" %}
+{% block title %} Teacher Details {% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/teacher_details.css') }}">
+{% endblock %}
 
 {% block content %}
-<h2> Teacher Details </h2>
 
+<div class="tp-page">
 
-<p>ID: {{teacher.teacher_id }} </p>
-<p>First Name: {{teacher.first_name }} </p>
-<p>Last Name: {{teacher.last_name }} </p>
-<p>Institute Name: {{teacher.institute }} </p>
-<p>Institute code: {{teacher.institute_code }} </p>
-<p>Phone: {{teacher.phone}} </p>
-<p>Email: {{teacher.email }} </p>
-<p>username: {{teacher.username }} </p>
-<p>password: {{teacher.password }} </p>
+    <!-- Hero -->
+    <section class="tp-hero">
+        <a href="javascript:history.back()" class="tp-back">&larr; Back</a>
+
+        <div class="tp-hero-body">
+            <div class="tp-avatar" aria-hidden="true">
+                {{ (teacher.first_name or '')[:1] | upper }}{{ (teacher.last_name or '')[:1] | upper }}
+            </div>
+
+            <div class="tp-hero-text">
+                <h1 class="tp-name">{{ teacher.first_name }} {{ teacher.last_name }}</h1>
+                <p class="tp-role">Teacher at {{ teacher.institute }}</p>
+                <div class="tp-chips">
+                    <span class="tp-chip">ID: {{ teacher.teacher_id }}</span>
+                    <span class="tp-chip">Code: {{ teacher.institute_code }}</span>
+                </div>
+            </div>
+
+            <div class="tp-hero-actions">
+                <a href="mailto:{{ teacher.email }}" class="tp-btn tp-btn-solid">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>
+                    </svg>
+                    Email
+                </a>
+                <a href="tel:{{ teacher.phone }}" class="tp-btn tp-btn-ghost">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>
+                    </svg>
+                    Call
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detail cards -->
+    <div class="tp-grid">
+
+        <section class="tp-card">
+            <div class="tp-card-head">
+                <span class="tp-card-icon is-blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                    </svg>
+                </span>
+                <h2 class="tp-card-title">Personal information</h2>
+            </div>
+            <dl class="tp-fields">
+                <div class="tp-field">
+                    <dt>First name</dt>
+                    <dd>{{ teacher.first_name }}</dd>
+                </div>
+                <div class="tp-field">
+                    <dt>Last name</dt>
+                    <dd>{{ teacher.last_name }}</dd>
+                </div>
+                <div class="tp-field tp-field-full">
+                    <dt>Teacher ID</dt>
+                    <dd>{{ teacher.teacher_id }}</dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="tp-card">
+            <div class="tp-card-head">
+                <span class="tp-card-icon is-teal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 10l9-6 9 6"/><path d="M5 10v9M19 10v9M9 19v-5h6v5M3 19h18"/>
+                    </svg>
+                </span>
+                <h2 class="tp-card-title">Institute</h2>
+            </div>
+            <dl class="tp-fields">
+                <div class="tp-field tp-field-full">
+                    <dt>Institute name</dt>
+                    <dd>{{ teacher.institute }}</dd>
+                </div>
+                <div class="tp-field tp-field-full">
+                    <dt>Institute code</dt>
+                    <dd>{{ teacher.institute_code }}</dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="tp-card">
+            <div class="tp-card-head">
+                <span class="tp-card-icon is-amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>
+                    </svg>
+                </span>
+                <h2 class="tp-card-title">Contact</h2>
+            </div>
+            <dl class="tp-fields">
+                <div class="tp-field tp-field-full">
+                    <dt>Phone</dt>
+                    <dd><a href="tel:{{ teacher.phone }}">{{ teacher.phone }}</a></dd>
+                </div>
+                <div class="tp-field tp-field-full">
+                    <dt>Email</dt>
+                    <dd><a href="mailto:{{ teacher.email }}">{{ teacher.email }}</a></dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="tp-card">
+            <div class="tp-card-head">
+                <span class="tp-card-icon is-indigo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+                    </svg>
+                </span>
+                <h2 class="tp-card-title">Account</h2>
+            </div>
+            <dl class="tp-fields">
+                <div class="tp-field tp-field-full">
+                    <dt>Username</dt>
+                    <dd>{{ teacher.username }}</dd>
+                </div>
+                <div class="tp-field tp-field-full">
+                    <dt>Password</dt>
+                    <dd class="tp-secret-wrap">
+                        <span class="tp-secret" id="tpSecret" data-secret="{{ teacher.password }}">••••••••</span>
+                        <button type="button" class="tp-reveal" id="tpReveal" aria-pressed="false">Show</button>
+                    </dd>
+                </div>
+            </dl>
+        </section>
+
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        var secret = document.getElementById('tpSecret');
+        var btn = document.getElementById('tpReveal');
+        if (!secret || !btn) return;
+        var hidden = true;
+        btn.addEventListener('click', function () {
+            hidden = !hidden;
+            secret.textContent = hidden ? '••••••••' : secret.getAttribute('data-secret');
+            btn.textContent = hidden ? 'Show' : 'Hide';
+            btn.setAttribute('aria-pressed', String(!hidden));
+        });
+    })();
+</script>
 
 {% endblock %}

@@ -1,0 +1,291 @@
+/* ============================================
+   TEACHER_DETAILS.CSS
+   Profile page (prefixed .tp-)
+   Text colors are fixed for strong contrast so
+   nothing depends on a faint theme variable.
+   ============================================ */
+
+.tp-page {
+  --d-primary: var(--primary-color, #0f4c94);
+  --d-primary-20: var(--primary-rgba-20, rgba(15, 76, 148, .2));
+
+  --ink: #0f172a;        /* values */
+  --ink-soft: #475569;   /* labels */
+  --line: #e5eaf1;
+  --tile: #f4f7fb;
+
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* ---------- Hero ---------- */
+.tp-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.25rem 2rem 6rem;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(135deg, var(--d-primary) 0%, #2b7fd6 100%);
+  color: #fff;
+  box-shadow: 0 18px 40px var(--d-primary-20);
+}
+
+/* soft rings, kept quiet */
+.tp-hero::before,
+.tp-hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, .15);
+  pointer-events: none;
+}
+.tp-hero::before { width: 320px; height: 320px; right: -90px; bottom: -170px; }
+.tp-hero::after  { width: 520px; height: 520px; right: -190px; bottom: -290px; border-color: rgba(255, 255, 255, .09); }
+
+.tp-back {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: .4rem .95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .18);
+  border: 1px solid rgba(255, 255, 255, .3);
+  color: #fff;
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color .15s ease;
+}
+.tp-back:hover { background: rgba(255, 255, 255, .28); }
+
+.tp-hero-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.tp-avatar {
+  flex-shrink: 0;
+  width: 104px;
+  height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--d-primary);
+  border: 5px solid rgba(255, 255, 255, .4);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 2.2rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .15);
+}
+
+.tp-hero-text { flex: 1; min-width: 0; }
+
+.tp-name {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 2.1rem;
+  line-height: 1.15;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+.tp-role {
+  margin: .4rem 0 0;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, .92);
+}
+
+.tp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .9rem;
+}
+.tp-chip {
+  padding: .3rem .85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .18);
+  border: 1px solid rgba(255, 255, 255, .32);
+  font-size: .85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.tp-hero-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: .6rem;
+}
+
+.tp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .65rem 1.2rem;
+  border-radius: 12px;
+  font-size: .92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .15s ease, background-color .15s ease;
+}
+.tp-btn svg { width: 18px; height: 18px; }
+.tp-btn:hover { transform: translateY(-2px); }
+
+.tp-btn-solid { background: #fff; color: var(--d-primary); }
+.tp-btn-ghost {
+  background: rgba(255, 255, 255, .16);
+  border: 1px solid rgba(255, 255, 255, .4);
+  color: #fff;
+}
+.tp-btn-ghost:hover { background: rgba(255, 255, 255, .26); }
+
+/* ---------- Cards (overlap the hero) ---------- */
+.tp-grid {
+  position: relative;
+  z-index: 2;
+  margin: -3.5rem 1.25rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.tp-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, .08);
+}
+
+.tp-card-head {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  margin-bottom: 1.1rem;
+}
+
+.tp-card-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+.tp-card-icon svg { width: 22px; height: 22px; }
+.tp-card-icon.is-blue   { color: #0f4c94; background: #e3eefb; }
+.tp-card-icon.is-teal   { color: #007a9e; background: #dff4fa; }
+.tp-card-icon.is-amber  { color: #b45309; background: #fdf0d5; }
+.tp-card-icon.is-indigo { color: #4f46e5; background: #e8e9fd; }
+
+.tp-card-title {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+/* ---------- Fields ---------- */
+.tp-fields {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+}
+.tp-field-full { grid-column: 1 / -1; }
+
+.tp-field {
+  padding: .8rem 1rem;
+  border-radius: 12px;
+  background: var(--tile);
+}
+.tp-field dt {
+  margin: 0 0 .2rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.tp-field dd {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.tp-field dd a {
+  color: var(--d-primary);
+  text-decoration: none;
+}
+.tp-field dd a:hover { text-decoration: underline; }
+
+/* ---------- Password reveal ---------- */
+.tp-secret-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.tp-secret { letter-spacing: .08em; }
+
+.tp-reveal {
+  flex-shrink: 0;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--d-primary);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .3rem .9rem;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.tp-reveal:hover { border-color: var(--d-primary); background: #f0f6fd; }
+
+.tp-back:focus-visible,
+.tp-btn:focus-visible,
+.tp-reveal:focus-visible,
+.tp-field dd a:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, .9);
+  outline-offset: 2px;
+}
+.tp-reveal:focus-visible,
+.tp-field dd a:focus-visible {
+  outline-color: var(--d-primary);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .tp-hero-body { flex-wrap: wrap; }
+  .tp-hero-actions { width: 100%; }
+}
+
+@media (max-width: 700px) {
+  .tp-grid { grid-template-columns: minmax(0, 1fr); margin: -3.5rem .5rem 0; }
+}
+
+@media (max-width: 560px) {
+  .tp-page { padding: 1rem; }
+  .tp-hero { padding: 1rem 1.25rem 5.5rem; border-radius: 20px; }
+  .tp-hero-body { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .tp-avatar { width: 84px; height: 84px; font-size: 1.8rem; }
+  .tp-name { font-size: 1.6rem; }
+  .tp-card { padding: 1.15rem; }
+  .tp-fields { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-back, .tp-btn, .tp-reveal { transition: none; }
+  .tp-btn:hover { transform: none; }
+}
