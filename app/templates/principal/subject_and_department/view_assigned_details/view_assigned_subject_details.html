@@ -1,38 +1,114 @@
 {% extends "base/base.html" %}
+{% block title %}Assigned Subjects{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/show_sub_dep.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h3 class="mb-4">Assigned Subjects</h3>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Subject Code</th>
-                    <th>Subject Name</th>
-                    <th>Assigned Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for subject in subjects %}
-                <tr>
-                    <td>
-                        {{ subject.subject_code }}
-                    </td>
-                    <td>
-                        {{ subject.subject_name }}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('view_assigned.view_teachers',subject_id=subject.subject_id) }}" class="btn btn-primary btn-sm">Teacher</a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="3" class="text-center">
-                        No subjects found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+{% set items = subjects|list %}
+
+<div class="sl-page">
+
+  <!-- HEADER: title (left) + back button (right) -->
+  <header class="sl-header sl-rise">
+    <div class="sl-brand">
+      <span class="sl-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      <div>
+        <h1 class="sl-title">Assigned subjects</h1>
+        <p class="sl-lead">See which teachers are assigned to each subject.</p>
+      </div>
     </div>
+    <a href="{{ url_for('assign_subject_dashboard.assign_subject_dashboard') }}" class="sl-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to dashboard
+    </a>
+  </header>
+
+  <!-- TOP BAR: search (left) + count (right) -->
+  <div class="sl-top sl-rise" style="animation-delay:.06s">
+    <label class="sl-find">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="sl-search" placeholder="Search by subject code or name" autocomplete="off" aria-label="Search assigned subjects"{% if not items %} disabled{% endif %}>
+    </label>
+
+    <div class="sl-count" aria-live="polite">
+      <strong class="sl-count-num" data-shown>{{ items|length }}</strong>
+      <span class="sl-count-label" data-label>Total subjects</span>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <section class="sl-card sl-rise" style="animation-delay:.12s" aria-label="Assigned subject list">
+    {% if items %}
+    <ul class="sl-list">
+      {% for subject in items %}
+      <li class="sl-row" data-search="{{ (subject.subject_code ~ ' ' ~ subject.subject_name)|lower }}">
+        <span class="sl-code">{{ subject.subject_code }}</span>
+        <span class="sl-name">{{ subject.subject_name }}</span>
+
+        <div class="sl-actions">
+          <a href="{{ url_for('view_assigned.view_teachers', subject_id=subject.subject_id) }}" class="sl-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Teacher
+          </a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- shown when the search matches nothing -->
+    <div class="sl-empty" id="sl-nomatch" hidden>
+      <span class="sl-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+      <p class="sl-empty-title">No matching subjects</p>
+      <p class="sl-empty-sub">Try a different code or name.</p>
+    </div>
+
+    {% else %}
+
+    <!-- no subjects at all -->
+    <div class="sl-empty">
+      <span class="sl-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+      <p class="sl-empty-title">No subjects found</p>
+      <p class="sl-empty-sub">Subjects you add will show up here.</p>
+    </div>
+    {% endif %}
+  </section>
+
 </div>
+
+{% if items %}
+<script>
+(function () {
+  var input   = document.getElementById('sl-search');
+  var rows    = document.querySelectorAll('.sl-row');
+  var shown   = document.querySelector('[data-shown]');
+  var label   = document.querySelector('[data-label]');
+  var nomatch = document.getElementById('sl-nomatch');
+  if (!input) return;
+
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase();
+    var visible = 0;
+
+    rows.forEach(function (row) {
+      var match = !q || row.getAttribute('data-search').indexOf(q) !== -1;
+      row.hidden = !match;
+      if (match) visible++;
+    });
+
+    if (shown) shown.textContent = visible;
+    if (label) label.textContent = q ? 'Matching subjects' : 'Total subjects';
+    if (nomatch) nomatch.hidden = visible !== 0;
+  });
+})();
+</script>
+{% endif %}
+
 {% endblock %}
