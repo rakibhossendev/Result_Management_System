@@ -1,123 +1,194 @@
-/* ==========================================================================
-   View Teachers — matches the "View Principals" reference design
-   Uses your existing CSS custom properties (--primary-light,
-   --gradient-primary, --text-dark, --border-color, --border-light,
-   --primary-color, --primary-rgba-20, --radius-lg, --off-white,
-   --transition-normal). Fallbacks provided in case a token is missing.
-   ========================================================================== */
+/* ============================================
+   VIEW_TEACHER.CSS  (hero banner + floating search + card rows)
+   Builds on colors.css + styles.css. All classes: .tv-
+   ============================================ */
 
-/* ---------- Hero bar ---------- */
-.tv-icon-box {
-    width: 48px;
-    height: 48px;
-    background: var(--primary-light, #eaf2ff);
+:root {
+  --tv-sky:     #5aabf6;
+  --tv-blue:    #2f86e0;
+  --tv-blue-d:  #2a6fb8;
+  --tv-cyan:    #2bb5ec;
+  --tv-ring:    rgba(47, 134, 224, .25);
+  --tv-ink:     var(--text-dark, #1a1a1a);
+  --tv-soft:    #6b7a90;
+  --tv-line:    #dde7f3;
+  --tv-tint:    #e8f3fd;
+  --tv-head:    'Poppins', sans-serif;
 }
 
-.tv-title {
-    background: var(--gradient-primary, linear-gradient(135deg, #0d47f4, #12b7e8));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+@keyframes tv-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.tv-rise { animation: tv-rise .5s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* ── PAGE ─────────────────────────────────── */
+.tv-page { max-width: 1040px; margin: 0 auto; padding: 2rem 1.5rem 3rem; color: var(--tv-ink); }
+
+/* ── HERO BANNER ──────────────────────────── */
+.tv-hero {
+  position: relative; overflow: hidden;
+  padding: 2rem 2rem 4.25rem; border-radius: 24px; color: #fff;
+  background: linear-gradient(160deg, var(--tv-sky) 0%, var(--tv-blue) 55%, var(--tv-blue-d) 100%);
+  box-shadow: 0 20px 48px rgba(47, 134, 224, .22);
+}
+.tv-hero > * { position: relative; }
+.tv-hero::after {
+  content: ''; position: absolute; left: 0; bottom: 0; width: 240px; height: 200px; pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, .22) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(circle at 0 100%, #000 0%, transparent 70%);
+          mask-image: radial-gradient(circle at 0 100%, #000 0%, transparent 70%);
+}
+.tv-art { position: absolute; top: -60px; right: -50px; width: 300px; height: 300px; pointer-events: none; }
+
+.tv-hero-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.tv-brand { display: flex; align-items: center; gap: 1rem; }
+
+.tv-icon {
+  width: 52px; height: 52px; flex-shrink: 0; display: grid; place-items: center; border-radius: 16px;
+  background: rgba(255, 255, 255, .18); border: 1.5px solid rgba(255, 255, 255, .4); color: #fff;
+}
+.tv-icon svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.tv-title { margin: 0; font-family: var(--tv-head); font-size: 1.7rem; font-weight: 700; line-height: 1.2; color: #fff; }
+.tv-lead { margin: .2rem 0 0; font-size: .92rem; color: rgba(255, 255, 255, .92); }
+
+.tv-actions-top { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; }
+
+/* white "add" button on the banner */
+.tv-add {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .6rem 1.2rem; border: 0; border-radius: 999px; background: #fff; color: var(--tv-blue-d);
+  font-size: .86rem; font-weight: 700; text-decoration: none;
+  box-shadow: 0 8px 20px rgba(20, 60, 120, .18);
+  transition: transform .15s, box-shadow .15s;
+}
+.tv-add svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.tv-add:hover { color: var(--tv-blue-d); box-shadow: 0 12px 26px rgba(20, 60, 120, .26); }
+.tv-add:active { transform: scale(.97); }
+
+/* blue version for the empty state */
+.tv-add--solid {
+  margin-top: .6rem; color: #fff;
+  background: linear-gradient(135deg, var(--tv-sky) 0%, var(--tv-blue) 60%, var(--tv-blue-d) 100%);
+  box-shadow: 0 10px 24px rgba(47, 134, 224, .25);
+}
+.tv-add--solid:hover { color: #fff; filter: brightness(1.06); }
+
+/* ghost back button */
+.tv-back {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .6rem 1.15rem; border: 1.5px solid rgba(255, 255, 255, .5); border-radius: 999px;
+  background: rgba(255, 255, 255, .14); font-size: .86rem; font-weight: 600; color: #fff; text-decoration: none;
+  transition: background-color .15s, color .15s;
+}
+.tv-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tv-back:hover { background: #fff; color: var(--tv-blue-d); }
+
+.tv-add:focus-visible, .tv-back:focus-visible, .tv-view:focus-visible { outline: 3px solid var(--tv-ring); outline-offset: 2px; }
+.tv-hero .tv-add:focus-visible, .tv-hero .tv-back:focus-visible { outline-color: #fff; }
+
+/* ── FLOATING SEARCH BAR ──────────────────── */
+.tv-search {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 1rem;
+  margin: -2rem 1.25rem 1.5rem; padding: .6rem .6rem .6rem .6rem;
+  background: #fff; border: 1px solid var(--tv-line); border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .05), 0 16px 36px rgba(47, 134, 224, .14);
 }
 
-.tv-subtitle {
-    font-size: .82rem;
+.tv-find { position: relative; display: block; flex: 1 1 auto; min-width: 0; margin: 0; }
+.tv-find svg {
+  position: absolute; left: 18px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%);
+  fill: none; stroke: var(--tv-soft); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
 }
-
-/* ---------- Main container ---------- */
-.tv-container {
-    max-width: 1100px;
+.tv-find input {
+  width: 100%; height: 46px; padding: 0 1rem 0 3rem;
+  border: 1.5px solid transparent; border-radius: 999px; background: #f8fbff;
+  font: inherit; font-size: .95rem; color: var(--tv-ink);
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
 }
+.tv-find input::placeholder { color: var(--tv-soft); }
+.tv-find input:hover { background: #f1f7fe; }
+.tv-find input:focus { outline: none; background: #fff; border-color: var(--tv-blue); box-shadow: 0 0 0 4px var(--tv-ring); }
+.tv-find input:disabled { opacity: .6; cursor: not-allowed; }
 
-/* ---------- Search input ---------- */
-.tv-search-input {
-    max-width: 340px;
-    border: 2px solid var(--border-color, #e3e6ea);
-    border-radius: var(--radius-lg, 10px);
-}
+.tv-count { flex-shrink: 0; display: flex; align-items: baseline; gap: .45rem; margin: 0 1rem 0 0; }
+.tv-count strong { font-family: var(--tv-head); font-size: 1.35rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; color: var(--tv-blue-d); }
+.tv-count span { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--tv-soft); white-space: nowrap; }
 
-/* ---------- Card header ---------- */
-.tv-card-header-label {
-    font-size: .9rem;
-    color: var(--text-dark, #1f2937);
-}
+/* ── TEACHER ROWS (each its own card) ─────── */
+.tv-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .75rem; }
 
-.tv-badge-total {
-    background: var(--primary-light, #eaf2ff);
-    color: var(--primary-color, #1e6fe0);
-    font-size: .78rem;
-    padding: .35rem .75rem;
-}
-
-/* ---------- Table header ---------- */
-.tv-thead {
-    background: var(--off-white, #f7f9fc);
-}
-
-.tv-th {
-    font-size: .72rem;
-    letter-spacing: .6px;
-    border-bottom: 2px solid var(--border-light, #eef0f4);
-}
-
-/* ---------- Table rows ---------- */
 .tv-row {
-    border-color: var(--border-light, #eef0f4) !important;
-    transition: background .15s;
+  display: grid; grid-template-columns: 32px minmax(0, 1fr) auto auto; align-items: center; gap: 1rem;
+  padding: .9rem 1.25rem; border: 1px solid var(--tv-line); border-radius: 18px; background: #fff;
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .04), 0 8px 22px rgba(47, 134, 224, .05);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
 }
+.tv-row:hover { transform: translateY(-2px); border-color: #b7cde8; box-shadow: 0 14px 32px rgba(47, 134, 224, .12); }
+.tv-row[hidden] { display: none; }
 
-.tv-td-num {
-    font-size: .85rem;
-    width: 52px;
-}
+.tv-num { font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--tv-soft); text-align: center; }
 
-.tv-id-badge {
-    background: var(--primary-light, #eaf2ff);
-    color: var(--primary-color, #1e6fe0);
-    font-size: .82rem;
-    font-weight: 600;
-}
+.tv-person { display: flex; align-items: center; gap: .9rem; min-width: 0; }
 
 .tv-avatar {
-    width: 38px;
-    height: 38px;
-    font-size: .82rem;
-    background: var(--gradient-primary, linear-gradient(135deg, #0d47f4, #12b7e8));
-    box-shadow: 0 2px 6px rgba(0, 102, 204, .25);
+  width: 46px; height: 46px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%;
+  background: linear-gradient(135deg, var(--tv-sky), var(--tv-blue));
+  font-family: var(--tv-head); font-size: .88rem; font-weight: 600; letter-spacing: .02em; color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 134, 224, .25);
 }
 
+.tv-person-text { display: flex; flex-direction: column; min-width: 0; }
 .tv-name {
-    font-size: .93rem;
-    color: var(--text-dark, #1f2937);
+  font-family: var(--tv-head); font-size: .98rem; font-weight: 500; line-height: 1.4;
+  letter-spacing: .01em; word-spacing: .08em; text-transform: capitalize;
+  color: var(--tv-ink); overflow-wrap: anywhere;
+}
+.tv-role { font-size: .78rem; color: var(--tv-soft); }
+
+.tv-id {
+  padding: .35rem .85rem; border-radius: 999px; background: var(--tv-tint); color: var(--tv-blue-d);
+  font-size: .78rem; font-weight: 700; letter-spacing: .03em; white-space: nowrap;
 }
 
-/* ---------- Action / View button ---------- */
-.tv-view-btn {
-    background: var(--primary-light, #eaf2ff);
-    color: var(--primary-color, #1e6fe0);
-    border: 1px solid var(--primary-rgba-20, rgba(30, 111, 224, .2));
-    border-radius: var(--radius-lg, 10px);
-    font-size: .82rem;
-    padding: .35rem .9rem;
-    transition: all var(--transition-normal, 0.15s ease);
+.tv-view {
+  display: inline-flex; align-items: center; gap: .25rem;
+  padding: .5rem 1.1rem; border-radius: 999px; border: 1.5px solid var(--tv-line); background: #fff;
+  font-size: .82rem; font-weight: 700; color: var(--tv-blue-d); text-decoration: none;
+  transition: background-color .15s, color .15s, border-color .15s;
 }
+.tv-view span { font-size: 1.2rem; line-height: 1; transition: transform .15s; }
+.tv-view:hover { background: var(--tv-blue); border-color: var(--tv-blue); color: #fff; }
+.tv-view:hover span { transform: translateX(3px); }
 
-.tv-view-btn:hover {
-    background: var(--primary-color, #1e6fe0);
-    color: #fff;
+/* ── EMPTY STATES ─────────────────────────── */
+.tv-empty {
+  display: flex; flex-direction: column; align-items: center; gap: .55rem; text-align: center; padding: 3rem 1.5rem;
+  background: #fff; border: 1px solid var(--tv-line); border-radius: 20px;
 }
+.tv-empty[hidden] { display: none; }
+.tv-empty-icon { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 16px; background: var(--tv-tint); color: var(--tv-blue); }
+.tv-empty-icon svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tv-empty-title { margin: 0; font-family: var(--tv-head); font-size: 1.05rem; font-weight: 700; color: var(--tv-ink); }
+.tv-empty-sub { margin: 0; font-size: .88rem; color: var(--tv-soft); }
 
-/* ---------- No-results state ---------- */
-.tv-noresults-sub {
-    font-size: .85rem;
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 700px) {
+  .tv-row { grid-template-columns: minmax(0, 1fr) auto; gap: .6rem 1rem; }
+  .tv-num { display: none; }
+  .tv-person { grid-column: 1 / -1; }
+  .tv-id { justify-self: start; }
+  .tv-view { justify-self: end; }
 }
-
-/* ---------- Card footer ---------- */
-.tv-footer {
-    font-size: .8rem;
+@media (max-width: 560px) {
+  .tv-page { padding: 1.25rem 1rem 2rem; }
+  .tv-hero { padding: 1.5rem 1.25rem 3.75rem; border-radius: 20px; }
+  .tv-title { font-size: 1.4rem; }
+  .tv-search { margin: -1.75rem .25rem 1.25rem; }
+  .tv-count span { display: none; }
+  .tv-count { margin-right: .75rem; }
 }
-
-/* ---------- Empty state ---------- */
-.tv-empty-title {
-    color: var(--text-dark, #1f2937);
+@media (prefers-reduced-motion: reduce) {
+  .tv-rise { animation: none; }
+  .tv-page * { transition: none !important; }
 }
