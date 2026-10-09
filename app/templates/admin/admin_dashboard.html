@@ -5,7 +5,7 @@
 {% block footer %}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
@@ -26,9 +26,8 @@
   'pulse': '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
   'grid':  '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
   'chev':  '<path d="M9 18l6-6-6-6"/>',
+  'down':  '<path d="M6 9l6 6 6-6"/>',
   'menu':  '<path d="M3 6h18M3 12h18M3 18h18"/>',
-  'help':  '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/>',
-  'arrow': '<path d="M5 12h14M13 6l6 6-6 6"/>',
   'upload':'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
   'lock':  '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'
 } -%}
@@ -71,7 +70,7 @@
   <!-- TOP BAR -->
   <header class="ad-topbar">
     <div class="ad-topbar-left">
-      <button type="button" class="ad-icon-btn ad-menu-btn" id="ad-menu" aria-label="Toggle menu" aria-controls="ad-sidebar" aria-expanded="true">{{ ic('menu') }}</button>
+      <button type="button" class="ad-icon-btn" id="ad-menu" aria-label="Toggle menu" aria-controls="ad-sidebar" aria-expanded="true">{{ ic('menu') }}</button>
       <nav class="ad-breadcrumb" aria-label="Breadcrumb">Home {{ ic('chev') }} <span>Admin dashboard</span></nav>
     </div>
     <div class="ad-topbar-right">
@@ -82,89 +81,73 @@
 
   <main class="ad-page">
 
-    <!-- HERO -->
-    <section class="ad-hero ad-rise" aria-label="Overview">
-      <svg class="ad-hero-art" viewBox="0 0 240 240" fill="none" aria-hidden="true">
-        <circle cx="200" cy="40" r="70" stroke="white" stroke-opacity=".16" stroke-width="1.5"/>
-        <circle cx="200" cy="40" r="105" stroke="white" stroke-opacity=".1" stroke-width="1.5"/>
-        <circle cx="200" cy="40" r="140" stroke="white" stroke-opacity=".06" stroke-width="1.5"/>
-      </svg>
-
-      <div class="ad-hero-main">
-        <p class="ad-hero-greet">Welcome back, Admin</p>
-        <h1 class="ad-hero-title">Admin Dashboard</h1>
-        <p class="ad-hero-sub">Register principals and keep an eye on the whole system from one place.</p>
-        <a href="{{ url_for('add_principal.add_principal') }}" class="ad-cta">{{ ic('plus') }}Add principal</a>
+    <!-- PAGE HEADER -->
+    <section class="ad-pagehead" aria-label="Overview">
+      <div>
+        <p class="ad-greet">Welcome back, Admin</p>
+        <h1 class="ad-title">Admin Dashboard</h1>
+        <p class="ad-sub">Register principals and keep an eye on the whole system from one place.</p>
       </div>
-
-      <ul class="ad-status" aria-label="System health">
-        {% for name, state, tone in [('Database','Online','ok'),('Auth service','Active','ok'),('Result engine','Idle','warn'),('Notifications','Running','ok')] %}
-        <li class="ad-chip"><span class="ad-dot is-{{ tone }}"></span>{{ name }}<strong>{{ state }}</strong></li>
-        {% endfor %}
-      </ul>
+      <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add principal</a>
     </section>
 
-    <!-- STATS -->
-    {% set stats = [
-      ('Principals',      total|default(none),           'home',  'blue',   'Registered accounts'),
-      ('Teachers',        total_teachers|default(none),  'users', 'cyan',   'Registered accounts'),
-      ('Students',        total_students|default(none),  'cap',   'indigo', 'Registered accounts'),
-      ('Pending results', pending_results|default(none), 'doc',   'amber',  'Awaiting review')
+    {% set panels = [
+      ('principals', 'Principals',      total|default(none),           'home',  'Register, review and edit principal accounts.',
+        [('Add principal', url_for('add_principal.add_principal'), true), ('All principals', url_for('admin_dashboard.view_principals'), false), ('Edit principal info', url_for('admin_dashboard.edit_and_view_principal'), false)]),
+      ('teachers',   'Teachers',        total_teachers|default(none),  'users', 'Teacher tools are not connected to this dashboard yet.', []),
+      ('students',   'Students',        total_students|default(none),  'cap',   'Student tools are not connected to this dashboard yet.', []),
+      ('results',    'Pending results', pending_results|default(none), 'doc',   'Review, upload and publish results.',
+        [('Upload dashboard', url_for('upload_dashboard.upload_dashboard'), true)])
     ] %}
-    <section class="ad-stats" aria-label="Summary statistics">
-      {% for label, value, icon, tone, note in stats %}
-      <div class="ad-stat is-{{ tone }} ad-rise" style="--delay:{{ 0.06 + loop.index0 * 0.04 }}s">
-        <span class="ad-tile">{{ ic(icon) }}</span>
-        <div class="ad-stat-text">
-          <span class="ad-stat-label">{{ label }}</span>
-          <span class="ad-stat-value{{ ' is-empty' if value is none }}">{{ value if value is not none else '—' }}</span>
-          <span class="ad-stat-note">{{ note if value is not none else 'Not connected yet' }}</span>
+
+    <!-- STAT TILES: click one to open its actions underneath -->
+    <section class="ad-stats" aria-label="Summary">
+      {% for key, label, value, icon, desc, links in panels %}
+      <button type="button" class="ad-stat" data-open="{{ key }}" aria-expanded="false" aria-controls="ad-detail">
+        <span class="ad-stat-top"><span class="ad-stat-label">{{ label }}</span><span class="ad-tile">{{ ic(icon) }}</span></span>
+        <span class="ad-stat-value{{ ' is-empty' if value is none }}">{{ value if value is not none else '—' }}</span>
+        <span class="ad-stat-foot">View actions<span class="ad-caret">{{ ic('down') }}</span></span>
+      </button>
+      {% endfor %}
+    </section>
+
+    <section class="ad-detail" id="ad-detail" aria-live="polite" hidden>
+      {% for key, label, value, icon, desc, links in panels %}
+      <div class="ad-detail-body" data-panel="{{ key }}" hidden>
+        <div>
+          <h2 class="ad-detail-title">{{ label }}</h2>
+          <p class="ad-detail-desc">{{ desc }}</p>
         </div>
+        {% if links %}
+        <div class="ad-detail-actions">
+          {% for text, href, primary in links %}<a href="{{ href }}" class="ad-link{{ ' is-primary' if primary }}">{{ text }}</a>{% endfor %}
+        </div>
+        {% endif %}
       </div>
       {% endfor %}
     </section>
 
-    <!-- QUICK ACTIONS + ACTIVITY (equal size) -->
-    <div class="ad-grid">
-
-      <section class="ad-panel ad-rise" style="--delay:.16s" aria-label="Quick actions">
-        <header class="ad-panel-head"><h2 class="ad-panel-title">Quick actions</h2></header>
-        {% for name, desc, icon, tone, href in [
-          ('Edit principal info', 'Update details for an existing principal',     'edit',   'blue',   url_for('admin_dashboard.edit_and_view_principal')),
-          ('All principals',      'View and manage every principal',              'list',   'indigo', url_for('admin_dashboard.view_principals')),
-          ('Upload dashboard',    'Visit here to control result',                 'upload', 'cyan',   url_for('upload_dashboard.upload_dashboard')),
-          ('Change password',     'Change password using username and password', 'lock',   'amber',  url_for('admin_change_password.change_password'))
-        ] %}
-        <a href="{{ href }}" class="ad-action is-{{ tone }}">
-          <span class="ad-tile is-sm">{{ ic(icon) }}</span>
-          <span class="ad-action-body">
-            <span class="ad-action-name">{{ name }}</span>
-            <span class="ad-action-desc">{{ desc }}</span>
-          </span>
-          <span class="ad-chevron">&rsaquo;</span>
-        </a>
+    <!-- ACTIVITY / STATUS (tabs) -->
+    <section class="ad-panel" aria-label="Activity and status">
+      <div class="ad-tabs" role="tablist">
+        <button type="button" class="ad-tab" role="tab" id="tab-activity" aria-controls="pane-activity" aria-selected="true">Recent activity</button>
+        <button type="button" class="ad-tab" role="tab" id="tab-status" aria-controls="pane-status" aria-selected="false" tabindex="-1">System status</button>
+      </div>
+      <ul class="ad-tabpanel" role="tabpanel" id="pane-activity" aria-labelledby="tab-activity">
+        {% for text, time in [('Admin signed in','Just now'),('Principal record updated','2 hours ago'),('Result published','Yesterday'),('Student batch imported','3 days ago')] %}
+        <li class="ad-row">{{ text }}<em>{{ time }}</em></li>
         {% endfor %}
-      </section>
+      </ul>
+      <ul class="ad-tabpanel" role="tabpanel" id="pane-status" aria-labelledby="tab-status" hidden>
+        {% for name, state, tone in [('Database','Online','ok'),('Auth service','Active','ok'),('Result engine','Idle','warn'),('Notifications','Running','ok')] %}
+        <li class="ad-row"><span class="ad-dot{{ ' is-warn' if tone == 'warn' }}"></span>{{ name }}<em>{{ state }}</em></li>
+        {% endfor %}
+      </ul>
+    </section>
 
-      <section class="ad-panel ad-rise" style="--delay:.2s" aria-label="Recent activity">
-        <header class="ad-panel-head"><h2 class="ad-panel-title">Recent activity</h2></header>
-        <ol class="ad-activity-list">
-          {% for text, time, tone in [('Admin signed in','Just now','blue'),('Principal record updated','2 hours ago','cyan'),('Result published','Yesterday','amber'),('Student batch imported','3 days ago','indigo')] %}
-          <li class="ad-activity-item is-{{ tone }}">
-            <span class="ad-activity-dot"></span>
-            <div><p class="ad-activity-text">{{ text }}</p><p class="ad-activity-time">{{ time }}</p></div>
-          </li>
-          {% endfor %}
-        </ol>
-      </section>
-
-    </div>
-
-    <!-- HELP BANNER -->
-    <a href="#" class="ad-help ad-rise" style="--delay:.24s">
-      <span class="ad-help-icon">{{ ic('help') }}</span>
+    <a href="#" class="ad-help">
       <span class="ad-help-text"><strong>Need help?</strong><span>View the full documentation or contact system support.</span></span>
-      <span class="ad-help-cta">Documentation {{ ic('arrow') }}</span>
+      <span class="ad-help-cta">Open documentation</span>
     </a>
 
     <p class="ad-foot">Result Management System &mdash; Admin Console</p>
@@ -202,6 +185,46 @@
   });
   (mobile.addEventListener ? mobile.addEventListener('change', function () { shell.classList.remove('is-open'); sync(); }) : mobile.addListener(function () { shell.classList.remove('is-open'); sync(); }));
   sync();
+})();
+</script>
+
+<script>
+(function () {
+  // stat tiles open their actions underneath; click again to close
+  var tiles = document.querySelectorAll('.ad-stat[data-open]');
+  var detail = document.getElementById('ad-detail');
+  var bodies = detail ? detail.querySelectorAll('[data-panel]') : [];
+  tiles.forEach(function (t) {
+    t.addEventListener('click', function () {
+      var wasOpen = t.getAttribute('aria-expanded') === 'true';
+      tiles.forEach(function (x) { x.setAttribute('aria-expanded', 'false'); });
+      bodies.forEach(function (b) { b.hidden = true; });
+      detail.hidden = true;
+      if (wasOpen) return;
+      t.setAttribute('aria-expanded', 'true');
+      bodies.forEach(function (b) { b.hidden = b.getAttribute('data-panel') !== t.getAttribute('data-open'); });
+      detail.hidden = false;
+    });
+  });
+
+  // activity / status tabs (arrow keys supported)
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.ad-tab'));
+  function pick(tab) {
+    tabs.forEach(function (x) {
+      var on = x === tab;
+      x.setAttribute('aria-selected', on ? 'true' : 'false');
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(t); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      pick(n); n.focus();
+    });
+  });
 })();
 </script>
 
