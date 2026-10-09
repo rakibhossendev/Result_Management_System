@@ -1,313 +1,180 @@
-/* ==========================================================================
-   Add Teacher — CSS-only restyle
-   Targets the EXACT existing markup: .card.form-box, .mb-3, .ap-label,
-   .form-control, and the submit input. No HTML/Jinja changes required.
-   Uses CSS variables so it inherits from colors.css when available —
-   swap the fallback values if your token names differ.
-   ========================================================================== */
+/* ============================================
+   ADD_TEACHER.CSS  (step-by-step form)
+   Builds on colors.css + styles.css. All classes: .nt-
+   ============================================ */
 
-.form-box {
-    max-width: 640px;
-    margin: 2.5rem auto;
-    padding: 2rem 2.25rem;
-    border: none;
-    border-radius: 16px;
-    background: var(--surface, #ffffff);
-    box-shadow: 0 10px 30px rgba(20, 40, 90, 0.08);
+:root {
+  --nt-sky:     #5aabf6;
+  --nt-blue:    #2f86e0;
+  --nt-blue-d:  #2a6fb8;
+  --nt-cyan:    #2bb5ec;
+  --nt-ring:    rgba(47, 134, 224, .25);
+  --nt-ink:     var(--text-dark, #1a1a1a);
+  --nt-muted:   var(--medium-gray, #6c757d);
+  --nt-soft:    #6b7a90;
+  --nt-line:    #dde7f3;
+  --nt-tint:    #e8f3fd;
+  --nt-danger:  #dc2626;
+  --nt-head:    'Poppins', sans-serif;
 }
 
-.form-box {
-    padding-top: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 1.5rem;
-    overflow: hidden;
+@keyframes nt-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.nt-form [hidden], .nt-footer [hidden] { display: none !important; }
+
+/* ── PAGE + HEADER ────────────────────────── */
+.nt-page { max-width: 660px; margin: 0 auto; padding: 2rem 1.5rem 3rem; color: var(--nt-ink); }
+
+.nt-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+
+.nt-title {
+  display: inline-block; margin: 0; padding-bottom: .1em;
+  font-family: var(--nt-head); font-size: 1.6rem; font-weight: 700; line-height: 1.2;
+  background: linear-gradient(90deg, var(--nt-blue) 0%, var(--nt-cyan) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
 }
 
-.form-box form {
-    padding: 0 2.25rem;
+.nt-back {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .55rem 1.1rem; border: 1.5px solid var(--nt-line); border-radius: 999px; background: #fff;
+  font-size: .85rem; font-weight: 600; color: var(--nt-muted); text-decoration: none;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.nt-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.nt-back:hover { color: var(--nt-blue-d); border-color: #b7cde8; background: var(--nt-tint); }
+
+/* ── CARD + PROGRESS BAR ──────────────────── */
+.nt-card {
+  background: #fff; border: 1px solid var(--nt-line); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .05), 0 24px 56px rgba(47, 134, 224, .1);
 }
 
-/* Field groups */
-.form-box .mb-3 {
-    margin-bottom: 1.35rem !important;
+.nt-bar { height: 5px; background: var(--nt-tint); }
+.nt-bar-fill {
+  display: block; width: 25%; height: 100%; border-radius: 0 999px 999px 0;
+  background: linear-gradient(90deg, var(--nt-sky), var(--nt-blue), var(--nt-cyan));
+  transition: width .4s cubic-bezier(.2, .7, .2, 1);
 }
 
-/* Labels */
-.form-box .ap-label {
-    display: inline-block;
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--text-primary, #1f2937);
+.nt-inner { padding: 1.75rem 2rem 1.5rem; }
+
+/* ── STEP DOTS ────────────────────────────── */
+.nt-steps { display: flex; align-items: flex-start; margin: 0 0 2.6rem; padding: 0; list-style: none; }
+.nt-dot { position: relative; display: flex; align-items: flex-start; }
+.nt-dot:not(:last-child) { flex: 1; }
+.nt-dot:not(:last-child)::after {
+  content: ''; flex: 1; height: 2px; margin: 17px .5rem 0; border-radius: 2px; background: var(--nt-line);
+  transition: background .3s;
 }
+.nt-dot.is-done:not(:last-child)::after { background: linear-gradient(90deg, var(--nt-blue), var(--nt-cyan)); }
 
-/* Inputs */
-.form-box .form-control {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    color: var(--text-primary, #1f2937);
-    background-color: var(--surface-alt, #f7f8fa);
-    border: 1.5px solid var(--border, #e3e6ea);
-    border-radius: 10px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+.nt-dot button {
+  position: relative; width: 36px; height: 36px; padding: 0; border: 0; background: none; cursor: default;
+  display: block; border-radius: 50%;
 }
+.nt-dot.is-done button { cursor: pointer; }
 
-.form-box .form-control::placeholder {
-    color: var(--text-muted, #9aa1ab);
+.nt-dot-num {
+  width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%;
+  border: 2px solid var(--nt-line); background: #fff; color: var(--nt-soft);
+  font-family: var(--nt-head); font-size: .82rem; font-weight: 600;
+  transition: background .25s, border-color .25s, color .25s, box-shadow .25s;
 }
-
-.form-box .form-control:hover {
-    border-color: var(--border-hover, #c7cbd3);
+.nt-dot.is-active .nt-dot-num {
+  border-color: var(--nt-blue); background: var(--nt-blue); color: #fff;
+  box-shadow: 0 0 0 5px var(--nt-ring);
 }
+.nt-dot.is-done .nt-dot-num { border-color: var(--nt-blue); background: var(--nt-tint); color: var(--nt-blue-d); font-size: 0; }
+.nt-dot.is-done .nt-dot-num::before { content: '\2713'; font-size: .95rem; font-weight: 700; }
 
-.form-box .form-control:focus {
-    outline: none;
-    background-color: var(--surface, #ffffff);
-    border-color: var(--primary, #1e88e5);
-    box-shadow: 0 0 0 3px var(--primary-soft, rgba(30, 136, 229, 0.15));
+.nt-dot-label {
+  position: absolute; top: 44px; left: 50%; transform: translateX(-50%);
+  font-size: .74rem; font-weight: 600; white-space: nowrap; color: var(--nt-soft);
+  transition: color .2s;
 }
+.nt-dot.is-active .nt-dot-label { color: var(--nt-blue-d); }
 
-/* Invalid state, in case WTForms adds is-invalid on validation errors */
-.form-box .form-control.is-invalid {
-    border-color: var(--danger, #e53935);
+.nt-dot button:focus-visible { outline: 3px solid var(--nt-ring); outline-offset: 3px; }
+
+/* ── PANELS + FIELDS ──────────────────────── */
+.nt-form { margin: 0; }
+
+.nt-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.15rem 1.25rem; }
+.nt-js .nt-panel { display: none; }
+.nt-js .nt-panel.is-active { display: grid; animation: nt-fade .35s cubic-bezier(.2, .7, .2, 1) both; }
+
+.nt-field--full { grid-column: 1 / -1; }
+.nt-field { display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.nt-label { margin: 0; font-size: .82rem; font-weight: 600; color: var(--nt-ink); }
+.nt-req { margin-left: .15rem; color: var(--nt-danger); }
+
+.nt-control { position: relative; display: block; }
+.nt-input {
+  display: block; width: 100%; height: 50px; padding: 0 1.1rem;
+  border: 1.5px solid var(--nt-line); border-radius: 14px; background: #f8fbff;
+  font: inherit; font-size: .95rem; font-weight: 500; color: var(--nt-ink);
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
 }
+.nt-input:hover { border-color: #b7cde8; background: #fff; }
+.nt-input:focus { outline: none; background: #fff; border-color: var(--nt-blue); box-shadow: 0 0 0 4px var(--nt-ring); }
 
-.form-box .invalid-feedback {
-    display: block;
-    margin-top: 0.3rem;
-    font-size: 0.8rem;
-    color: var(--danger, #e53935);
+.nt-control--pw .nt-input { padding-right: 3.1rem; }
+.nt-eye {
+  position: absolute; right: 8px; top: 50%; width: 34px; height: 34px; transform: translateY(-50%);
+  display: grid; place-items: center; padding: 0; border: 0; border-radius: 10px; background: transparent; cursor: pointer;
+  color: var(--nt-soft); transition: background-color .15s, color .15s;
 }
+.nt-eye svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nt-eye:hover { background: var(--nt-tint); color: var(--nt-blue-d); }
+.nt-eye.is-on { color: var(--nt-blue); }
+.nt-eye:focus-visible { outline: 3px solid var(--nt-ring); outline-offset: 2px; }
 
-/* Two-column layout on wider screens. Section titles and the
-   .full-width / .form-actions rows always span both columns;
-   everything else pairs up left/right in source order. */
-@media (min-width: 640px) {
-    .form-box form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0 1.5rem;
-        align-items: start;
-    }
+.nt-field--error .nt-input { border-color: #fca5a5; background: #fff8f8; }
+.nt-field--error .nt-input:focus { border-color: var(--nt-danger); box-shadow: 0 0 0 4px rgba(220, 38, 38, .14); }
+.nt-error { margin: 0; font-size: .8rem; color: var(--nt-danger); }
 
-    .form-box form > .at-section-title,
-    .form-box .mb-3.full-width,
-    .form-box .form-actions {
-        grid-column: 1 / -1;
-    }
+/* ── BUTTONS ──────────────────────────────── */
+.nt-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--nt-line);
 }
+.nt-footer-left, .nt-footer-right { display: flex; align-items: center; gap: .6rem; }
 
-/* Footer actions: Cancel + Submit */
-.form-box .form-actions {
-    margin-top: 0.5rem;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.75rem;
+.nt-ghost {
+  display: inline-flex; align-items: center; height: 46px; padding: 0 1.3rem;
+  border: 1.5px solid var(--nt-line); border-radius: 999px; background: #fff; cursor: pointer;
+  font: inherit; font-size: .88rem; font-weight: 600; color: var(--nt-muted); text-decoration: none;
+  transition: color .15s, border-color .15s, background-color .15s;
 }
+.nt-ghost:hover { color: var(--nt-blue-d); border-color: #b7cde8; background: var(--nt-tint); }
 
-.form-box .btn-cancel {
-    padding: 0.75rem 1.75rem;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-secondary, #4b5563);
-    background: var(--surface-alt, #eceef1);
-    border: none;
-    border-radius: 10px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.15s ease, transform 0.05s ease;
+.nt-next, .nt-submit {
+  display: inline-flex; align-items: center; gap: .5rem;
+  height: 46px; padding: 0 1.9rem; border: 0; border-radius: 999px; cursor: pointer;
+  background: linear-gradient(135deg, var(--nt-sky) 0%, var(--nt-blue) 60%, var(--nt-blue-d) 100%);
+  font: inherit; font-size: .9rem; font-weight: 700; color: #fff;
+  box-shadow: 0 10px 24px rgba(47, 134, 224, .28);
+  transition: transform .15s, box-shadow .15s, filter .15s;
 }
+.nt-next svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .15s; }
+.nt-next:hover svg { transform: translateX(3px); }
+.nt-next:hover, .nt-submit:hover { filter: brightness(1.06); box-shadow: 0 14px 28px rgba(47, 134, 224, .34); }
+.nt-next:active, .nt-submit:active { transform: scale(.97); }
 
-.form-box .btn-cancel:hover {
-    background: var(--border, #dfe2e6);
+.nt-back:focus-visible, .nt-ghost:focus-visible, .nt-next:focus-visible, .nt-submit:focus-visible { outline: 3px solid var(--nt-ring); outline-offset: 2px; }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 600px) {
+  .nt-page { padding: 1.25rem 1rem 2rem; }
+  .nt-title { font-size: 1.35rem; }
+  .nt-inner { padding: 1.4rem 1.25rem 1.25rem; }
+  .nt-panel { grid-template-columns: 1fr; }
+  .nt-footer { flex-wrap: wrap; }
+  .nt-footer-right { flex: 1; }
+  .nt-next, .nt-submit { flex: 1; justify-content: center; }
 }
-
-.form-box input[type="submit"].btn-submit,
-.form-box button.btn-submit {
-    padding: 0.75rem 2rem;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #fff;
-    /* deep blue to bright cyan, solid stops, no washed-out fade */
-    background: linear-gradient(90deg, #0d47f4 0%, #0561e0 35%, #12b7e8 100%);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(13, 71, 244, 0.25);
-    transition: box-shadow 0.15s ease, transform 0.05s ease, filter 0.15s ease;
-}
-
-.form-box input[type="submit"].btn-submit:hover,
-.form-box button.btn-submit:hover {
-    filter: brightness(1.05);
-    box-shadow: 0 6px 14px rgba(13, 71, 244, 0.3);
-}
-
-.form-box .btn-cancel:active,
-.form-box input[type="submit"].btn-submit:active,
-.form-box button.btn-submit:active {
-    transform: translateY(1px);
-}
-
-/* Small screens: single column, tighter padding, full-width button */
-@media (max-width: 639px) {
-    .form-box {
-        margin: 1.25rem;
-        padding: 1.5rem 1.25rem;
-    }
-
-    .form-box .form-actions {
-        flex-direction: column-reverse;
-        align-items: stretch;
-    }
-
-    .form-box .btn-cancel,
-    .form-box input[type="submit"].btn-submit,
-    .form-box button.btn-submit {
-        width: 100%;
-        text-align: center;
-    }
-}
-
-/* ==========================================================================
-   Page header bar (icon + title + subtitle + Back to Dashboard)
-   ========================================================================== */
-
-.at-page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    max-width: 900px;
-    margin: 2rem auto 1rem;
-    flex-wrap: nowrap;
-}
-
-.at-header-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.at-header-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    font-size: 1.4rem;
-    border-radius: 12px;
-    background: var(--icon-bg, #eaf2ff);
-    flex-shrink: 0;
-}
-
-.at-header-left h1 {
-    margin: 0;
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: var(--primary, #1e6fe0);
-}
-
-.at-header-left p {
-    margin: 0.15rem 0 0;
-    font-size: 0.9rem;
-    color: var(--text-secondary, #6b7280);
-}
-
-.at-back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 1.1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--primary, #1e6fe0);
-    background: #fff;
-    border: 1.5px solid var(--primary, #1e6fe0);
-    border-radius: 999px;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.at-back-btn:hover {
-    background: var(--primary, #1e6fe0);
-    color: #fff;
-}
-
-/* ==========================================================================
-   Blue registration banner inside the card
-   ========================================================================== */
-
-.at-banner {
-    padding: 1.75rem 2.25rem;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #e3f2fd, #e8f9fd);
-    border-bottom: 1px solid var(--border, #e3e6ea);
-}
-
-.at-banner h2 {
-    margin: 0;
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: var(--primary, #1e6fe0);
-}
-
-.at-banner p {
-    margin: 0.35rem 0 0;
-    font-size: 0.9rem;
-    color: var(--text-secondary, #6b7280);
-}
-
-.at-required {
-    color: var(--danger, #e53935);
-    font-weight: 700;
-}
-
-/* ==========================================================================
-   Numbered section labels (01 PERSONAL INFORMATION, etc.)
-   ========================================================================== */
-
-.at-section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 1.75rem 0 1.1rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--text-secondary, #6b7280);
-}
-
-.form-box form > .at-section-title:first-of-type {
-    margin-top: 0;
-}
-
-.at-step {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #fff;
-    background: linear-gradient(135deg, var(--primary, #1e88e5), var(--primary-light, #29b6f6));
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-/* Responsive */
-@media (max-width: 639px) {
-    .at-page-header {
-        margin: 1.25rem 1.25rem 1rem;
-        flex-wrap: wrap;
-    }
-
-    .at-banner {
-        padding: 1.5rem 1.25rem;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .nt-js .nt-panel.is-active { animation: none; }
+  .nt-page * { transition: none !important; }
 }
