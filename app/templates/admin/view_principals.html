@@ -1,196 +1,81 @@
-{% extends "base/base.html" %}
+{% extends "base/admin_base.html" %}
+{% set active_page = 'principals' %}
 {% block title %}View Principals{% endblock %}
+{% block crumb %}All principals{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_pages.css') }}">
 {% endblock %}
 
-{% block content %}
+{% block admin_content %}
+{% from "base/_icons.html" import ic %}
+{% set items = principals|list %}
 
-<!-- Hero Bar -->
-<section class="d-flex align-items-center justify-content-between flex-wrap gap-3 px-4 py-3 bg-white border-bottom sticky-top">
-  <div class="d-flex align-items-center gap-3">
-    <div class="d-flex align-items-center justify-content-center rounded-3 fs-4"
-         style="width:48px;height:48px;background:var(--primary-light);">🏫</div>
+<div class="ad-stack">
+
+  <header class="ad-pagehead">
     <div>
-      <h1 class="fw-bold mb-0 fs-5"
-          style="background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-        All Principals
-      </h1>
-      <p class="text-muted mb-0" style="font-size:.82rem;">
-        Showing {{ principals | length }} registered principal{{ 's' if principals | length != 1 }}
-      </p>
+      <h1 class="ad-title">All principals</h1>
+      <p class="ad-sub">View registered principal accounts.</p>
     </div>
+    <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add principal</a>
+  </header>
+
+  <div class="pg-top">
+    <label class="pg-find">
+      {{ ic('search') }}
+      <input type="search" id="pg-search" placeholder="Search by name or principal ID" autocomplete="off" aria-label="Search principals"{% if not items %} disabled{% endif %}>
+    </label>
+    <p class="pg-count" aria-live="polite">
+      <strong data-shown>{{ items|length }}</strong>
+      <span data-label data-total="Total principals" data-match="Matching principals">Total principals</span>
+    </p>
   </div>
-  <div class="d-flex gap-2">
-    <a href="{{ url_for('add_principal.add_principal') }}" class="btn btn-primary btn-sm">
-      + Add Principal
-    </a>
-    <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-outline-secondary btn-sm">
-      ← Dashboard
-    </a>
-  </div>
-</section>
 
-<!-- Main content -->
-<div class="container-fluid px-4 py-4" style="max-width:1100px;">
+  <section class="pg-card pg-listcard" aria-label="Principal list">
+    {% if items %}
 
-  {% if principals %}
-
-    <!-- Search bar -->
-    <div class="mb-3">
-      <input type="text" id="principalSearch"
-             class="form-control"
-             placeholder="🔍  Search by name or ID…"
-             style="max-width:340px;border:2px solid var(--border-color);border-radius:var(--radius-lg);">
+    <div class="pg-cols" aria-hidden="true">
+      <span>#</span><span>Principal ID</span><span>Full name</span><span>Action</span>
     </div>
 
-    <!-- Card wrapping the table -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <ul class="pg-list">
+      {% for principal in items %}
+      <li class="pg-row" data-search="{{ (principal.principal_id ~ ' ' ~ principal.first_name ~ ' ' ~ principal.last_name)|lower }}">
+        <span class="pg-num">{{ loop.index }}</span>
+        <span class="pg-id">{{ principal.principal_id }}</span>
+        <div class="pg-person">
+          <span class="pg-avatar">{{ principal.first_name[:1]|upper }}{{ principal.last_name[:1]|upper }}</span>
+          <span class="pg-name">{{ principal.first_name }} {{ principal.last_name }}</span>
+        </div>
+        <div class="pg-row-actions">
+          <a href="{{ url_for('admin_dashboard.principal_details', principal_id=principal.principal_id) }}" class="pg-view">View {{ ic('arrow') }}</a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
 
-      <!-- Card header -->
-      <div class="card-header bg-white border-bottom d-flex align-items-center justify-content-between py-3 px-4">
-        <span class="fw-semibold" style="font-size:.9rem;color:var(--text-dark);">Principal Directory</span>
-        <span class="badge rounded-pill"
-              style="background:var(--primary-light);color:var(--primary-color);font-size:.78rem;padding:.35rem .75rem;">
-          {{ principals | length }} total
-        </span>
-      </div>
-
-      <!-- Table -->
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0" id="principalTable">
-          <thead style="background:var(--off-white);">
-            <tr>
-              <th class="px-4 py-3 fw-semibold text-muted text-uppercase"
-                  style="font-size:.72rem;letter-spacing:.6px;border-bottom:2px solid var(--border-light);">
-                #
-              </th>
-              <th class="px-3 py-3 fw-semibold text-muted text-uppercase"
-                  style="font-size:.72rem;letter-spacing:.6px;border-bottom:2px solid var(--border-light);">
-                Principal ID
-              </th>
-              <th class="px-3 py-3 fw-semibold text-muted text-uppercase"
-                  style="font-size:.72rem;letter-spacing:.6px;border-bottom:2px solid var(--border-light);">
-                Full Name
-              </th>
-              <th class="px-3 py-3 fw-semibold text-muted text-uppercase text-center"
-                  style="font-size:.72rem;letter-spacing:.6px;border-bottom:2px solid var(--border-light);">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for principal in principals %}
-            <tr class="principal-row border-bottom" style="border-color:var(--border-light)!important;transition:background .15s;">
-              <!-- Row number -->
-              <td class="px-4 py-3 text-muted" style="font-size:.85rem;width:52px;">
-                {{ loop.index }}
-              </td>
-
-              <!-- Principal ID -->
-              <td class="px-3 py-3">
-                <span class="badge rounded-pill px-3 py-2"
-                      style="background:var(--primary-light);color:var(--primary-color);font-size:.82rem;font-weight:600;">
-                  {{ principal.principal_id }}
-                </span>
-              </td>
-
-              <!-- Name with avatar -->
-              <td class="px-3 py-3">
-                <div class="d-flex align-items-center gap-3">
-                  <!-- Initials avatar -->
-                  <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white flex-shrink-0"
-                       style="width:38px;height:38px;font-size:.82rem;
-                              background:var(--gradient-primary);
-                              box-shadow:0 2px 6px rgba(0,102,204,.25);">
-                    {{ principal.first_name[0] | upper }}{{ principal.last_name[0] | upper }}
-                  </div>
-                  <div>
-                    <p class="mb-0 fw-semibold" style="font-size:.93rem;color:var(--text-dark);">
-                      {{ principal.first_name }} {{ principal.last_name }}
-                    </p>
-                  </div>
-                </div>
-              </td>
-
-              <!-- Action -->
-              <td class="px-3 py-3 text-center">
-                <a href="{{ url_for('admin_dashboard.principal_details', principal_id=principal.principal_id) }}"
-                   class="btn btn-sm fw-semibold"
-                   style="background:var(--primary-light);color:var(--primary-color);
-                          border:1px solid var(--primary-rgba-20);border-radius:var(--radius-lg);
-                          font-size:.82rem;padding:.35rem .9rem;
-                          transition:all var(--transition-normal);"
-                   onmouseover="this.style.background='var(--primary-color)';this.style.color='#fff';"
-                   onmouseout="this.style.background='var(--primary-light)';this.style.color='var(--primary-color)';">
-                  View →
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- No results row (hidden by default, shown by JS) -->
-      <div id="noResults" class="d-none text-center py-5 text-muted">
-        <p class="fs-4 mb-1">🔍</p>
-        <p class="fw-semibold mb-0">No principals match your search</p>
-        <p style="font-size:.85rem;">Try a different name or ID</p>
-      </div>
-
-      <!-- Card footer -->
-      <div class="card-footer bg-white border-top py-2 px-4 text-muted"
-           style="font-size:.8rem;">
-        Result Management System &mdash; Principal Directory
-      </div>
-
-    </div><!-- /card -->
-
-  {% else %}
-
-    <!-- Empty state -->
-    <div class="card border-0 shadow-sm rounded-4 text-center py-5">
-      <div class="card-body py-5">
-        <div class="fs-1 mb-3">🏫</div>
-        <h3 class="fw-bold mb-2" style="color:var(--text-dark);">No Principals Found</h3>
-        <p class="text-muted mb-4">There are no principals registered in the system yet.</p>
-        <a href="{{ url_for('add_principal.add_principal') }}" class="btn btn-primary">
-          + Add First Principal
-        </a>
-      </div>
+    <div class="pg-empty" id="pg-nomatch" hidden>
+      <span class="pg-empty-icon">{{ ic('search') }}</span>
+      <p class="pg-empty-title">No principals match your search</p>
+      <p class="pg-empty-sub">Try a different name or ID.</p>
     </div>
 
-  {% endif %}
+    {% else %}
+
+    <div class="pg-empty">
+      <span class="pg-empty-icon">{{ ic('users') }}</span>
+      <p class="pg-empty-title">No principals found</p>
+      <p class="pg-empty-sub">There are no principals registered in the system yet.</p>
+      <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add first principal</a>
+    </div>
+
+    {% endif %}
+  </section>
 
 </div>
-
 {% endblock %}
 
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const input    = document.getElementById('principalSearch');
-  const rows     = document.querySelectorAll('.principal-row');
-  const noResult = document.getElementById('noResults');
-
-  if (!input) return;
-
-  input.addEventListener('input', () => {
-    const q = input.value.trim().toLowerCase();
-    let visible = 0;
-
-    rows.forEach(row => {
-      const text = row.textContent.toLowerCase();
-      const show = !q || text.includes(q);
-      row.classList.toggle('d-none', !show);
-      if (show) visible++;
-    });
-
-    noResult && noResult.classList.toggle('d-none', visible > 0);
-  });
-});
-</script>
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/admin_list.js') }}"></script>
 {% endblock %}

@@ -1,208 +1,55 @@
-{% extends "base/base.html" %}
+{% extends "base/admin_base.html" %}
+{% set active_page = 'add' %}
 {% block title %}Add Principal{% endblock %}
+{% block crumb %}Add principal{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/add_principal.css') }}">
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_pages.css') }}">
 {% endblock %}
 
-{% block content %}
+{% block admin_content %}
+{% from "base/_fields.html" import field %}
 
-<!-- Decorative blobs -->
-<div class="ap-blob ap-blob-1"></div>
-<div class="ap-blob ap-blob-2"></div>
+<div class="ad-stack">
 
-<!-- Page Hero -->
-<section class="ap-hero">
-  <div class="ap-hero-inner">
-    <div class="ap-hero-icon">🏫</div>
+  <header class="ad-pagehead">
     <div>
-      <h1 class="ap-hero-title">Add New Principal</h1>
-      <p class="ap-hero-sub">Fill in the details below to register a principal to the system</p>
+      <h1 class="ad-title">Add principal</h1>
+      <p class="ad-sub">Register a new principal account.</p>
     </div>
-  </div>
-  <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-outline btn-sm ap-back-btn">
-    ← Back to Dashboard
-  </a>
-</section>
+  </header>
 
-<!-- Form Card -->
-<div class="ap-wrapper">
-  <div class="ap-card">
+  <form method="POST" class="pg-card pg-form" novalidate>
+    {{ principal_data_form.hidden_tag() }}
 
-    <!-- Card Header -->
-    <div class="ap-card-header">
-      <h2 class="ap-card-title">Principal Registration Form</h2>
-      <p class="ap-card-desc">All fields marked <span class="req">*</span> are required</p>
+    <div class="pg-grid">
+      {{ field(principal_data_form.principal_id) }}
+      {{ field(principal_data_form.mobile_number, auto='tel') }}
+      {{ field(principal_data_form.first_name) }}
+      {{ field(principal_data_form.last_name) }}
+      {{ field(principal_data_form.email, full=True, auto='email') }}
+
+      <hr class="pg-divider">
+
+      {{ field(principal_data_form.institute) }}
+      {{ field(principal_data_form.institute_code) }}
+
+      <hr class="pg-divider">
+
+      {{ field(principal_data_form.username, full=True, auto='username') }}
+      {{ field(principal_data_form.password, toggle=True, auto='new-password') }}
+      {{ field(principal_data_form.retype_password, toggle=True, auto='new-password') }}
     </div>
 
-    <form method="POST" class="ap-form" novalidate>
-      {{ principal_data_form.hidden_tag() }}
+    <div class="pg-footer">
+      <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="pg-cancel">Cancel</a>
+      {{ principal_data_form.submit(class="pg-submit") }}
+    </div>
+  </form>
 
-      <!-- ── SECTION: Identity ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">01</span> Identity Information
-        </h3>
-        <div class="ap-grid-2">
-
-          <div class="ap-field">
-            {{ principal_data_form.principal_id.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.principal_id(class="ap-input", placeholder="e.g. PRC-2024-001") }}
-            {% if principal_data_form.principal_id.errors %}
-              <span class="ap-error">{{ principal_data_form.principal_id.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.first_name.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.first_name(class="ap-input", placeholder="Enter first name") }}
-            {% if principal_data_form.first_name.errors %}
-              <span class="ap-error">{{ principal_data_form.first_name.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.last_name.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.last_name(class="ap-input", placeholder="Enter last name") }}
-            {% if principal_data_form.last_name.errors %}
-              <span class="ap-error">{{ principal_data_form.last_name.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.mobile_number.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.mobile_number(class="ap-input", placeholder="e.g. 01XXXXXXXXX") }}
-            {% if principal_data_form.mobile_number.errors %}
-              <span class="ap-error">{{ principal_data_form.mobile_number.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field ap-field-full">
-            {{ principal_data_form.email.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.email(class="ap-input", placeholder="principal@school.edu") }}
-            {% if principal_data_form.email.errors %}
-              <span class="ap-error">{{ principal_data_form.email.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── SECTION: Institute ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">02</span> Institute Details
-        </h3>
-        <div class="ap-grid-2">
-
-          <div class="ap-field ap-field-full">
-            {{ principal_data_form.institute.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.institute(class="ap-input", placeholder="Full institute name") }}
-            {% if principal_data_form.institute.errors %}
-              <span class="ap-error">{{ principal_data_form.institute.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.institute_code.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.institute_code(class="ap-input", placeholder="e.g. INST-001") }}
-            {% if principal_data_form.institute_code.errors %}
-              <span class="ap-error">{{ principal_data_form.institute_code.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── SECTION: Account Credentials ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">03</span> Account Credentials
-        </h3>
-        <div class="ap-grid-2">
-
-          <div class="ap-field ap-field-full">
-            {{ principal_data_form.username.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.username(class="ap-input", placeholder="Choose a username") }}
-            {% if principal_data_form.username.errors %}
-              <span class="ap-error">{{ principal_data_form.username.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.password.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.password(class="ap-input", placeholder="Create a strong password") }}
-            {% if principal_data_form.password.errors %}
-              <span class="ap-error">{{ principal_data_form.password.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.retype_password.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.retype_password(class="ap-input", placeholder="Repeat the password") }}
-            {% if principal_data_form.retype_password.errors %}
-              <span class="ap-error">{{ principal_data_form.retype_password.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ── Actions ── -->
-      <div class="ap-actions">
-        <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-secondary">
-          Cancel
-        </a>
-        {{ principal_data_form.submit(class="btn btn-primary ap-submit") }}
-      </div>
-
-    </form>
-  </div>
 </div>
-
 {% endblock %}
 
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Animate card in
-  const card = document.querySelector('.ap-card');
-  if (card) {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(28px)';
-    requestAnimationFrame(() => {
-      card.style.transition = 'opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1)';
-      card.style.opacity = '1';
-      card.style.transform = 'translateY(0)';
-    });
-  }
-
-  // Live validation highlight
-  document.querySelectorAll('.ap-input').forEach(input => {
-    input.addEventListener('blur', () => {
-      if (input.value.trim() === '') {
-        input.classList.add('ap-input-error');
-      } else {
-        input.classList.remove('ap-input-error');
-        input.classList.add('ap-input-ok');
-      }
-    });
-    input.addEventListener('focus', () => {
-      input.classList.remove('ap-input-error');
-    });
-  });
-});
-</script>
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/admin_form.js') }}"></script>
 {% endblock %}

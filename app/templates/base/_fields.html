@@ -1,0 +1,16 @@
+{% macro field(f, full=False, toggle=False, auto='off', ph='') %}
+<div class="pg-field{% if full %} pg-field--full{% endif %}{% if f.errors %} pg-field--error{% endif %}">
+  <label class="pg-label" for="{{ f.id }}">{{ f.label.text }}{% if f.flags.required %}<span class="pg-req">*</span>{% endif %}</label>
+  <div class="pg-control{% if toggle %} pg-control--pw{% endif %}">
+    {{ f(class="pg-input", autocomplete=auto, placeholder=ph) if ph else f(class="pg-input", autocomplete=auto) }}
+    {% if toggle %}
+    <button type="button" class="pg-eye" data-toggle="{{ f.id }}" aria-label="Show or hide password">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+    {% endif %}
+  </div>
+  {% for error in f.errors %}
+  <p class="pg-error">{{ error }}</p>
+  {% endfor %}
+</div>
+{% endmacro %}

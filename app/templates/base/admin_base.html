@@ -1,0 +1,119 @@
+{% extends "base/base.html" %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_layout.css') }}">
+{% block page_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+{% from "base/_icons.html" import ic %}
+
+{# each sub-page sets  {% set active_page = '...' %}  to highlight its link #}
+{% set current = active_page|default('') %}
+{% set nav = [
+  ('General', [
+    ('dashboard',  'Dashboard',       'grid',   url_for('admin_dashboard.admin_dashboard'))
+  ]),
+  ('Manage', [
+    ('principals', 'Principals',      'list',   url_for('admin_dashboard.view_principals')),
+    ('add',        'Add principal',   'plus',   url_for('add_principal.add_principal')),
+    ('results',    'Manage result',   'upload', url_for('upload_dashboard.upload_dashboard'))
+  ]),
+  ('Account', [
+    ('password',   'Change password', 'lock',   url_for('admin_change_password.change_password'))
+  ])
+] %}
+
+<div class="ad-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="ad-sidebar" id="ad-sidebar" aria-label="Main navigation">
+    <div class="ad-brand">
+      <span class="ad-brand-mark">{{ ic('cap') }}</span>
+      <span>
+        <span class="ad-brand-name">Result Management</span>
+        <span class="ad-brand-sub">Admin portal</span>
+      </span>
+    </div>
+
+    <nav class="ad-nav">
+      {% for group, items in nav %}
+      <p class="ad-nav-group">{{ group }}</p>
+      {% for key, label, icon, href in items %}
+      <a href="{{ href }}" class="ad-nav-link{{ ' is-current' if current == key }}"{% if current == key %} aria-current="page"{% endif %}>{{ ic(icon) }}{{ label }}</a>
+      {% endfor %}
+      {% endfor %}
+    </nav>
+
+    <div class="ad-side-foot">
+      <span class="ad-avatar">A</span>
+      <span class="ad-user-text"><span class="ad-user-name">Admin</span><span class="ad-user-role">Super Admin</span></span>
+    </div>
+  </aside>
+  <div class="ad-scrim" id="ad-scrim" aria-hidden="true"></div>
+
+  <div class="ad-main" id="top">
+
+    <!-- TOP BAR -->
+    <header class="ad-topbar">
+      <div class="ad-topbar-left">
+        <button type="button" class="ad-icon-btn" id="ad-menu" aria-label="Toggle menu" aria-controls="ad-sidebar" aria-expanded="true">{{ ic('menu') }}</button>
+        <nav class="ad-breadcrumb" aria-label="Breadcrumb">Home {{ ic('chev') }} <span>{% block crumb %}Admin dashboard{% endblock %}</span></nav>
+      </div>
+      <div class="ad-topbar-right">
+        <button class="ad-icon-btn" type="button" aria-label="Notifications">{{ ic('bell') }}<span class="ad-notif-dot"></span></button>
+        <a href="{{ url_for('login.logout') }}" class="ad-signout">Sign out</a>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT (each admin page fills this) -->
+    <main class="ad-page">
+      {% block admin_content %}{% endblock %}
+      <p class="ad-foot">Result Management System &mdash; Admin Console</p>
+    </main>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var shell = document.querySelector('.ad-shell');
+  var btn = document.getElementById('ad-menu');
+  var scrim = document.getElementById('ad-scrim');
+  var sidebar = document.getElementById('ad-sidebar');
+  if (!shell || !btn || !sidebar) return;
+
+  var mobile = window.matchMedia('(max-width: 900px)');
+  // phones/tablets: sidebar slides over the page (class is-open)
+  // desktop: sidebar slides away to give more room (class is-collapsed)
+  var isOpen = function () { return mobile.matches ? shell.classList.contains('is-open') : !shell.classList.contains('is-collapsed'); };
+
+  function sync() { btn.setAttribute('aria-expanded', isOpen() ? 'true' : 'false'); }
+  function set(open) {
+    if (mobile.matches) shell.classList.toggle('is-open', open);
+    else shell.classList.toggle('is-collapsed', !open);
+    sync();
+  }
+
+  btn.addEventListener('click', function () { set(!isOpen()); });
+  scrim.addEventListener('click', function () { set(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mobile.matches && isOpen()) { set(false); btn.focus(); }
+  });
+  sidebar.addEventListener('click', function (e) {
+    if (mobile.matches && e.target.closest('a')) set(false);
+  });
+  (mobile.addEventListener ? mobile.addEventListener('change', function () { shell.classList.remove('is-open'); sync(); }) : mobile.addListener(function () { shell.classList.remove('is-open'); sync(); }));
+  sync();
+})();
+</script>
+{% block page_js %}{% endblock %}
+{% endblock %}

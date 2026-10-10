@@ -7,7 +7,102 @@
 {% endblock %}
 
 {% block content %}
+{% extends "base/admin_base.html" %}
+{% set active_page = 'principals' %}
+{% block title %}Edit & Manage Principals{% endblock %}
+{% block crumb %}Manage principals{% endblock %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_pages.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+{% from "base/_icons.html" import ic %}
+{% set items = principals|list %}
+
+<div class="ad-stack">
+
+  <header class="ad-pagehead">
+    <div>
+      <h1 class="ad-title">Manage principals</h1>
+      <p class="ad-sub">Edit or remove principal accounts.</p>
+    </div>
+    <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add principal</a>
+  </header>
+
+  <div class="pg-top">
+    <label class="pg-find">
+      {{ ic('search') }}
+      <input type="search" id="pg-search" placeholder="Search by name or principal ID" autocomplete="off" aria-label="Search principals"{% if not items %} disabled{% endif %}>
+    </label>
+    <p class="pg-count" aria-live="polite">
+      <strong data-shown>{{ items|length }}</strong>
+      <span data-label data-total="Total principals" data-match="Matching principals">Total principals</span>
+    </p>
+  </div>
+
+  <section class="pg-card pg-listcard pg-listcard--manage" aria-label="Principal list">
+    {% if items %}
+
+    <div class="pg-cols" aria-hidden="true">
+      <span>#</span><span>Principal ID</span><span>Full name</span><span>Actions</span>
+    </div>
+
+    <ul class="pg-list">
+      {% for principal in items %}
+      <li class="pg-row" data-search="{{ (principal.principal_id ~ ' ' ~ principal.first_name ~ ' ' ~ principal.last_name)|lower }}">
+        <span class="pg-num">{{ loop.index }}</span>
+        <span class="pg-id">{{ principal.principal_id }}</span>
+        <div class="pg-person">
+          <span class="pg-avatar">{{ principal.first_name[:1]|upper }}{{ principal.last_name[:1]|upper }}</span>
+          <span class="pg-name">{{ principal.first_name }} {{ principal.last_name }}</span>
+        </div>
+        <div class="pg-row-actions">
+          <a href="{{ url_for('admin_dashboard.edit_principal', principal_id=principal.principal_id) }}" class="pg-edit">{{ ic('edit') }}Edit</a>
+          <form method="POST" action="{{ url_for('admin_dashboard.delete_principal', principal_id=principal.principal_id) }}">
+            <button type="button" class="pg-del" data-name="{{ principal.first_name }} {{ principal.last_name }}" aria-label="Delete {{ principal.first_name }} {{ principal.last_name }}" title="Delete">{{ ic('trash') }}</button>
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="pg-empty" id="pg-nomatch" hidden>
+      <span class="pg-empty-icon">{{ ic('search') }}</span>
+      <p class="pg-empty-title">No principals match your search</p>
+      <p class="pg-empty-sub">Try a different name or ID.</p>
+    </div>
+
+    {% else %}
+
+    <div class="pg-empty">
+      <span class="pg-empty-icon">{{ ic('users') }}</span>
+      <p class="pg-empty-title">No principals found</p>
+      <p class="pg-empty-sub">There are no principals registered in the system yet.</p>
+      <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add first principal</a>
+    </div>
+
+    {% endif %}
+  </section>
+
+  <dialog class="pg-dialog" id="pg-dialog" aria-labelledby="pg-dialog-title">
+    <div class="pg-dialog-body">
+      <span class="pg-dialog-icon">{{ ic('trash') }}</span>
+      <h2 id="pg-dialog-title">Delete principal?</h2>
+      <p>You are about to permanently delete <strong data-name></strong>. This can't be undone.</p>
+    </div>
+    <div class="pg-dialog-foot">
+      <button type="button" class="pg-cancel" data-cancel>Cancel</button>
+      <button type="button" class="pg-danger" data-confirm>Delete</button>
+    </div>
+  </dialog>
+
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/admin_list.js') }}"></script>
+{% endblock %}
 <!-- Hero Bar -->
 <section class="d-flex align-items-center justify-content-between flex-wrap gap-3 px-4 py-3 bg-white border-bottom sticky-top">
   <div class="d-flex align-items-center gap-3">

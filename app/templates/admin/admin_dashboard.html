@@ -1,193 +1,91 @@
-{% extends "base/base.html" %}
+{% extends "base/admin_base.html" %}
+{% set active_page = 'dashboard' %}
 {% block title %}Admin Dashboard{% endblock %}
+{% block crumb %}Admin dashboard{% endblock %}
 
-{% block navbar %}{% endblock %}
-{% block footer %}{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% block page_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 {% endblock %}
 
-{% block content %}
+{% block admin_content %}
+{% from "base/_icons.html" import ic %}
 
-{% macro ic(n) -%}
-{%- set I = {
-  'home':  '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
-  'users': '<path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/><path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/>',
-  'cap':   '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
-  'doc':   '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
-  'plus':  '<path d="M12 5v14M5 12h14"/>',
-  'edit':  '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
-  'list':  '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
-  'bell':  '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
-  'pulse': '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
-  'grid':  '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-  'chev':  '<path d="M9 18l6-6-6-6"/>',
-  'down':  '<path d="M6 9l6 6 6-6"/>',
-  'menu':  '<path d="M3 6h18M3 12h18M3 18h18"/>',
-  'upload':'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
-  'lock':  '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'
-} -%}
-<svg viewBox="0 0 24 24" aria-hidden="true">{{ I[n]|safe }}</svg>
-{%- endmacro %}
+<div class="ad-stack">
 
-<div class="ad-shell">
-
-  <!-- SIDEBAR -->
-  <aside class="ad-sidebar" id="ad-sidebar" aria-label="Main navigation">
-    <div class="ad-brand">
-      <span class="ad-brand-mark">{{ ic('pulse') }}</span>
-      <span>
-        <span class="ad-brand-name">Result Management</span>
-        <span class="ad-brand-sub">Admin portal</span>
-      </span>
+  <!-- PAGE HEADER -->
+  <section class="ad-pagehead" aria-label="Overview">
+    <div>
+      <h1 class="ad-title">Admin dashboard</h1>
+      <p class="ad-greet">Welcome back, Admin</p>
     </div>
+    <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add principal</a>
+  </section>
 
-    <nav class="ad-nav">
-      <p class="ad-nav-group">General</p>
-      <a href="#top" class="ad-nav-link is-current" aria-current="page">{{ ic('grid') }}Dashboard</a>
+  {% set panels = [
+    ('principals', 'Principals',      total|default(none),           'home',  'Register, review and edit principal accounts.',
+      [('Add principal', url_for('add_principal.add_principal'), true), ('All principals', url_for('admin_dashboard.view_principals'), false), ('Edit principal info', url_for('admin_dashboard.edit_and_view_principal'), false)]),
+    ('teachers',   'Teachers',        total_teachers|default(none),  'users', 'Teacher tools are not connected to this dashboard yet.', []),
+    ('students',   'Students',        total_students|default(none),  'cap',   'Student tools are not connected to this dashboard yet.', []),
+    ('results',    'Pending results', pending_results|default(none), 'doc',   'Review, upload and publish results.',
+      [('Upload dashboard', url_for('upload_dashboard.upload_dashboard'), true)])
+  ] %}
 
-      <p class="ad-nav-group">Manage</p>
-      <a href="{{ url_for('admin_dashboard.view_principals') }}" class="ad-nav-link">{{ ic('list') }}Principals</a>
-      <a href="{{ url_for('upload_dashboard.upload_dashboard') }}" class="ad-nav-link">{{ ic('upload') }}Manage result</a>
+  <!-- STAT TILES: click one to open its actions underneath -->
+  <section class="ad-stats" aria-label="Summary">
+    {% for key, label, value, icon, desc, links in panels %}
+    <button type="button" class="ad-stat ad-tone-{{ loop.index0 }}" data-open="{{ key }}" aria-expanded="false" aria-controls="ad-detail">
+      <span class="ad-stat-top"><span class="ad-stat-label">{{ label }}</span><span class="ad-tile">{{ ic(icon) }}</span></span>
+      <span class="ad-stat-value{{ ' is-empty' if value is none }}">{{ value if value is not none else '—' }}</span>
+      <span class="ad-stat-foot">View actions<span class="ad-caret">{{ ic('down') }}</span></span>
+    </button>
+    {% endfor %}
+  </section>
 
-      <p class="ad-nav-group">Account</p>
-      <a href="{{ url_for('admin_change_password.change_password') }}" class="ad-nav-link">{{ ic('lock') }}Change password</a>
-    </nav>
-
-    <div class="ad-side-foot">
-      <span class="ad-avatar">A</span>
-      <span class="ad-user-text"><span class="ad-user-name">Admin</span><span class="ad-user-role">Super Admin</span></span>
-    </div>
-  </aside>
-  <div class="ad-scrim" id="ad-scrim" aria-hidden="true"></div>
-
-  <div class="ad-main" id="top">
-
-  <!-- TOP BAR -->
-  <header class="ad-topbar">
-    <div class="ad-topbar-left">
-      <button type="button" class="ad-icon-btn" id="ad-menu" aria-label="Toggle menu" aria-controls="ad-sidebar" aria-expanded="true">{{ ic('menu') }}</button>
-      <nav class="ad-breadcrumb" aria-label="Breadcrumb">Home {{ ic('chev') }} <span>Admin dashboard</span></nav>
-    </div>
-    <div class="ad-topbar-right">
-      <button class="ad-icon-btn" type="button" aria-label="Notifications">{{ ic('bell') }}<span class="ad-notif-dot"></span></button>
-      <a href="{{ url_for('login.logout') }}" class="ad-signout">Sign out</a>
-    </div>
-  </header>
-
-  <main class="ad-page">
-
-    <!-- PAGE HEADER -->
-    <section class="ad-pagehead" aria-label="Overview">
+  <section class="ad-detail" id="ad-detail" aria-live="polite" hidden>
+    {% for key, label, value, icon, desc, links in panels %}
+    <div class="ad-detail-body" data-panel="{{ key }}" hidden>
       <div>
-        <p class="ad-greet">Welcome back, Admin</p>
-        <h1 class="ad-title">Admin Dashboard</h1>
-        <p class="ad-sub">Register principals and keep an eye on the whole system from one place.</p>
+        <h2 class="ad-detail-title">{{ label }}</h2>
+        <p class="ad-detail-desc">{{ desc }}</p>
       </div>
-      <a href="{{ url_for('add_principal.add_principal') }}" class="ad-btn">{{ ic('plus') }}Add principal</a>
-    </section>
+      {% if links %}
+      <div class="ad-detail-actions">
+        {% for text, href, primary in links %}<a href="{{ href }}" class="ad-link{{ ' is-primary' if primary }}">{{ text }}</a>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
 
-    {% set panels = [
-      ('principals', 'Principals',      total|default(none),           'home',  'Register, review and edit principal accounts.',
-        [('Add principal', url_for('add_principal.add_principal'), true), ('All principals', url_for('admin_dashboard.view_principals'), false), ('Edit principal info', url_for('admin_dashboard.edit_and_view_principal'), false)]),
-      ('teachers',   'Teachers',        total_teachers|default(none),  'users', 'Teacher tools are not connected to this dashboard yet.', []),
-      ('students',   'Students',        total_students|default(none),  'cap',   'Student tools are not connected to this dashboard yet.', []),
-      ('results',    'Pending results', pending_results|default(none), 'doc',   'Review, upload and publish results.',
-        [('Upload dashboard', url_for('upload_dashboard.upload_dashboard'), true)])
-    ] %}
-
-    <!-- STAT TILES: click one to open its actions underneath -->
-    <section class="ad-stats" aria-label="Summary">
-      {% for key, label, value, icon, desc, links in panels %}
-      <button type="button" class="ad-stat" data-open="{{ key }}" aria-expanded="false" aria-controls="ad-detail">
-        <span class="ad-stat-top"><span class="ad-stat-label">{{ label }}</span><span class="ad-tile">{{ ic(icon) }}</span></span>
-        <span class="ad-stat-value{{ ' is-empty' if value is none }}">{{ value if value is not none else '—' }}</span>
-        <span class="ad-stat-foot">View actions<span class="ad-caret">{{ ic('down') }}</span></span>
-      </button>
+  <!-- ACTIVITY / STATUS (tabs) -->
+  <section class="ad-panel" aria-label="Activity and status">
+    <div class="ad-tabs" role="tablist">
+      <button type="button" class="ad-tab" role="tab" id="tab-activity" aria-controls="pane-activity" aria-selected="true">Recent activity</button>
+      <button type="button" class="ad-tab" role="tab" id="tab-status" aria-controls="pane-status" aria-selected="false" tabindex="-1">System status</button>
+    </div>
+    <ul class="ad-tabpanel" role="tabpanel" id="pane-activity" aria-labelledby="tab-activity">
+      {% for text, time in [('Admin signed in','Just now'),('Principal record updated','2 hours ago'),('Result published','Yesterday'),('Student batch imported','3 days ago')] %}
+      <li class="ad-row"><span class="ad-dot is-info"></span>{{ text }}<em>{{ time }}</em></li>
       {% endfor %}
-    </section>
-
-    <section class="ad-detail" id="ad-detail" aria-live="polite" hidden>
-      {% for key, label, value, icon, desc, links in panels %}
-      <div class="ad-detail-body" data-panel="{{ key }}" hidden>
-        <div>
-          <h2 class="ad-detail-title">{{ label }}</h2>
-          <p class="ad-detail-desc">{{ desc }}</p>
-        </div>
-        {% if links %}
-        <div class="ad-detail-actions">
-          {% for text, href, primary in links %}<a href="{{ href }}" class="ad-link{{ ' is-primary' if primary }}">{{ text }}</a>{% endfor %}
-        </div>
-        {% endif %}
-      </div>
+    </ul>
+    <ul class="ad-tabpanel" role="tabpanel" id="pane-status" aria-labelledby="tab-status" hidden>
+      {% for name, state, tone in [('Database','Online','ok'),('Auth service','Active','ok'),('Result engine','Idle','warn'),('Notifications','Running','ok')] %}
+      <li class="ad-row"><span class="ad-dot{{ ' is-warn' if tone == 'warn' }}"></span>{{ name }}<em>{{ state }}</em></li>
       {% endfor %}
-    </section>
+    </ul>
+  </section>
 
-    <!-- ACTIVITY / STATUS (tabs) -->
-    <section class="ad-panel" aria-label="Activity and status">
-      <div class="ad-tabs" role="tablist">
-        <button type="button" class="ad-tab" role="tab" id="tab-activity" aria-controls="pane-activity" aria-selected="true">Recent activity</button>
-        <button type="button" class="ad-tab" role="tab" id="tab-status" aria-controls="pane-status" aria-selected="false" tabindex="-1">System status</button>
-      </div>
-      <ul class="ad-tabpanel" role="tabpanel" id="pane-activity" aria-labelledby="tab-activity">
-        {% for text, time in [('Admin signed in','Just now'),('Principal record updated','2 hours ago'),('Result published','Yesterday'),('Student batch imported','3 days ago')] %}
-        <li class="ad-row">{{ text }}<em>{{ time }}</em></li>
-        {% endfor %}
-      </ul>
-      <ul class="ad-tabpanel" role="tabpanel" id="pane-status" aria-labelledby="tab-status" hidden>
-        {% for name, state, tone in [('Database','Online','ok'),('Auth service','Active','ok'),('Result engine','Idle','warn'),('Notifications','Running','ok')] %}
-        <li class="ad-row"><span class="ad-dot{{ ' is-warn' if tone == 'warn' }}"></span>{{ name }}<em>{{ state }}</em></li>
-        {% endfor %}
-      </ul>
-    </section>
+  <!-- HELP BANNER -->
+  <a href="#" class="ad-help">
+    <span class="ad-help-icon">{{ ic('doc') }}</span>
+    <span class="ad-help-text"><strong>Need help?</strong><span>View the full documentation or contact system support.</span></span>
+    <span class="ad-help-cta">Documentation</span>
+  </a>
 
-    <a href="#" class="ad-help">
-      <span class="ad-help-text"><strong>Need help?</strong><span>View the full documentation or contact system support.</span></span>
-      <span class="ad-help-cta">Open documentation</span>
-    </a>
-
-    <p class="ad-foot">Result Management System &mdash; Admin Console</p>
-  </main>
-  </div>
 </div>
+{% endblock %}
 
-<script>
-(function () {
-  var shell = document.querySelector('.ad-shell');
-  var btn = document.getElementById('ad-menu');
-  var scrim = document.getElementById('ad-scrim');
-  var sidebar = document.getElementById('ad-sidebar');
-  if (!shell || !btn || !sidebar) return;
-
-  var mobile = window.matchMedia('(max-width: 900px)');
-  // phones/tablets: sidebar slides over the page (class is-open)
-  // desktop: sidebar slides away to give more room (class is-collapsed)
-  var isOpen = function () { return mobile.matches ? shell.classList.contains('is-open') : !shell.classList.contains('is-collapsed'); };
-
-  function sync() { btn.setAttribute('aria-expanded', isOpen() ? 'true' : 'false'); }
-  function set(open) {
-    if (mobile.matches) shell.classList.toggle('is-open', open);
-    else shell.classList.toggle('is-collapsed', !open);
-    sync();
-  }
-
-  btn.addEventListener('click', function () { set(!isOpen()); });
-  scrim.addEventListener('click', function () { set(false); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && mobile.matches && isOpen()) { set(false); btn.focus(); }
-  });
-  sidebar.addEventListener('click', function (e) {
-    if (mobile.matches && e.target.closest('a')) set(false);
-  });
-  (mobile.addEventListener ? mobile.addEventListener('change', function () { shell.classList.remove('is-open'); sync(); }) : mobile.addListener(function () { shell.classList.remove('is-open'); sync(); }));
-  sync();
-})();
-</script>
-
+{% block page_js %}
 <script>
 (function () {
   // stat tiles open their actions underneath; click again to close
@@ -227,5 +125,4 @@
   });
 })();
 </script>
-
 {% endblock %}
