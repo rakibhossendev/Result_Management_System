@@ -1,160 +1,66 @@
-{% extends "base/base.html" %}
+{% extends "base/admin_base.html" %}
+{% set active_page = 'principals' %}
 {% block title %}Principal Details{% endblock %}
+{% block crumb %}Principal details{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_pages.css') }}">
 {% endblock %}
 
-{% block content %}
+{% block admin_content %}
+{% from "base/_icons.html" import ic %}
 
-<!-- Hero Bar -->
-<section class="d-flex align-items-center justify-content-between flex-wrap gap-3 px-4 py-3 bg-white border-bottom sticky-top">
-  <div class="d-flex align-items-center gap-3">
-    <div class="d-flex align-items-center justify-content-center rounded-3 fs-4"
-         style="width:48px;height:48px;background:var(--primary-light);">🏫</div>
+<div class="ad-stack">
+
+  <header class="ad-pagehead">
     <div>
-      <h1 class="fw-bold mb-0 fs-5"
-          style="background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-        Principal Details
-      </h1>
-      <p class="text-muted mb-0" style="font-size:.82rem;">Full profile information</p>
+      <h1 class="ad-title">Principal details</h1>
+      <p class="ad-sub">Full profile information.</p>
     </div>
-  </div>
-  <div class="d-flex gap-2">
-    <a href="{{ url_for('admin_dashboard.edit_principal', principal_id=principal.principal_id) }}"
-       class="btn btn-primary btn-sm">✏️ Edit</a>
-    <a href="{{ url_for('admin_dashboard.edit_and_view_principal') }}"
-       class="btn btn-outline-secondary btn-sm">← Back</a>
-  </div>
-</section>
+    <div class="pg-actions">
+      <a href="{{ url_for('admin_dashboard.edit_and_view_principal') }}" class="pg-ghost">{{ ic('back') }}Back</a>
+      <a href="{{ url_for('admin_dashboard.edit_principal', principal_id=principal.principal_id) }}" class="ad-btn">{{ ic('edit') }}Edit principal</a>
+    </div>
+  </header>
 
-<!-- Main -->
-<div class="container-fluid px-4 py-4" style="max-width:860px;">
-  <div class="card border-0 shadow-sm rounded-4">
+  <section class="pg-card" aria-label="Principal profile">
 
-    <!-- Profile header – flat, no overflow trick -->
-    <div class="d-flex align-items-center gap-4 flex-wrap px-4 py-4"
-         style="background:var(--gradient-primary);
-                border-radius:var(--radius-xl) var(--radius-xl) 0 0;">
-
-      <!-- Avatar inside the banner, no negative margin needed -->
-      <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white flex-shrink-0"
-           style="width:72px;height:72px;font-size:1.6rem;
-                  background:rgba(255,255,255,.22);
-                  border:3px solid rgba(255,255,255,.45);
-                  box-shadow:0 4px 14px rgba(0,0,0,.18);">
-        {{ principal.first_name[0]|upper }}{{ principal.last_name[0]|upper }}
-      </div>
-
-      <!-- Name + ID badge, white on the gradient -->
+    <div class="pg-profile">
+      <span class="pg-profile-avatar">{{ principal.first_name[:1]|upper }}{{ principal.last_name[:1]|upper }}</span>
       <div>
-        <h2 class="fw-bold mb-1 text-white" style="font-size:1.25rem;">
-          {{ principal.first_name }} {{ principal.last_name }}
-        </h2>
-        <span class="badge rounded-pill px-3 py-2"
-              style="background:rgba(255,255,255,.22);color:#fff;
-                     border:1px solid rgba(255,255,255,.35);
-                     font-size:.8rem;font-weight:600;">
-          ID: {{ principal.principal_id }}
-        </span>
-      </div>
-
-    </div>
-
-    <hr class="m-0" style="border-color:var(--border-light);">
-
-    <!-- Details grid -->
-    <div class="px-4 pb-4">
-
-      <!-- Section label -->
-      <p class="fw-semibold text-uppercase mb-3"
-         style="font-size:.72rem;letter-spacing:.7px;color:var(--medium-gray);">
-        Personal Information
-      </p>
-
-      <div class="row g-3 mb-4">
-
-        <!-- First Name -->
-        <div class="col-sm-6">
-          <div class="rounded-3 p-3 h-100" style="background:var(--off-white);border:1px solid var(--border-light);">
-            <p class="mb-1 text-muted" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">First Name</p>
-            <p class="mb-0 fw-semibold" style="font-size:.95rem;color:var(--text-dark);">{{ principal.first_name }}</p>
-          </div>
-        </div>
-
-        <!-- Last Name -->
-        <div class="col-sm-6">
-          <div class="rounded-3 p-3 h-100" style="background:var(--off-white);border:1px solid var(--border-light);">
-            <p class="mb-1 text-muted" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Last Name</p>
-            <p class="mb-0 fw-semibold" style="font-size:.95rem;color:var(--text-dark);">{{ principal.last_name }}</p>
-          </div>
-        </div>
-
-        <!-- Phone -->
-        <div class="col-sm-6">
-          <div class="rounded-3 p-3 h-100" style="background:var(--off-white);border:1px solid var(--border-light);">
-            <p class="mb-1 text-muted" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">📞 Phone</p>
-            <p class="mb-0 fw-semibold" style="font-size:.95rem;color:var(--text-dark);">{{ principal.mobile_number }}</p>
-          </div>
-        </div>
-
-        <!-- Email -->
-        <div class="col-12">
-          <div class="rounded-3 p-3" style="background:var(--off-white);border:1px solid var(--border-light);">
-            <p class="mb-1 text-muted" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">✉️ Email</p>
-            <a href="mailto:{{ principal.email }}"
-               class="fw-semibold text-decoration-none"
-               style="font-size:.95rem;color:var(--primary-color);">
-              {{ principal.email }}
-            </a>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Section label -->
-      <p class="fw-semibold text-uppercase mb-3"
-         style="font-size:.72rem;letter-spacing:.7px;color:var(--medium-gray);">
-        Institute Information
-      </p>
-
-      <div class="row g-3">
-
-        <!-- Institute -->
-        <div class="col-12">
-          <div class="rounded-3 p-3" style="background:var(--off-white);border:1px solid var(--border-light);">
-            <p class="mb-1 text-muted" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">🏫 Institute</p>
-            <p class="mb-0 fw-semibold" style="font-size:.95rem;color:var(--text-dark);">{{ principal.institute }}</p>
-          </div>
-        </div>
-
-        <!-- Institute Code -->
-        <div class="col-sm-6">
-          <div class="rounded-3 p-3 h-100" style="background:var(--off-white);border:1px solid var(--border-light);">
-            <p class="mb-1 text-muted" style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Institute Code</p>
-            <span class="badge rounded-pill px-3 py-2"
-                  style="background:var(--secondary-light);color:var(--secondary-dark);font-size:.85rem;font-weight:700;">
-              {{ principal.institute_code }}
-            </span>
-          </div>
-        </div>
-
+        <h2 class="pg-profile-name">{{ principal.first_name }} {{ principal.last_name }}</h2>
+        <span class="pg-profile-id">ID: {{ principal.principal_id }}</span>
       </div>
     </div>
 
-    <!-- Card footer actions -->
-    <div class="card-footer bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-2 px-4 py-3">
-      <span class="text-muted" style="font-size:.8rem;">Result Management System</span>
-      <div class="d-flex gap-2">
-        <a href="{{ url_for('admin_dashboard.edit_principal', principal_id=principal.principal_id) }}"
-           class="btn btn-primary btn-sm">✏️ Edit Principal</a>
-        <a href="{{ url_for('admin_dashboard.edit_and_view_principal') }}"
-           class="btn btn-outline-secondary btn-sm">← Back to List</a>
+    <div class="pg-facts">
+      <div class="pg-fact">
+        <span class="pg-fact-label">First name</span>
+        <span class="pg-fact-value">{{ principal.first_name }}</span>
+      </div>
+      <div class="pg-fact">
+        <span class="pg-fact-label">Last name</span>
+        <span class="pg-fact-value">{{ principal.last_name }}</span>
+      </div>
+      <div class="pg-fact">
+        <span class="pg-fact-label">Phone</span>
+        <span class="pg-fact-value">{{ principal.mobile_number }}</span>
+      </div>
+      <div class="pg-fact">
+        <span class="pg-fact-label">Email</span>
+        <span class="pg-fact-value"><a href="mailto:{{ principal.email }}">{{ principal.email }}</a></span>
+      </div>
+      <div class="pg-fact pg-fact--full">
+        <span class="pg-fact-label">Institute</span>
+        <span class="pg-fact-value">{{ principal.institute }}</span>
+      </div>
+      <div class="pg-fact">
+        <span class="pg-fact-label">Institute code</span>
+        <span class="pg-fact-value">{{ principal.institute_code }}</span>
       </div>
     </div>
 
-  </div>
+  </section>
+
 </div>
-
 {% endblock %}
