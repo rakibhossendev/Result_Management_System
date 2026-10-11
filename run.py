@@ -1,6 +1,6 @@
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-# load_dotenv()
+load_dotenv()
 
 from app import create_app
 from app.extensions import db
