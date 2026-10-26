@@ -1,0 +1,226 @@
+/* ============================================
+   PRINCIPAL_DETAILS.CSS - principal profile page
+   Self-contained: works with base/base.html only.
+   Same blue/cyan look as the other pages.
+   Colors come from colors.css (with fallbacks).
+   ============================================ */
+
+.pd-page {
+  --pd-primary: var(--primary-color, #0b5fd0);
+  --pd-primary-dark: var(--primary-dark, #004299);
+  --pd-primary-light: var(--primary-light, #e8f0fe);
+  --pd-secondary: var(--secondary-dark, #0099cc);
+  --pd-secondary-light: var(--secondary-light, #def4fa);
+  --pd-warning: var(--warning-color, #f59e0b);
+  --pd-warning-light: var(--warning-light, #fdf0c8);
+  --pd-gradient: var(--gradient-primary, linear-gradient(135deg, #0361cc 0%, #049fe8 55%, #00d0ff 100%));
+  --pd-white: var(--white, #ffffff);
+  --pd-bg: var(--off-white, #f4f8fd);
+  --pd-border: var(--border-light, #dbe5f1);
+  --pd-text: var(--text-dark, #0f1b2d);
+  --pd-muted: var(--medium-gray, #64748b);
+  --pd-shadow: 0 1px 2px rgba(11, 95, 208, .04), 0 14px 34px rgba(11, 95, 208, .09);
+
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* pale-blue page backdrop, same as the home page */
+body:has(.pd-page) {
+  min-height: 100vh;
+  background:
+    radial-gradient(700px 360px at 50% 0%, rgba(0, 150, 235, .14), transparent 72%),
+    linear-gradient(180deg, #eef5ff 0%, #f6faff 55%, #fbfdff 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.pd-page svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Header ---------- */
+.pd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.pd-title {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(90deg, var(--pd-primary), #00bfff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.pd-sub { margin: .25rem 0 0; font-size: .92rem; color: var(--pd-muted); }
+
+.pd-actions { display: flex; align-items: center; gap: .6rem; }
+
+.pd-ghost,
+.pd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .65rem 1.2rem;
+  font-size: .9rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: transform .15s ease, box-shadow .15s ease, color .15s ease;
+}
+.pd-ghost {
+  color: var(--pd-muted);
+  background: var(--pd-white);
+  border: 1px solid var(--pd-border);
+  box-shadow: var(--pd-shadow);
+}
+.pd-ghost:hover { color: var(--pd-primary); }
+.pd-btn {
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  background: var(--pd-gradient);
+  box-shadow: 0 12px 22px -10px rgba(3, 97, 204, .65);
+}
+.pd-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 26px -10px rgba(3, 97, 204, .7); }
+.pd-ghost:focus-visible,
+.pd-btn:focus-visible { outline: 2px solid var(--pd-primary); outline-offset: 3px; }
+
+/* ---------- Profile card ---------- */
+.pd-card {
+  overflow: hidden;
+  background: var(--pd-white);
+  border-radius: 24px;
+  box-shadow: var(--pd-shadow);
+}
+
+/* .pd-cover {
+  position: relative;
+  overflow: hidden;
+  height: 110px;
+  background: var(--pd-gradient);
+} */
+/* .pd-cover::after {
+  content: "";
+  position: absolute;
+  right: -50px;
+  top: -90px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .13);
+} */
+
+.pd-profile {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+  padding: 0 2rem;
+  padding-top: 1.5rem;
+}
+.pd-avatar {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--pd-gradient);
+  box-shadow: 0 0 0 6px var(--pd-white), 0 14px 28px -10px rgba(3, 97, 204, .6);
+}
+.pd-who { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; min-width: 0; padding-bottom: .3rem; }
+.pd-name {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--pd-text);
+  overflow-wrap: anywhere;
+}
+.pd-id {
+  padding: .2rem .75rem;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--pd-primary);
+  background: var(--pd-primary-light);
+  border-radius: 999px;
+}
+
+/* ---------- Facts ---------- */
+.pd-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 1.75rem 2rem 2rem;
+}
+.pd-fact--full { grid-column: 1 / -1; }
+
+.pd-fact {
+  --tone: var(--pd-primary);
+  --tone-bg: var(--pd-primary-light);
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: 1rem 1.1rem;
+  background: var(--pd-bg);
+  border: 1px solid var(--pd-border);
+  border-radius: 16px;
+}
+.pd-fact.is-teal  { --tone: var(--pd-secondary); --tone-bg: var(--pd-secondary-light); }
+.pd-fact.is-amber { --tone: var(--pd-warning);   --tone-bg: var(--pd-warning-light); }
+
+.pd-fact-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  color: var(--tone);
+  background: var(--tone-bg);
+}
+.pd-fact-text { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.pd-fact-label { font-size: .78rem; font-weight: 600; color: var(--pd-muted); }
+.pd-fact-value { font-size: 1rem; font-weight: 600; color: var(--pd-text); overflow-wrap: anywhere; }
+.pd-fact-value a { color: var(--pd-primary); text-decoration: none; }
+.pd-fact-value a:hover { color: var(--pd-primary-dark); text-decoration: underline; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .pd-facts { grid-template-columns: minmax(0, 1fr); padding: 1.5rem 1.25rem 1.5rem; }
+  .pd-profile { padding: 0 1.25rem; }
+  .pd-title { font-size: 1.6rem; }
+}
+@media (max-width: 480px) {
+  .pd-page { padding: 1rem .85rem 2rem; }
+  .pd-profile { flex-direction: column; align-items: flex-start; gap: .8rem; }
+  .pd-who { padding-bottom: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-ghost, .pd-btn { transition: none; }
+  .pd-btn:hover { transform: none; }
+}
