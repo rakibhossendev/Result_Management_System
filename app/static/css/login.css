@@ -1,0 +1,306 @@
+/* ============================================
+   LOGIN.CSS - white card, minimal, underline fields, pill button
+   Accent bar + soft circle, "Remember me" / "Forgot?" row,
+   gradient Sign In pill, "Student search" link.
+   Blue/cyan colours come from colors.css (with fallbacks).
+   ============================================ */
+
+.lg-page {
+  --lg-primary: var(--primary-color, #0066cc);
+  --lg-primary-dark: var(--primary-dark, #004299);
+  --lg-gradient: var(--gradient-primary, linear-gradient(135deg, #0066cc 0%, #00d4ff 100%));
+  --lg-danger: var(--danger-color, #ef4444);
+
+  /* light card palette */
+  --lg-surface: var(--white, #ffffff);
+  --lg-card-border: var(--border-light, #e2e8f0);
+  --lg-line: #cbd5e1;
+  --lg-text: var(--text-dark, #14181f);
+  --lg-muted: #94a3b8;
+  --lg-link: var(--lg-primary);
+  --lg-focus: var(--lg-primary);
+
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+}
+
+.lg-page svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* visually hidden, still read by screen readers */
+.lg-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes lgFade {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Card ---------- */
+.lg-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  max-width: 470px;
+  display: flex;
+  flex-direction: column;
+  padding: 3rem 3.1rem 2.6rem;
+  background: var(--lg-surface);
+  border: 1px solid var(--lg-card-border);
+  border-radius: 16px;
+  box-shadow: 0 20px 44px -14px rgba(15, 40, 90, .2), 0 2px 6px rgba(15, 40, 90, .05);
+  animation: lgFade .5s ease both;
+}
+.lg-card > * { position: relative; z-index: 1; }
+
+/* soft circle in the top-right corner */
+.lg-card::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: -150px;
+  right: -150px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(0, 150, 230, .07);
+  pointer-events: none;
+}
+
+/* short gradient accent bar above the title */
+.lg-accent {
+  display: block;
+  width: 52px;
+  height: 5px;
+  margin-bottom: 1.1rem;
+  border-radius: 999px;
+  background: var(--lg-gradient);
+}
+
+.lg-title {
+  margin: 0 0 1.6rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--lg-text);
+}
+
+/* ---------- Form ---------- */
+.lg-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.lg-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .65rem .85rem;
+  font-size: .84rem;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid rgba(239, 68, 68, .45);
+  border-radius: 10px;
+}
+.lg-alert-close {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #b91c1c;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.lg-alert-close:hover { background: rgba(239, 68, 68, .15); }
+
+.lg-field { display: flex; flex-direction: column; gap: .1rem; }
+.lg-input-wrap { position: relative; }
+
+/* underline-only inputs */
+.lg-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--lg-text);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--lg-line);
+  border-radius: 0;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.lg-input-wrap .lg-input { padding-right: 2.6rem; }
+.lg-input::placeholder { color: var(--lg-muted); opacity: 1; }
+.lg-input:hover { border-bottom-color: #94a3b8; }
+.lg-input:focus {
+  outline: none;
+  border-bottom-color: var(--lg-focus);
+  box-shadow: 0 1px 0 var(--lg-focus);
+}
+.lg-input.is-error {
+  border-bottom-color: var(--lg-danger);
+  box-shadow: 0 1px 0 var(--lg-danger);
+}
+/* keep browser autofill from turning the field light */
+.lg-input:-webkit-autofill {
+  -webkit-text-fill-color: var(--lg-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--lg-surface) inset;
+  caret-color: var(--lg-text);
+}
+
+.lg-error { display: block; margin: 0; font-size: .82rem; font-weight: 500; color: var(--lg-danger); }
+
+/* show / hide password */
+.lg-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #94a3b8;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color .15s ease;
+}
+.lg-toggle svg { width: 18px; height: 18px; }
+.lg-toggle:hover { color: var(--lg-primary); }
+.lg-toggle .lg-eye-off { display: none; }
+.lg-toggle.is-on .lg-eye { display: none; }
+.lg-toggle.is-on .lg-eye-off { display: block; }
+
+/* remember me + forgot */
+.lg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: .15rem;
+}
+.lg-check {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--lg-text);
+  cursor: pointer;
+}
+.lg-check-input {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.lg-check-box {
+  position: relative;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 6px;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.lg-check-box::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform .12s ease;
+}
+.lg-check-input:checked + .lg-check-box { background: var(--lg-gradient); border-color: transparent; }
+.lg-check-input:checked + .lg-check-box::after { transform: rotate(45deg) scale(1); }
+.lg-check-input:focus-visible + .lg-check-box { outline: 2px solid var(--lg-focus); outline-offset: 2px; }
+
+.lg-forgot { font-size: .95rem; font-weight: 600; color: var(--lg-link); text-decoration: none; }
+.lg-forgot:hover { color: var(--lg-primary-dark); text-decoration: underline; }
+
+/* sign in pill */
+.lg-btn {
+  width: 100%;
+  min-height: 56px;
+  margin-top: .45rem;
+  padding: 0 1.25rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--lg-gradient);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px -6px rgba(0, 120, 220, .45);
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.lg-btn:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 12px 22px -6px rgba(0, 120, 220, .5); }
+.lg-btn:active { transform: translateY(0); }
+
+/* student search */
+.lg-link {
+  align-self: center;
+  margin-top: 1.5rem;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--lg-link);
+  text-decoration: none;
+}
+.lg-link:hover { color: var(--lg-primary-dark); text-decoration: underline; }
+
+.lg-btn:focus-visible,
+.lg-toggle:focus-visible,
+.lg-forgot:focus-visible,
+.lg-link:focus-visible { outline: 2px solid var(--lg-focus); outline-offset: 3px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .lg-page { padding: 1rem .75rem; }
+  .lg-card { padding: 2.1rem 1.5rem 1.75rem; }
+  .lg-title { font-size: 1.6rem; }
+  .lg-card::before { width: 220px; height: 220px; top: -110px; right: -110px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-card { animation: none; }
+  .lg-btn, .lg-input, .lg-toggle, .lg-check-box, .lg-check-box::after { transition: none; }
+  .lg-btn:hover { transform: none; }
+}
