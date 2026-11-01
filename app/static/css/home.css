@@ -20,6 +20,7 @@
   --hm-border: var(--border-light, #dbe5f1);
   --hm-text: var(--text-dark, #0f1b2d);
   --hm-muted: var(--medium-gray, #64748b);
+  --hm-ink: #0b2447;       /* headings: deep navy instead of pure black */
 
   /* shared sizes */
   --hm-radius: 22px;
@@ -74,13 +75,19 @@ body:has(.hm-page) {
   border: 0;
 }
 
-/* gradient accent word, used in two headings */
+/* accent words keep the heading colour; only "all in one place" gets the soft marker highlight */
 .hm-page em {
   font-style: normal;
-  background: var(--hm-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: inherit;
+}
+.hm-lead h2 em,
+.hm-cell h2 em {
+  padding: 0 .12em;
+  margin: 0 -.12em;
+  border-radius: .15em;
+  background: linear-gradient(transparent 60%, rgba(0, 190, 255, .3) 60% 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* ---------- Cells: one shared look ---------- */
@@ -123,7 +130,7 @@ body:has(.hm-page) {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   letter-spacing: -.01em;
-  color: var(--hm-text);
+  color: var(--hm-ink);
   text-wrap: balance;
 }
 .hm-cell h2 { font-size: 1.3rem; font-weight: 700; line-height: 1.3; }
@@ -238,7 +245,7 @@ body:has(.hm-page) {
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -.01em;
-  color: var(--hm-text);
+  color: var(--hm-ink);
   text-wrap: balance;
 }
 
@@ -371,7 +378,7 @@ body:has(.hm-page) {
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -.02em;
-  color: var(--hm-text);
+  color: var(--hm-ink);
   text-wrap: balance;
 }
 .hm-lead p {
