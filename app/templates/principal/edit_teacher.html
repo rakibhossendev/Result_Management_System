@@ -1,168 +1,173 @@
 {% extends "base/base.html" %}
 {% block title %}Teacher editing page{% endblock title %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/teachers.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_teacher.css') }}">
-
-<div class="et-page">
-
-    <!-- Top bar -->
-    <div class="et-top">
-        <div>
-            <h1 class="et-title">Edit Teacher</h1>
-            <p class="et-sub">Update this teacher's profile, institute, and account details.</p>
-        </div>
-        <a href="{{ url_for('edit_teacher.edit_teacher_view') }}" class="et-back">
-            <span>&larr;</span> Back to Teachers
-        </a>
-    </div>
-
-    <div class="et-card">
-        <form method="POST" class="et-form" novalidate>
-            {{ form.hidden_tag() }}
-
-            <!-- Section: Identity -->
-            <section class="et-section">
-                <header class="et-section-head">
-                    <span class="et-section-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.6 3-6 8-6s8 2.4 8 6"/>
-                        </svg>
-                    </span>
-                    <h2 class="et-section-title">Identity</h2>
-                </header>
-
-                <div class="et-row">
-                    <div class="et-field et-field-narrow">
-                        {{ form.teacher_id.label(class="et-label") }}
-                        {{ form.teacher_id(class="et-input") }}
-                    </div>
-                    <div class="et-field">
-                        {{ form.first_name.label(class="et-label") }}
-                        {{ form.first_name(class="et-input") }}
-                    </div>
-                    <div class="et-field">
-                        {{ form.last_name.label(class="et-label") }}
-                        {{ form.last_name(class="et-input") }}
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section: Institute -->
-            <section class="et-section">
-                <header class="et-section-head">
-                    <span class="et-section-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/>
-                        </svg>
-                    </span>
-                    <h2 class="et-section-title">Institute</h2>
-                </header>
-
-                <div class="et-row">
-                    <div class="et-field et-field-wide">
-                        {{ form.institute.label(class="et-label") }}
-                        {{ form.institute(class="et-input") }}
-                    </div>
-                    <div class="et-field">
-                        {{ form.institute_code.label(class="et-label") }}
-                        {{ form.institute_code(class="et-input") }}
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section: Contact -->
-            <section class="et-section">
-                <header class="et-section-head">
-                    <span class="et-section-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 6 9 7 9-7"/>
-                        </svg>
-                    </span>
-                    <h2 class="et-section-title">Contact</h2>
-                </header>
-
-                <div class="et-row">
-                    <div class="et-field">
-                        {{ form.phone.label(class="et-label") }}
-                        {{ form.phone(class="et-input") }}
-                    </div>
-                    <div class="et-field">
-                        {{ form.email.label(class="et-label") }}
-                        {{ form.email(class="et-input") }}
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section: Account -->
-            <section class="et-section et-section-last">
-                <header class="et-section-head">
-                    <span class="et-section-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-                        </svg>
-                    </span>
-                    <h2 class="et-section-title">Account</h2>
-                </header>
-
-                <div class="et-row">
-                    <div class="et-field et-field-wide">
-                        {{ form.username.label(class="et-label") }}
-                        {{ form.username(class="et-input") }}
-                    </div>
-                </div>
-
-                <div class="et-row">
-                    <div class="et-field">
-                        {{ form.password.label(class="et-label") }}
-                        <div class="et-pass-wrap">
-                            {{ form.password(class="et-input", id="et-password") }}
-                            <button type="button" class="et-pass-toggle" data-target="et-password" aria-label="Show password">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="et-field">
-                        {{ form.retype_password.label(class="et-label") }}
-                        <div class="et-pass-wrap">
-                            {{ form.retype_password(class="et-input", id="et-retype-password") }}
-                            <button type="button" class="et-pass-toggle" data-target="et-retype-password" aria-label="Show password">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <p class="et-hint">Leave both password fields blank to keep the current password.</p>
-            </section>
-
-            <div class="et-actions">
-                <a href="{{ url_for('view_teachers.view_teachers') }}" class="et-cancel">Cancel</a>
-                {{ form.submit(class="et-submit") }}
-            </div>
-
-        </form>
-    </div>
-
+{# One form field: label, leading icon, optional show/hide button, errors #}
+{% macro field(f, icon=None, full=False, auto=None, ph=None, toggle=False) -%}
+{% set cls = 'tp-input' ~ (' tp-input-error' if f.errors else '') ~ (' has-icon' if icon else '') ~ (' has-toggle' if toggle else '') %}
+{% set kw = {'class_': cls} %}
+{% if auto %}{% set _ = kw.update({'autocomplete': auto}) %}{% endif %}
+{% if ph %}{% set _ = kw.update({'placeholder': ph}) %}{% endif %}
+<div class="tp-field{{ ' tp-field-full' if full }}">
+  <label class="tp-label" for="{{ f.id }}">{{ f.label.text }}{% if f.flags.required %}<span class="tp-req" aria-hidden="true">*</span>{% endif %}</label>
+  <div class="tp-control">
+    {% if icon %}<svg class="tp-icon" aria-hidden="true"><use href="#tp-i-{{ icon }}"/></svg>{% endif %}
+    {{ f(**kw) }}
+    {% if toggle %}
+    <button type="button" class="tp-toggle" aria-label="Show password" aria-pressed="false">
+      <svg class="tp-eye" aria-hidden="true"><use href="#tp-i-eye"/></svg>
+      <svg class="tp-eye-off" aria-hidden="true"><use href="#tp-i-eyeoff"/></svg>
+    </button>
+    {% endif %}
+  </div>
+  {% for err in f.errors %}<span class="tp-error">{{ err }}</span>{% endfor %}
 </div>
+{%- endmacro %}
 
+<!-- Icons used on this page -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="tp-i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="tp-i-edit" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></symbol>
+    <symbol id="tp-i-id" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.5 1.7-2 3-2s2.4.5 3 2M14 10h4M14 14h4"/></symbol>
+    <symbol id="tp-i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+    <symbol id="tp-i-building" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/></symbol>
+    <symbol id="tp-i-hash" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14M10 3L8 21M16 3l-2 18"/></symbol>
+    <symbol id="tp-i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+    <symbol id="tp-i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+    <symbol id="tp-i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="tp-i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="tp-i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.9 10.9 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/></symbol>
+  </defs>
+</svg>
+
+{% set full_name = ((form.first_name.data or '') ~ ' ' ~ (form.last_name.data or ''))|trim %}
+{% set initials = ((form.first_name.data or '')[:1] ~ (form.last_name.data or '')[:1])|upper %}
+
+<main class="tp-page tp-page--narrow">
+
+  <!-- Header -->
+  <header class="tp-head">
+    <div class="tp-head-left">
+      <span class="tp-head-icon" aria-hidden="true"><svg><use href="#tp-i-edit"/></svg></span>
+      <div>
+        <h1 class="tp-title">Edit Teacher</h1>
+        <p class="tp-sub">Update this teacher's profile, institute, and account details.</p>
+      </div>
+    </div>
+    <a href="{{ url_for('edit_teacher.edit_teacher_view') }}" class="tp-btn tp-btn-ghost">
+      <svg aria-hidden="true"><use href="#tp-i-back"/></svg>Back to Teachers
+    </a>
+  </header>
+
+  <!-- Form card -->
+  <div class="tp-card">
+
+    <!-- Who is being edited -->
+    <div class="tp-profile">
+      <span class="tp-avatar tp-avatar-lg" aria-hidden="true">{{ initials or 'T' }}</span>
+      <div class="tp-profile-text">
+        <p class="tp-profile-name">{{ full_name or 'Teacher' }}</p>
+        {% if form.teacher_id.data %}<span class="tp-id">ID: {{ form.teacher_id.data }}</span>{% endif %}
+      </div>
+      <span class="tp-editing">Editing</span>
+    </div>
+
+    <form method="POST" class="tp-form" novalidate>
+      {{ form.hidden_tag() }}
+
+      <!-- 1. Identity -->
+      <section class="tp-step">
+        <div class="tp-rail"><span class="tp-num">1</span></div>
+        <div class="tp-step-body">
+          <h2 class="tp-step-title">Identity</h2>
+          <p class="tp-step-sub">Who is the teacher?</p>
+          <div class="tp-grid">
+            {{ field(form.teacher_id, icon='id', full=True) }}
+            {{ field(form.first_name, icon='user') }}
+            {{ field(form.last_name, icon='user') }}
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Institute -->
+      <section class="tp-step">
+        <div class="tp-rail"><span class="tp-num">2</span></div>
+        <div class="tp-step-body">
+          <h2 class="tp-step-title">Institute</h2>
+          <p class="tp-step-sub">Where do they teach?</p>
+          <div class="tp-grid">
+            {{ field(form.institute, icon='building') }}
+            {{ field(form.institute_code, icon='hash') }}
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Contact -->
+      <section class="tp-step">
+        <div class="tp-rail"><span class="tp-num">3</span></div>
+        <div class="tp-step-body">
+          <h2 class="tp-step-title">Contact</h2>
+          <p class="tp-step-sub">How can they be reached?</p>
+          <div class="tp-grid">
+            {{ field(form.phone, icon='phone', auto='tel') }}
+            {{ field(form.email, icon='mail', auto='email') }}
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Account -->
+      <section class="tp-step">
+        <div class="tp-rail"><span class="tp-num">4</span></div>
+        <div class="tp-step-body">
+          <h2 class="tp-step-title">Account</h2>
+          <p class="tp-step-sub">Sign-in details. Leave both password fields blank to keep the current password.</p>
+          <div class="tp-grid">
+            {{ field(form.username, icon='user', full=True, auto='username') }}
+            {{ field(form.password, icon='lock', auto='new-password', toggle=True) }}
+            {{ field(form.retype_password, icon='lock', auto='new-password', toggle=True) }}
+          </div>
+        </div>
+      </section>
+
+      <div class="tp-form-actions">
+        <a href="{{ url_for('view_teachers.view_teachers') }}" class="tp-btn tp-btn-ghost">Cancel</a>
+        {{ form.submit(class="tp-btn tp-btn-primary") }}
+      </div>
+    </form>
+
+  </div>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".et-pass-toggle").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-            const input = document.getElementById(btn.dataset.target);
-            if (!input) return;
-            const showing = input.type === "text";
-            input.type = showing ? "password" : "text";
-            btn.classList.toggle("is-active", !showing);
-            btn.setAttribute("aria-label", showing ? "Show password" : "Hide password");
-        });
+  document.addEventListener('DOMContentLoaded', function () {
+    // Show / hide password
+    document.querySelectorAll('.tp-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var input = btn.parentNode.querySelector('input');
+        if (!input) return;
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.classList.toggle('is-on', show);
+        btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
     });
-});
-</script>
 
+    // Clear a red field as soon as the user edits it
+    document.querySelectorAll('.tp-input').forEach(function (input) {
+      input.addEventListener('input', function () { input.classList.remove('tp-input-error'); });
+    });
+  });
+</script>
 {% endblock %}

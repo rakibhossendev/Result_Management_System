@@ -10,10 +10,21 @@
 {% block content %}
   <main class="hm-page">
 
-    <div class="hm-bento">
+    <div class="hm-landing">
 
-      <!-- Search (big cell) -->
-      <div class="hm-cell hm-search">
+      <!-- Hero: intro text + search -->
+      <section class="hm-hero">
+        <div class="hm-lead">
+          <h2>Your results, <em>all in one place</em></h2>
+          <p>Look up your academic results with just a roll number and see your performance details instantly. Results appear here as soon as your school publishes them.</p>
+          <ol class="hm-steps">
+          <li><span>1</span>Enter roll number</li>
+          <li><span>2</span>Search</li>
+          <li><span>3</span>View result</li>
+        </ol>
+        </div>
+
+        <div class="hm-cell hm-search">
 
         <!-- Illustration: result sheet + magnifier -->
         <svg class="hm-illo" viewBox="0 0 210 150" aria-hidden="true">
@@ -42,7 +53,6 @@
           </g>
           <g transform="translate(26 34)"><path class="hm-spark" d="M0-7L2-2 7 0 2 2 0 7-2 2-7 0-2-2z" fill="#00d0ff"/></g>
           <g transform="translate(191 80)"><path class="hm-spark sp2" d="M0-6L1.7-1.7 6 0 1.7 1.7 0 6-1.7 1.7-6 0-1.7-1.7z" fill="#049fe8"/></g>
-          <g transform="translate(18 88)"><circle class="hm-spark sp3" r="3.2" fill="#0361cc"/></g>
         </svg>
 
         <h1 class="hm-title">Find your <em>result</em></h1>
@@ -80,47 +90,42 @@
 
         <a href="{{ url_for('login.login') }}" class="hm-link">Staff sign in</a>
       </div>
-
-      <!-- Feature cells -->
-      <article class="hm-cell hm-f1">
-        <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
-        <h3>Search by roll number</h3>
-        <p>Find your result in seconds.</p>
-        <svg class="hm-wm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      </article>
-
-      <article class="hm-cell hm-f2">
-        <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span>
-        <h3>View your performance</h3>
-        <p>Marks, grades and overall result.</p>
-        <svg class="hm-wm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>
-      </article>
-
-      <article class="hm-cell hm-f3">
-        <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
-        <div>
-          <h3>Instant access</h3>
-          <p>No sign-up needed. Open the page, search, and you are done.</p>
-        </div>
-        <svg class="hm-wm" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
-      </article>
-
-      <!-- About + help -->
-      <section class="hm-cell hm-intro">
-        <h2><em>Your results, all in one place</em></h2>
-        <p>The Result Management System lets students look up their academic results with just a roll number and see their performance details instantly. Results appear here as soon as your school publishes them.</p>
-        <ol class="hm-steps">
-          <li><span>1</span>Enter roll number</li>
-          <li><span>2</span>Search</li>
-          <li><span>3</span>View result</li>
-        </ol>
       </section>
 
-      <aside class="hm-cell hm-help">
-        <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/></svg></span>
-        <h3>Need help?</h3>
-        <p><a href="mailto:support@example.com">support@example.com</a></p>
-      </aside>
+      <!-- Strip: features + help -->
+      <div class="hm-strip">
+        <article class="hm-cell hm-vert hm-f1">
+          <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
+          <div class="hm-text">
+            <h3>Search by roll number</h3>
+            <p>Find your result in seconds.</p>
+          </div>
+        </article>
+
+      <article class="hm-cell hm-vert hm-f2">
+          <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span>
+          <div class="hm-text">
+            <h3>View your performance</h3>
+            <p>Marks, grades and overall result.</p>
+          </div>
+        </article>
+
+      <article class="hm-cell hm-vert hm-f3">
+          <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
+          <div class="hm-text">
+            <h3>Instant access</h3>
+            <p>No sign-up needed. Just search.</p>
+          </div>
+        </article>
+
+        <aside class="hm-cell hm-vert hm-help">
+          <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/></svg></span>
+          <div class="hm-text">
+            <h3>Need help?</h3>
+            <p><a href="mailto:support@example.com">support@example.com</a></p>
+          </div>
+        </aside>
+      </div>
 
     </div>
 
