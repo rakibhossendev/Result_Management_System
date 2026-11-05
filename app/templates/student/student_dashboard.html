@@ -1,86 +1,172 @@
 {% extends 'base/base.html' %}
 {% block title %}Student Dashboard{% endblock %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/student/student_dashboard.css') }}">
 {% endblock %}
+
 {% block content %}
-<div class="page-header">
-    <div class="page-header-left">
-        <div class="page-header-avatar">{{ student_data.student_full_name[0]|upper if student_data.student_full_name else "S" }}</div>
-        <div>
-            <p class="page-header-greeting">Good day,</p>
-            <h4 class="page-header-title">Student Dashboard</h4>
+{% set initial = (student_data.student_full_name[:1]|upper) if student_data.student_full_name else 'S' %}
+
+<div class="sd-page">
+
+    <!-- TOP BAR -->
+    <header class="sd-bar">
+        <div class="sd-bar-inner">
+            <div class="sd-bar-left">
+                <span class="sd-brand" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 10v6"/>
+                    </svg>
+                </span>
+                <div>
+                    <p class="sd-bar-greeting" id="sd-greeting">Good day,</p>
+                    <h1 class="sd-bar-title">Student Dashboard</h1>
+                </div>
+            </div>
+            <div class="sd-bar-right">
+                <span class="sd-role">Student</span>
+                <a href="{{ url_for('login.logout') }}" class="sd-out" aria-label="Sign out">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>
+                    </svg>
+                    <span class="sd-out-text">Sign out</span>
+                </a>
+            </div>
         </div>
-    </div>
-    <div class="page-header-right">
-        <span class="role-badge">Student</span>
-        <a href="{{ url_for('login.logout') }}" class="btn-outline-pill">Sign out</a>
-    </div>
+    </header>
+
+    <main class="sd-wrap">
+
+        <!-- PROFILE PANEL -->
+        <section class="sd-panel" aria-label="Student profile">
+            <div class="sd-profile">
+                <div class="sd-avatar" aria-hidden="true">{{ initial }}</div>
+                <div class="sd-profile-text">
+                    <p class="sd-hero-label">Welcome back</p>
+                    <h2 class="sd-hero-name">{{ student_data.student_full_name }}</h2>
+                </div>
+            </div>
+
+            <ul class="sd-facts">
+                <li class="sd-fact">
+                    <span class="sd-fact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.5 1.7-2 3-2s2.4.5 3 2M14 10h4M14 14h4"/>
+                        </svg>
+                    </span>
+                    <span class="sd-fact-text">
+                        <span class="sd-fact-label">Roll</span>
+                        <span class="sd-fact-value">{{ student_data.student_roll }}</span>
+                    </span>
+                </li>
+                <li class="sd-fact">
+                    <span class="sd-fact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                    </span>
+                    <span class="sd-fact-text">
+                        <span class="sd-fact-label">Semester</span>
+                        <span class="sd-fact-value">{{ student_data.semester }}</span>
+                    </span>
+                </li>
+                <li class="sd-fact">
+                    <span class="sd-fact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>
+                        </svg>
+                    </span>
+                    <span class="sd-fact-text">
+                        <span class="sd-fact-label">Group</span>
+                        <span class="sd-fact-value">{{ student_data.group }}</span>
+                    </span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- QUICK ACCESS -->
+        <div class="sd-main">
+            <div class="sd-section-head">
+                <h2 class="sd-section-title">Quick access</h2>
+                <p class="sd-section-sub">Jump straight to your records.</p>
+            </div>
+
+            <div class="sd-cards">
+
+                <!-- Marks -->
+                <a href="{{ url_for('subjects_marks.subjects_marks') }}" class="sd-card sd-card-marks">
+                    <span class="sd-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span class="sd-card-text">
+                        <span class="sd-card-title">Your marks</span>
+                        <span class="sd-card-sub">Results for every subject</span>
+                    </span>
+                    <span class="sd-card-go" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </span>
+                </a>
+
+                <!-- Attendance -->
+                <a href="{{ url_for('student_attendance.attendance') }}" class="sd-card sd-card-attendance">
+                    <span class="sd-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M3 10H21" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8 3V7M16 3V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M8 14L10.5 16.5L16 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span class="sd-card-text">
+                        <span class="sd-card-title">Attendance</span>
+                        <span class="sd-card-sub">Your daily record</span>
+                    </span>
+                    <span class="sd-card-go" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </span>
+                </a>
+
+                <!-- CGPA -->
+                <a href="{{ url_for('view_cgpa.view_cgpa') }}" class="sd-card sd-card-cgpa">
+                    <span class="sd-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20V10M18 20V4M6 20V14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span class="sd-card-text">
+                        <span class="sd-card-title">CGPA</span>
+                        <span class="sd-card-sub">Your overall score</span>
+                    </span>
+                    <span class="sd-card-go" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14M13 6l6 6-6 6"/>
+                        </svg>
+                    </span>
+                </a>
+
+            </div>
+        </div>
+
+    </main>
+
 </div>
-<div class="dash-wrap">
+{% endblock %}
 
-    <!-- Welcome banner -->
-    <div class="welcome-banner">
-        <div class="welcome-top">
-            <div class="avatar">{{ student_data.student_full_name[0]|upper if student_data.student_full_name else "S" }}</div>
-            <div>
-                <p class="welcome-label">Welcome back</p>
-                <h3 class="welcome-name">{{ student_data.student_full_name }}</h3>
-            </div>
-        </div>
-        <div class="stat-chips">
-            <div class="chip">
-                <span class="chip-label">Roll</span>
-                <span class="chip-value">{{ student_data.student_roll }}</span>
-            </div>
-            <div class="chip">
-                <span class="chip-label">Semester</span>
-                <span class="chip-value">{{ student_data.semester }}</span>
-            </div>
-            <div class="chip">
-                <span class="chip-label">Group</span>
-                <span class="chip-value">{{ student_data.group }}</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick access -->
-    <p class="section-label">Quick access</p>
-    <div class="link-grid">
-
-        <a href="{{ url_for('subjects_marks.subjects_marks') }}" class="link-card link-marks">
-            <div class="link-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <p class="link-title">Your marks</p>
-            <p class="link-sub">Subject results</p>
-        </a>
-
-        <a href="{{ url_for('student_attendance.attendance') }}" class="link-card link-attendance">
-            <div class="link-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                    <path d="M3 10H21" stroke="currentColor" stroke-width="1.8"/>
-                    <path d="M8 3V7M16 3V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                    <path d="M8 14L10.5 16.5L16 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <p class="link-title">Attendance</p>
-            <p class="link-sub">Daily record</p>
-        </a>
-
-        <a href="{{ url_for('view_cgpa.view_cgpa') }}" class="link-card link-cgpa">
-            <div class="link-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 20V10M18 20V4M6 20V14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <p class="link-title">CGPA</p>
-            <p class="link-sub">Overall score</p>
-        </a>
-
-    </div>
-</div>
+{% block extra_js %}
+<script>
+  // Time-based greeting in the top bar
+  (function () {
+    var el = document.getElementById('sd-greeting');
+    if (!el) return;
+    var h = new Date().getHours();
+    el.textContent = (h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening') + ',';
+  })();
+</script>
 {% endblock %}
