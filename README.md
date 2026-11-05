@@ -1,220 +1,570 @@
 # Result Management System
 
-A College result management system built with Flask. This application implements four user roles (Admin, Principal, Teacher, Student) and provides administrative workflows for managing principals, teachers, departments, subjects, students, attendance, and marks topics.
+A role-based academic management system built with **Python, Flask, and SQLAlchemy**, designed to improve how Polytechnic institutions in Bangladesh manage academic information and how students access their results.
 
-## Overview
+**Live Application:** [Result Management System](https://result-management-system-theta.vercel.app/)
 
-The project is a Flask-based web application organized with Blueprints and SQLAlchemy models. It is designed to support:
+**Test Student Roll:** `322112`
 
-- Admin dashboard to manage principals
-- Principal dashboard to manage teachers, departments, subjects, and curriculum
-- Teacher dashboard to manage students, attendance, and marks topics
-- Session-based login with role-aware navigation
+---
 
-> Note: This project is currently incomplete and requires additional refinement. The README is based on the current code state.
+## About The Project
 
-## Technology Stack
+When I joined Polytechnic, I noticed a practical problem: Polytechnic students in Bangladesh have very limited options for accessing detailed academic results.
+
+Usually, students receive their semester results as PDF files containing only their CGPA, without a convenient way to explore subject-wise marks, attendance, or other academic information.
+
+Since I had been learning programming since Class 9, I started thinking about how this problem could be solved with software.
+
+That idea became the foundation of this Result Management System.
+
+Initially, I started building the application using the technologies I knew at that time: HTML, CSS, JavaScript, Bootstrap, Flask, SQLAlchemy, and SQL.
+
+As the application grew, I encountered real-world challenges involving application architecture, authentication, authorization, database design, data security, and team collaboration.
+
+This project gradually evolved into a role-based academic management system with four user roles:
+
+**Admin → Principal → Teacher → Student**
+
+Each role has specific responsibilities and access permissions, keeping academic operations organized and controlled.
+
+---
+
+## Key Features
+
+- Four-level role-based access control (RBAC).
+- Hierarchical account creation and management.
+- Department, subject, and semester management.
+- Teacher assignment and academic access restrictions.
+- Student management.
+- Attendance management.
+- Topic-based marks management.
+- CGPA updates through PDF uploads.
+<!-- - AI-powered student information assistant. -->
+- Session-based authentication.
+- Password hashing for improved account security.
+- Role-specific dashboards and navigation.
+
+---
+
+# User Roles & Features
+
+## 1. Student Features
+
+Students are the primary beneficiaries of this system. The application aims to make academic information more accessible and organized.
+
+- **CGPA Information:** Access the latest CGPA information processed from uploaded result PDFs.
+- **Roll-Based Identification:** Student records are associated with their unique roll numbers.
+- **Academic Information:** Student academic records are maintained within the system.
+- **Result Accessibility:** Reduces dependence on manually searching through PDF result files.
+
+*Note: The availability of individual student dashboard features depends on the current implementation.*
+
+## 2. Teacher Features
+
+Teachers are responsible for managing student records and academic activities within their assigned academic scope.
+
+### Student Management
+- Add new students.
+- View student lists.
+- Manage student information.
+- Organize students according to assigned academic groups.
+
+### Attendance Management
+- Record student attendance.
+- Save attendance records.
+- Manage attendance for assigned students.
+
+### Marks Management
+- Create and manage assessment topics.
+- Organize marks according to individual assessment categories.
+- Maintain structured academic assessment information.
+
+For example, a Python Programming subject may contain:
+
+| Assessment Topic | Marks |
+|---|---:|
+| Mid Term | 20 |
+| Lab Report | 10 |
+| Other Assessments | As configured |
+
+<!-- ### AI Assistant
+- Ask questions about student information using natural language.
+- Retrieve student details using roll numbers.
+- Query available academic information.
+- Ask questions such as:
+  - "Tell me about student 322053."
+  - "What's the CGPA for student 322056?"
+  - "What's the attendance for group B?"
+
+The AI assistant uses the Mistral API to process natural-language questions. -->
+
+### Academic Access Control
+- Teachers are assigned to specific departments, subjects, and semesters.
+- Access to student and academic data is restricted according to their assignments.
+
+## 3. Principal Features
+
+Principals manage the academic structure and teaching staff of their respective institutions.
+
+### Teacher Management
+- Create teacher accounts.
+- View registered teachers.
+- Edit teacher profiles.
+- Delete teacher accounts.
+- Manage teacher information.
+
+### Department Management
+- Create departments.
+- View department information.
+- Manage academic departments.
+
+### Subject Management
+- Add new subjects.
+- View available subjects.
+- Assign subjects to departments.
+- Associate subjects with specific semesters.
+
+### Academic Structure
+- Select an institutional shift (Morning or Day).
+- Organize departments, subjects, and semesters.
+- Manage the academic structure required for teacher assignments.
+
+### Controlled Account Management
+- Create teacher accounts under the principal's authority.
+- Maintain control over teacher account creation.
+- Keep teacher management within the institutional hierarchy.
+
+## 4. Admin Features
+
+The Admin has the highest level of administrative control over the application.
+
+### Principal Management
+- Create new principal accounts.
+- View all principals.
+- Edit principal profiles.
+- Delete principal accounts.
+
+### CGPA Management
+- Upload official Polytechnic result PDF files.
+- Process student result information from uploaded PDFs.
+- Match result records using student roll numbers.
+- Update students' CGPA information.
+
+This feature was introduced to solve a practical problem: students often receive their results in PDF format, so manually entering every student's CGPA would be unnecessarily time-consuming.
+
+Instead, the Admin can upload the result PDF, and the application processes the available information.
+
+---
+
+# How The System Works
+
+The application follows a controlled hierarchical workflow.
+
+```text
+                 ADMIN
+                   |
+          Creates Principals
+                   |
+                   v
+                PRINCIPAL
+                   |
+       +-----------+-----------+
+       |           |           |
+   Departments  Subjects   Teachers
+                   |
+                   v
+                TEACHER
+                   |
+          +--------+--------+
+          |        |        |
+       Students Attendance Marks Topics
+          |
+          v
+        STUDENT
+          |
+    Academic Information
+       & CGPA
+```
+
+### Step 1: Admin Creates Principals
+
+The Admin logs into the administrative dashboard and creates Principal accounts.
+
+This prevents unrestricted public registration of institutional administrators.
+
+### Step 2: Principal Organizes Academic Structure
+
+After logging in, the Principal selects an institutional shift and manages:
+
+- Departments
+- Subjects
+- Semesters
+- Teachers
+
+Subjects are associated with their respective departments and semesters.
+
+### Step 3: Teachers Manage Students
+
+Teachers receive accounts from their respective Principals.
+
+They can then add students and manage academic activities within their assigned departments, subjects, and semesters.
+
+### Step 4: Teachers Manage Academic Records
+
+Teachers maintain attendance records and organize assessment topics.
+
+For example, instead of treating all marks as a single value, the system can organize assessments into individual topics such as Mid Term and Lab Report.
+
+### Step 5: Admin Updates CGPA
+
+The Admin uploads official result PDFs.
+
+The application processes the result information and updates student CGPA records using roll numbers.
+
+### Step 6: Students Access Academic Information
+
+Students are identified through their roll numbers, and their academic information is maintained in the system.
+
+---
+
+# Authentication & Authorization
+
+One of the biggest architectural challenges was designing a secure account creation process.
+
+Initially, I considered allowing users to register themselves. However, unrestricted registration could result in fake or unauthorized institutional accounts.
+
+To address this problem, I implemented a controlled account hierarchy:
+
+- Admin creates Principal accounts.
+- Principal creates Teacher accounts.
+- Teachers create and manage Student records.
+
+This approach keeps account creation under institutional control.
+
+### Role-Based Access Control
+
+Authentication alone is not enough to protect an academic management system.
+
+A Teacher should not be able to access or modify another department's academic information.
+
+To address this, teachers are associated with specific:
+
+- Departments
+- Subjects
+- Semesters
+
+The application uses these assignments to restrict access to relevant student records and academic information.
+
+This was one of the most important lessons I learned while developing this project: **Authorization and data-level access control are just as important as authentication.**
+
+### Password Security
+
+Initially, passwords were stored in plain text. Later, I improved the authentication system by implementing password hashing using Werkzeug security utilities.
+
+---
+
+# AI-Powered Academic Assistant
+
+The project includes an AI assistant that allows teachers to interact with available student information through natural-language questions.
+
+**Technology:** Mistral API
+
+Example queries:
+
+- Tell me about student 322053.
+- What's the CGPA for student 322056?
+- What's the attendance for group B?
+
+The goal is to make academic information easier to retrieve without requiring teachers to manually navigate multiple pages.
+
+<!-- ### AI Assistant Setup
+
+1. Create an API key from [Mistral Console](https://console.mistral.ai/).
+2. Create a `.env` file in the project root.
+3. Add your API key:
+
+```env
+MISTRAL_API_KEY=your-mistral-api-key
+```
+
+4. Restart the application.
+
+The AI assistant can be accessed by an authenticated teacher through:
+
+```text
+http://localhost:5000/ask
+```
+
+--- -->
+
+# Technology Stack
+
+| Category | Technologies |
+|---|---|
+| Language | Python, JavaScript |
+| Backend | Flask |
+| Database ORM | SQLAlchemy, Flask-SQLAlchemy |
+| Database | SQLite |
+| Frontend | HTML, CSS, JavaScript |
+| UI Framework | Bootstrap |
+| Forms & Validation | Flask-WTF, WTForms |
+| Authentication | Flask Sessions, Werkzeug Security |
+| AI Integration | Mistral API |
+| Version Control | Git, GitHub |
+
+---
+
+# Project Structure
+
+```text
+Result_Management_System/
+│
+├── app/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── extensions.py
+│   │
+│   ├── models/
+│   │   ├── admin.py
+│   │   ├── principal.py
+│   │   ├── teacher.py
+│   │   ├── student.py
+│   │   ├── department.py
+│   │   ├── subject.py
+│   │   └── ...
+│   │
+│   ├── routes/
+│   │   ├── auth/
+│   │   ├── admin/
+│   │   ├── principal/
+│   │   ├── teacher/
+│   │   └── ...
+│   │
+│   └── utils/
+│
+├── templates/
+│
+├── static/
+│   ├── css/
+│   └── js/
+│
+├── instance/
+│
+├── requirements.txt
+├── run.py
+├── import_students.sql
+└── README.md
+```
+
+---
+
+# Installation & Local Setup
+
+Follow these steps to run the project on your local machine.
+
+### Prerequisites
+
+Make sure you have installed:
 
 - Python 3
-- Flask
-- Flask SQLAlchemy
-- Flask-WTF / WTForms
-- SQLite (default)
+- pip
+- Git
 
-## Installation
+### 1. Clone the Repository
 
-1. Create a Python virtual environment:
+```bash
+git clone https://github.com/rakibhossendev/Result_Management_System.git
+```
+
+Navigate into the project directory:
+
+```bash
+cd Result_Management_System
+```
+
+### 2. Create a Virtual Environment
 
 ```bash
 python3 -m venv venv
+```
+
+### 3. Activate the Virtual Environment
+
+**Linux / macOS:**
+
+```bash
 source venv/bin/activate
 ```
 
-2. Install dependencies:
+**Windows (Command Prompt):**
+
+```cmd
+venv\Scripts\activate
+```
+
+**Windows (PowerShell):**
+
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+### 4. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-> Important: The current `requirements.txt` file does not list all code dependencies. Add the following packages if missing:
->
-> - `Flask-WTF`
-> - `WTForms`
-> - `Flask-SQLAlchemy`
->
-> Then run:
->
-> ```bash
-> pip install Flask-WTF WTForms Flask-SQLAlchemy
-> ```
+If any required dependencies are missing from `requirements.txt`, install them manually:
 
-3. Run the app:
+```bash
+pip install Flask Flask-SQLAlchemy Flask-WTF WTForms python-dotenv
+```
+
+<!-- ### 5. Configure Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+SECRET_KEY=your-secret-key
+DATABASE_URL=sqlite:///database.db
+MISTRAL_API_KEY=your-mistral-api-key
+``` -->
+
+The Mistral API key is required only if you want to use the AI assistant.
+
+Make sure the configuration in `app/config.py` reads the environment variables correctly.
+
+### 5. Run the Application
 
 ```bash
 python run.py
 ```
 
-The app creates the database automatically when started.
+The application initializes the database automatically when started, according to its configured database setup.
 
-## Configuration
+### 6. Open the Application
 
-Configuration is loaded from `app/config.py`.
+Visit:
 
-- `SECRET_KEY`: used for session security
-- `SQLALCHEMY_DATABASE_URI`: database connection string
-
-Default values are:
-
-- `SECRET_KEY = 'your-secret-key'`
-- `SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'`
-
-For production, set environment variables:
-
-```bash
-export SECRET_KEY='your-secret-key'
-export DATABASE_URL='sqlite:///database.db'
-```
-
-## Run the Application
-
-Start the server with:
-
-```bash
-python run.py
-```
-
-Then visit:
-
-- `http://127.0.0.1:5000/` for the home page
-- `http://127.0.0.1:5000/login` for login
-
-## Default Login
-
-The app currently uses a hard-coded admin account in `app/routes/auth/login.py`:
-
-- username: `admin`
-- password: `admin123`
-
-Principal and teacher users must be created from the admin and principal dashboards.
-
-## User Roles and Flows
-
-### Admin
-
-- Login with the default admin account
-- Add new principals
-- View principals
-- Edit principal profile
-- Delete principals
-
-### Principal
-
-- Login after being created by the admin
-- Select a shift (Morning or Day)
-- Add teachers
-- View teachers
-- Edit or delete teachers
-- Manage departments
-- Add subjects
-- Assign subjects to departments and semesters
-- View departments and subjects
-
-### Teacher
-
-- Login after being created by a principal
-- Add students
-- View student lists
-- Record and save attendance
-- Manage marks topics
-
-## Project Structure
-
-Key files and directories:
-
-- `run.py` — application entrypoint
-- `app/__init__.py` — Flask app factory and Blueprint registration
-- `app/config.py` — configuration settings
-- `app/extensions.py` — SQLAlchemy initialization
-- `app/models/` — database models for Admin, Principal, Teacher, Student, Departments, Subjects, Curriculum, Attendance, and Marks Topics
-- `app/routes/` — blueprint route handlers split by role
-- `app/utils/` — form definitions
-- `templates/` — HTML templates for each role
-- `static/` — CSS and JS assets
-
-## How To Use The AI Features
-
-The app includes an AI assistant that helps teachers query student data through conversation (e.g., "Show me student 322053's details" or "What's the attendance for group B?").
-
-### Setup (One-time)
-
-1. **Get a Mistral API key** (free):
-   - Visit [console.mistral.ai](https://console.mistral.ai)
-   - Sign up, go to **API Keys**, click **Create API Key**, and copy it
-
-2. **Create `.env` file** in your project root (same folder as `run.py`):
-   ```
-   MISTRAL_API_KEY=your-key-here
-   ```
-
-### Using the Assistant
-
-1. Start the app: `python run.py`
-2. Log in as a teacher
-3. Visit `http://localhost:5000/ask`
-4. Ask questions like:
-   - "Tell me about student 322053"
-   - "What's the CGPA for student 322056?"
-
-### Troubleshooting
-
-| Error | Fix |
-|-------|-----|
-| "MISTRAL_API_KEY is not set" | Check your `.env` file exists and has the correct key |
-| "401 Unauthorized" | Your API key is wrong; regenerate it at console.mistral.ai |
-| "student not found" | Make sure the student exists in your teacher's class. And log in as the teacher. |
-
-## Adding Sample Students For Testing Purpose
-
-- Make a teacher with ID 01 and make sure your principal ID is 2006
-- run `sqlite3 instance/database.db < import_students.sql` in your terminal
-
-The shell command will load 45 students in the database. Now you can test AI features with this data or test the software.
-
-## Known Issues and Review Notes
-
-The current code contains some areas to improve before final release:
-
-- Passwords are stored in plain text. Add password hashing with `werkzeug.security.generate_password_hash` and `check_password_hash`. - Problem Solved ✅
-- Authentication logic in `app/routes/auth/login.py` is not fully robust and mixes principal and teacher login flows incorrectly.
-- `requirements.txt` is incomplete and should include `Flask-WTF`, `WTForms`, and `Flask-SQLAlchemy`.
-- Session management uses `session["temp_principal_id"]` and `session["principal_id"]`; verify principal/teacher workflows carefully.
-- No unit tests are included.
-
-## Future Improvements
-
-- Add password hashing and stronger authentication - Done ✅
-- Add input validation and error handling for all routes
-- Create a proper registration flow for principals, teachers, and students
-- Add a student-facing view for marks and attendance records
-- Add tests for models, forms, and routes
-- Add deployment instructions and production configuration
-
-## Contribution
-
-Once the project is complete, update this README with:
-
-- full dependency list
-- installation and usage steps for production
-- new feature descriptions
-- testing commands
-- deployment guide
+- Home: http://127.0.0.1:5000/
+- Login: http://127.0.0.1:5000/login
 
 ---
 
-This document was created from the current project implementation and is ready to be updated as the app evolves.
+# Testing The Application
 
-## Authors
+You can explore the deployed application using the following student test roll:
 
-- Rakib Hossen
-- Aronno Rahman Arpa
+**Test Student Roll:** `322112`
+
+**Live Application:** [Open Result Management System](https://result-management-system-theta.vercel.app/)
+
+*Note: A student roll number is not a login password. Use the credentials and login flow configured by the application.*
+
+---
+
+# Import Sample Students (Optional)
+
+For local testing, you can import sample student records using the provided SQL file.
+
+Before importing, make sure:
+
+- A Teacher with ID `01` exists.
+- The Principal ID is `2006`.
+- The SQLite database has been initialized.
+
+Run:
+
+```bash
+sqlite3 instance/database.db < import_students.sql
+```
+
+This imports 45 sample student records into the database.
+
+---
+
+# Challenges & Lessons Learned
+
+Building this application was one of my biggest learning experiences.
+
+I started the project without a complete understanding of application architecture, security, scalability, or modern web development practices.
+
+During development, I learned about:
+
+- Application Architecture and Flask Blueprints
+- Authentication and Authorization
+- Role-Based Access Control (RBAC)
+- Database Design and Relationships
+- Data-Level Access Restrictions
+- Session Management
+- Password Hashing
+- Academic Data Management
+- Requirements Analysis
+- PDF-Based Data Processing
+- AI API Integration
+- Team Collaboration
+- Real-World Problem Solving
+
+I also learned that building a large application is not just about writing code. Understanding the problem, designing the architecture, managing responsibilities, and making the right technical decisions are equally important.
+
+---
+
+# Team Collaboration
+
+This project was developed collaboratively.
+
+- **Rakib Hossen** — Project Initiation, Backend Development, and Application Architecture.
+- **Aronno Rahman Arpa** — Frontend Development and UI Implementation.
+- **Srestho** — AI Agent Feature Development.
+
+Working with other developers helped me understand the importance of communication, task distribution, collaboration, and maintaining a consistent application structure.
+
+---
+
+# Future Improvements
+
+The project is still evolving. Some areas I would like to improve include:
+
+- Complete student-facing academic dashboards.
+- More comprehensive marks and attendance views.
+- Stronger authentication and session management.
+- Improved input validation and error handling.
+- Automated testing for models, forms, and routes.
+- More robust database management.
+- Better production configuration and deployment.
+- Improved documentation and code organization.
+
+---
+
+# What I Would Do Differently Today
+
+When I started this project, I did not have much experience with modern web technologies or large application architecture.
+
+Today, after learning Next.js, React.js, TypeScript, and Tailwind CSS, I have a much better understanding of how I would approach the same application.
+
+I would pay more attention to:
+
+- Separation of business logic and UI components.
+- Scalable backend architecture.
+- Database design and optimization.
+- Secure authentication and authorization.
+- API design and maintainability.
+- Reusable components and clean code.
+
+This project started as an idea to solve a problem I personally noticed as a Polytechnic student.
+
+Eventually, it became much more than a programming project. It taught me how real-world software problems are identified, analyzed, designed, solved, and continuously improved.
+
+---
+
+# Authors
+
+- [Rakib Hossen](https://github.com/rakibhossendev)
+- [Aronno Rahman Arpa](https://github.com/AronnoRahmanArpa)
 - Srestho
+
+**GitHub Repository:** [Result Management System](https://github.com/rakibhossendev/Result_Management_System)
+
+**Live Application:** [https://result-management-system-theta.vercel.app/](https://result-management-system-theta.vercel.app/)
+
