@@ -1,0 +1,7 @@
+[project]
+name = "result-management-system"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+
+[tool.vercel]
+entrypoint = "index:app"

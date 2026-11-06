@@ -15,6 +15,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
+  <!-- AI Assistant Widget CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai_widget.css') }}">
+
   <!-- Extra CSS Block for Child Templates -->
   {% block extra_css %}{% endblock %}
 
@@ -103,5 +106,64 @@
       });
     });
   </script>
+
+  <!-- ===== AI Assistant Floating Widget ===== -->
+
+  <!-- Floating AI toggle button -->
+  <button id="ai-fab" aria-label="Open AI Assistant" title="AI Assistant">
+    <!-- Chat icon (default) -->
+    <svg class="icon-chat" width="24" height="24" viewBox="0 0 24 24" fill="none"
+         stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <!-- Close icon (shown when panel is open) -->
+    <svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none"
+         stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+         style="display:none;">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- AI Chat panel -->
+  <div id="ai-panel" role="dialog" aria-label="AI Assistant chat" aria-hidden="true">
+    <div id="ai-panel-header">
+      <div class="ai-avatar">🤖</div>
+      <div class="ai-info">
+        <div class="ai-name">AI Assistant</div>
+        <div class="ai-sub">Ask me anything about the system</div>
+      </div>
+      <a href="/ask" id="ai-open-full" title="Open full page" target="_blank">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        Full page
+      </a>
+    </div>
+
+    <div id="ai-messages">
+      <div class="ai-welcome" id="ai-welcome">
+        <div class="ai-welcome-icon">✨</div>
+        <p>Hi! I'm your AI assistant.<br>Ask about marks, attendance, students, or any workflow.</p>
+      </div>
+    </div>
+
+    <div id="ai-input-area">
+      <textarea id="ai-input" rows="1" placeholder="Type a message…" aria-label="Message"></textarea>
+      <button id="ai-send" aria-label="Send">
+        <svg viewBox="0 0 24 24">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- AI Assistant Widget JS -->
+  <script src="{{ url_for('static', filename='js/ai_widget.js') }}"></script>
+
+  <!-- ===== End AI Assistant Floating Widget ===== -->
+
 </body>
 </html>
