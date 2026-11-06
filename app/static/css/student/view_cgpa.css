@@ -1,0 +1,458 @@
+/* ==========================================================
+   VIEW_CGPA.CSS - View CGPA page (final, option A)
+   Put in: static/css/student/view_cgpa.css
+   Same blue/cyan look as the dashboard.
+   Colors come from colors.css / styles.css (with fallbacks).
+
+   Layout:
+   - Header   : icon + title on the left, Back button on the right
+   - Banner   : big CGPA number + progress meter + Roll / Published tiles
+   - Semesters: 8 cards (4 per row, 2 on tablet/phone)
+   - Failed   : table, turns into cards on phones
+   ========================================================== */
+
+.cg-page {
+  --cg-primary: var(--primary-color, #0b5fd0);
+  --cg-primary-light: var(--primary-light, #e8f0fe);
+  --cg-primary-10: var(--primary-rgba-10, rgba(11, 95, 208, .12));
+  --cg-gradient: var(--gradient-primary, linear-gradient(135deg, #0361cc 0%, #049fe8 55%, #00d0ff 100%));
+  --cg-white: var(--white, #ffffff);
+  --cg-bg: var(--off-white, #f4f8fd);
+  --cg-border: var(--border-light, #dbe5f1);
+  --cg-text: var(--text-dark, #0f1b2d);
+  --cg-muted: var(--medium-gray, #64748b);
+  --cg-danger: #dc2626;
+  --cg-danger-light: #fee2e2;
+  --cg-shadow: 0 1px 2px rgba(11, 95, 208, .04), 0 10px 28px rgba(11, 95, 208, .07);
+  --cg-shadow-hover: 0 2px 4px rgba(11, 95, 208, .06), 0 18px 36px rgba(11, 95, 208, .15);
+
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(.85rem, 3vw, 1.5rem) 3.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--cg-text);
+}
+
+/* pale-blue page backdrop, same as the other pages */
+body:has(.cg-page) {
+  min-height: 100vh;
+  background:
+    radial-gradient(700px 360px at 50% 0%, rgba(0, 150, 235, .12), transparent 72%),
+    linear-gradient(180deg, #eef5ff 0%, #f6faff 55%, #fbfdff 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* every icon has a fixed size */
+.cg-page svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ---------- Header ---------- */
+.cg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.cg-head-left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.cg-head-icon {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 17px;
+  color: #fff;
+  background: var(--cg-gradient);
+  box-shadow: 0 12px 22px -10px rgba(3, 97, 204, .65);
+}
+.cg-page .cg-head-icon svg { width: 26px; height: 26px; }
+.cg-title {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--cg-text);
+}
+.cg-sub { margin: .25rem 0 0; font-size: .95rem; color: var(--cg-muted); }
+
+.cg-back {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 44px;
+  padding: 0 1.25rem;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--cg-muted);
+  text-decoration: none;
+  background: var(--cg-white);
+  border: 1px solid var(--cg-border);
+  border-radius: 999px;
+  box-shadow: var(--cg-shadow);
+  transition: color .15s ease, border-color .15s ease;
+}
+.cg-back:hover { color: var(--cg-primary); border-color: var(--cg-primary); }
+.cg-back:focus-visible { outline: 2px solid var(--cg-primary); outline-offset: 3px; }
+.cg-page .cg-back svg { width: 20px; height: 20px; }
+
+/* ---------- Banner ---------- */
+.cg-banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  padding: clamp(1.4rem, 4vw, 2.2rem) clamp(1.25rem, 4vw, 2.5rem);
+  color: #fff;
+  background: var(--cg-gradient);
+  border-radius: 28px;
+  box-shadow: 0 26px 46px -24px rgba(3, 97, 204, .8);
+}
+.cg-banner::before,
+.cg-banner::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .11);
+  pointer-events: none;
+}
+.cg-banner::before { width: 320px; height: 320px; right: -110px; top: -160px; }
+.cg-banner::after  { width: 190px; height: 190px; left: 38%; bottom: -120px; }
+.cg-banner > * { position: relative; z-index: 1; }
+
+.cg-banner-label { display: block; font-size: .92rem; font-weight: 500; color: rgba(255, 255, 255, .85); }
+.cg-banner-value {
+  display: block;
+  margin-top: .1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(3rem, 10vw, 4.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff;
+}
+.cg-banner-of { display: block; margin-top: .15rem; font-size: .85rem; color: rgba(255, 255, 255, .8); }
+
+/* thin meter showing CGPA out of 4.00 */
+.cg-meter {
+  width: min(260px, 100%);
+  height: 8px;
+  margin-top: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .28);
+  border-radius: 999px;
+}
+.cg-meter span {
+  display: block;
+  height: 100%;
+  background: #fff;
+  border-radius: 999px;
+  animation: cg-grow 1s ease .3s backwards;
+}
+
+/* Roll / Published / Failed tiles */
+.cg-tiles { display: flex; flex-wrap: wrap; gap: .75rem; }
+.cg-tile {
+  min-width: 118px;
+  padding: .85rem 1.15rem;
+  background: rgba(255, 255, 255, .16);
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 18px;
+}
+.cg-tile-label { display: block; font-size: .78rem; font-weight: 500; color: rgba(255, 255, 255, .8); }
+.cg-tile-value {
+  display: block;
+  margin-top: .15rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Section title ---------- */
+.cg-section-title {
+  margin: 0 0 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ---------- Semester cards ---------- */
+.cg-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.cg-sem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  min-width: 0;
+  padding: 1.1rem 1.2rem;
+  background: var(--cg-white);
+  border: 1px solid var(--cg-border);
+  border-radius: 22px;
+  box-shadow: var(--cg-shadow);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  animation: cg-rise .5s ease backwards;
+  animation-delay: calc(var(--i, 0) * 45ms + 150ms);
+}
+.cg-sem:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--cg-shadow-hover);
+  border-color: color-mix(in srgb, var(--cg-primary) 40%, var(--cg-border));
+}
+
+.cg-sem-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.cg-sem-name { font-size: .88rem; font-weight: 600; color: var(--cg-muted); }
+
+.cg-sem-badge {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cg-primary);
+  background: var(--cg-primary-light);
+  border-radius: 50%;
+}
+.cg-page .cg-sem-badge svg { width: 15px; height: 15px; }
+.cg-sem-latest-tag {
+  padding: .2rem .65rem;
+  font-size: .72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--cg-gradient);
+  border-radius: 999px;
+}
+
+.cg-sem-gpa {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--cg-primary);
+}
+
+.cg-bar {
+  height: 7px;
+  overflow: hidden;
+  background: var(--cg-primary-light);
+  border-radius: 999px;
+}
+.cg-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--cg-gradient);
+  border-radius: 999px;
+  animation: cg-grow .9s ease .35s backwards;
+}
+.cg-sem-note {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--cg-primary);
+}
+
+/* newest published semester stands out */
+.cg-sem-latest {
+  border-color: var(--cg-primary);
+  box-shadow: 0 0 0 4px var(--cg-primary-10), var(--cg-shadow);
+}
+
+/* not published yet: calm, grey, dashed */
+.cg-sem-pending {
+  background: var(--cg-bg);
+  border-style: dashed;
+  box-shadow: none;
+}
+.cg-sem-pending:hover { transform: none; box-shadow: none; border-color: var(--cg-border); }
+.cg-sem-pending .cg-sem-badge { color: #94a3b8; background: #e8edf3; }
+.cg-sem-pending .cg-sem-gpa { color: #b4bfcd; }
+.cg-sem-pending .cg-bar { background: var(--cg-border); }
+.cg-sem-pending .cg-sem-note { color: var(--cg-muted); font-weight: 500; }
+
+/* ---------- Shared card (failed subjects, empty state) ---------- */
+.cg-card {
+  background: var(--cg-white);
+  border: 1px solid var(--cg-border);
+  border-radius: 24px;
+  box-shadow: var(--cg-shadow);
+}
+.cg-section { padding: clamp(1.25rem, 3vw, 1.75rem); }
+.cg-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+.cg-section-head .cg-section-title { margin: 0; }
+.cg-fail-title { color: var(--cg-danger); }
+.cg-count {
+  min-width: 30px;
+  padding: .2rem .7rem;
+  font-size: .85rem;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  background: var(--cg-danger);
+  border-radius: 999px;
+}
+
+/* ---------- Failed subjects table ---------- */
+.cg-table-wrap { overflow-x: auto; }
+.cg-table { width: 100%; border-collapse: collapse; }
+.cg-table th {
+  padding: .7rem .9rem;
+  font-size: .8rem;
+  font-weight: 700;
+  text-align: left;
+  color: var(--cg-muted);
+  background: var(--cg-bg);
+}
+.cg-table th:first-child { border-radius: 12px 0 0 12px; }
+.cg-table th:last-child  { border-radius: 0 12px 12px 0; }
+.cg-table td {
+  padding: .9rem;
+  font-size: .92rem;
+  border-bottom: 1px solid var(--cg-border);
+  vertical-align: middle;
+}
+.cg-table tr:last-child td { border-bottom: 0; }
+.cg-code { font-weight: 700; }
+.cg-type {
+  display: inline-block;
+  padding: .2rem .75rem;
+  font-size: .78rem;
+  font-weight: 700;
+  border-radius: 999px;
+}
+.cg-type-t { color: var(--cg-primary); background: var(--cg-primary-light); }
+.cg-type-p { color: #475569; background: #e8edf3; }
+
+/* ---------- Empty state ---------- */
+.cg-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+.cg-empty-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cg-primary);
+  background: var(--cg-primary-light);
+  border-radius: 50%;
+}
+.cg-page .cg-empty-icon svg { width: 28px; height: 28px; }
+.cg-empty-title { margin: .5rem 0 0; font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 700; }
+.cg-empty-sub { margin: 0; font-size: .9rem; color: var(--cg-muted); }
+
+/* ---------- Motion (once, on load) ---------- */
+@keyframes cg-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes cg-grow { from { width: 0; } }
+.cg-banner { animation: cg-rise .5s ease backwards; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* ---- Tablet: banner stacks, 2 semester cards per row ---- */
+@media (max-width: 820px) {
+  .cg-banner { flex-direction: column; align-items: flex-start; }
+  .cg-tiles { width: 100%; }
+  .cg-tile { flex: 1 1 118px; }
+}
+@media (max-width: 760px) {
+  .cg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ---- Phone ---- */
+@media (max-width: 560px) {
+  .cg-page { gap: 1.25rem; }
+  .cg-head-icon { width: 46px; height: 46px; border-radius: 14px; }
+  .cg-page .cg-head-icon svg { width: 22px; height: 22px; }
+  .cg-back { min-height: 42px; padding: 0 1.05rem; }
+
+  .cg-banner { border-radius: 22px; padding: 1.25rem; }
+  .cg-banner::after { display: none; }
+  .cg-tile { padding: .7rem .9rem; border-radius: 14px; }
+  .cg-tile-value { font-size: 1.1rem; }
+
+  .cg-grid { gap: .75rem; }
+  .cg-sem { padding: .9rem 1rem; border-radius: 18px; }
+  .cg-sem-gpa { font-size: 1.7rem; }
+  .cg-card { border-radius: 20px; }
+
+  /* failed subjects table becomes cards */
+  .cg-table thead { display: none; }
+  .cg-table, .cg-table tbody, .cg-table tr, .cg-table td { display: block; width: 100%; }
+  .cg-table tr {
+    margin-bottom: .7rem;
+    padding: .5rem .9rem;
+    border: 1px solid var(--cg-border);
+    border-radius: 14px;
+  }
+  .cg-table tr:last-child { margin-bottom: 0; }
+  .cg-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: .55rem 0;
+    text-align: right;
+    border-bottom: 1px solid var(--cg-border);
+  }
+  .cg-table td:last-child { border-bottom: 0; }
+  .cg-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: .78rem;
+    font-weight: 700;
+    text-align: left;
+    color: var(--cg-muted);
+  }
+}
+
+/* ---- Very small phones: 1 semester card per row ---- */
+@media (max-width: 340px) {
+  .cg-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- Touch screens: no hover lift ---- */
+@media (hover: none) {
+  .cg-sem:hover { transform: none; box-shadow: var(--cg-shadow); border-color: var(--cg-border); }
+  .cg-sem-latest:hover { border-color: var(--cg-primary); box-shadow: 0 0 0 4px var(--cg-primary-10), var(--cg-shadow); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-banner, .cg-sem, .cg-bar-fill, .cg-meter span { animation: none; }
+  .cg-sem, .cg-back { transition: none; }
+  .cg-sem:hover { transform: none; }
+}
+
+@media print {
+  .cg-back { display: none; }
+  .cg-banner { color: #000; background: none; border: 1px solid #999; box-shadow: none; }
+  .cg-banner-label, .cg-banner-value, .cg-banner-of, .cg-tile-label, .cg-tile-value { color: #000; }
+  .cg-card, .cg-sem { box-shadow: none; }
+}
