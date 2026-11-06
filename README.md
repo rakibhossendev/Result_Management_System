@@ -1,6 +1,6 @@
 # Result Management System
 
-A school result management system built with Flask. This application implements three user roles (Admin, Principal, Teacher) and provides administrative workflows for managing principals, teachers, departments, subjects, students, attendance, and marks topics.
+A College result management system built with Flask. This application implements four user roles (Admin, Principal, Teacher, Student) and provides administrative workflows for managing principals, teachers, departments, subjects, students, attendance, and marks topics.
 
 ## Overview
 

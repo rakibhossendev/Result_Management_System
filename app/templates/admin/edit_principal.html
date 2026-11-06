@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-{% block title %}Edit Principal{% endblock %}
+{% block title %} Edit Principal {% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
@@ -9,156 +9,73 @@
 
 {% block content %}
 
-<!-- Decorative blobs -->
-<div class="ap-blob ap-blob-1"></div>
-<div class="ap-blob ap-blob-2"></div>
+{% macro field(f, full=False, auto=None, ph=None) -%}
+{% set cls = 'ap-input' ~ (' ap-input-error' if f.errors else '') %}
+{% set kw = {'class_': cls} %}
+{% if auto %}{% set _ = kw.update({'autocomplete': auto}) %}{% endif %}
+{% if ph %}{% set _ = kw.update({'placeholder': ph}) %}{% endif %}
+<div class="ap-field{{ ' ap-field-full' if full }}">
+  <label class="ap-label" for="{{ f.id }}">{{ f.label.text }}{% if f.flags.required %}<span class="req" aria-hidden="true">*</span>{% endif %}</label>
+  {{ f(**kw) }}
+  {% for err in f.errors %}<span class="ap-error">{{ err }}</span>{% endfor %}
+</div>
+{%- endmacro %}
 
-<!-- Page Hero -->
-<section class="ap-hero">
+<div class="ap-blob ap-blob-1" aria-hidden="true"></div>
+<div class="ap-blob ap-blob-2" aria-hidden="true"></div>
+
+<!-- HERO BAR -->
+<header class="ap-hero">
   <div class="ap-hero-inner">
-    <div class="ap-hero-icon">✏️</div>
+    <div class="ap-hero-icon" aria-hidden="true">✏️</div>
     <div>
       <h1 class="ap-hero-title">Edit Principal</h1>
-      <p class="ap-hero-sub">Update the principal's information below</p>
+      <p class="ap-hero-sub">Update the principal's information.</p>
     </div>
   </div>
-  <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-outline btn-sm ap-back-btn">
-    ← Back to Dashboard
-  </a>
-</section>
+  <a href="{{ url_for('admin_dashboard.edit_and_view_principal') }}" class="btn btn-outline btn-sm ap-back-btn">&larr; Back</a>
+</header>
 
-<!-- Form Card -->
+<!-- FORM -->
 <div class="ap-wrapper">
   <div class="ap-card">
 
-    <!-- Card Header -->
     <div class="ap-card-header">
-      <h2 class="ap-card-title">Principal Edit Form</h2>
-      <p class="ap-card-desc">Fields marked <span class="req">*</span> are required</p>
+      <h2 class="ap-card-title">Principal details</h2>
+      <p class="ap-card-desc">Fields marked with <span class="req">*</span> are required.</p>
     </div>
 
     <form method="POST" class="ap-form" novalidate>
       {{ form.hidden_tag() }}
 
-      <!-- ── SECTION 01: Identity ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">01</span> Identity Information
-        </h3>
+      <!-- 1. Personal info -->
+      <section class="ap-section">
+        <h3 class="ap-section-title"><span class="ap-section-num">1</span>Personal information</h3>
         <div class="ap-grid-2">
-
-          <div class="ap-field">
-            {{ form.principal_id.label(class="ap-label") }}<span class="req">*</span>
-            {{ form.principal_id(class="ap-input", placeholder="e.g. PRC-2024-001") }}
-            {% if form.principal_id.errors %}
-              <span class="ap-error">{{ form.principal_id.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ form.first_name.label(class="ap-label") }}<span class="req">*</span>
-            {{ form.first_name(class="ap-input", placeholder="Enter first name") }}
-            {% if form.first_name.errors %}
-              <span class="ap-error">{{ form.first_name.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ form.last_name.label(class="ap-label") }}<span class="req">*</span>
-            {{ form.last_name(class="ap-input", placeholder="Enter last name") }}
-            {% if form.last_name.errors %}
-              <span class="ap-error">{{ form.last_name.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ form.mobile_number.label(class="ap-label") }}<span class="req">*</span>
-            {{ form.mobile_number(class="ap-input", placeholder="e.g. 01XXXXXXXXX") }}
-            {% if form.mobile_number.errors %}
-              <span class="ap-error">{{ form.mobile_number.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field ap-field-full">
-            {{ form.email.label(class="ap-label") }}<span class="req">*</span>
-            {{ form.email(class="ap-input", placeholder="principal@school.edu") }}
-            {% if form.email.errors %}
-              <span class="ap-error">{{ form.email.errors[0] }}</span>
-            {% endif %}
-          </div>
-
+          {{ field(form.principal_id) }}
+          {{ field(form.mobile_number, auto='tel') }}
+          {{ field(form.first_name) }}
+          {{ field(form.last_name) }}
+          {{ field(form.email, full=True, auto='email') }}
         </div>
-      </div>
+      </section>
 
-      <!-- ── SECTION 02: Account Credentials ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">02</span> Account Credentials
-        </h3>
+      <!-- 2. Account -->
+      <section class="ap-section">
+        <h3 class="ap-section-title"><span class="ap-section-num">2</span>Account</h3>
         <div class="ap-grid-2">
-
-          <div class="ap-field ap-field-full">
-            {{ form.username.label(class="ap-label") }}<span class="req">*</span>
-            {{ form.username(class="ap-input", placeholder="Username") }}
-            {% if form.username.errors %}
-              <span class="ap-error">{{ form.username.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field ap-field-full">
-            {{ form.password.label(class="ap-label") }}
-            {{ form.password(class="ap-input", placeholder="Leave blank to keep current password") }}
-            {% if form.password.errors %}
-              <span class="ap-error">{{ form.password.errors[0] }}</span>
-            {% endif %}
-          </div>
-
+          {{ field(form.username, auto='username') }}
+          {{ field(form.password, auto='new-password', ph='Leave blank to keep current password') }}
         </div>
-      </div>
+      </section>
 
-      <!-- ── Actions ── -->
       <div class="ap-actions">
-        <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-secondary">
-          Cancel
-        </a>
-        <button type="submit" class="btn btn-primary ap-submit">
-          Update Principal
-        </button>
+        <a href="{{ url_for('admin_dashboard.edit_and_view_principal') }}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary ap-submit">Update principal</button>
       </div>
-
     </form>
+
   </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const card = document.querySelector('.ap-card');
-  if (card) {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(24px)';
-    requestAnimationFrame(() => {
-      card.style.transition = 'opacity .55s cubic-bezier(.4,0,.2,1), transform .55s cubic-bezier(.4,0,.2,1)';
-      card.style.opacity = '1';
-      card.style.transform = 'translateY(0)';
-    });
-  }
-  document.querySelectorAll('.ap-input').forEach(input => {
-    input.addEventListener('blur', () => {
-      if (input.value.trim() === '') {
-        input.classList.add('ap-input-error');
-        input.classList.remove('ap-input-ok');
-      } else {
-        input.classList.remove('ap-input-error');
-        input.classList.add('ap-input-ok');
-      }
-    });
-    input.addEventListener('focus', () => {
-      input.classList.remove('ap-input-error');
-    });
-  });
-});
-</script>
 {% endblock %}

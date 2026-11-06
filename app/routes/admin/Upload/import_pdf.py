@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import text
 from app.extensions import db
 from app.models.cgpa_upload import CGPAImportFile
+from app.models.cgpa_upload import StudentCGPA
 
 
 import_pdf_bp = Blueprint(
@@ -162,76 +163,73 @@ def parse_gpa_data(content):
 # SAME ROLL = OVERWRITE
 # =========================================================
 
+
+
+
 def save_student_data(students):
     if not students:
         return 0
 
-    # -----------------------------------------------------
-    # Remove duplicate roll
-    # Latest occurrence wins
-    # -----------------------------------------------------
+    # 1. Remove duplicate rolls.
+    # Latest occurrence wins.
     student_map = {
-        student["roll"]: student
+        str(student["roll"]): student
         for student in students
     }
+
     rows = list(student_map.values())
-    # -----------------------------------------------------
-    # SQLite UPSERT
-    #
-    # One SQL statement for ALL students
-    # -----------------------------------------------------
+    rolls = list(student_map.keys())
 
-    sql = text("""
-        INSERT INTO student_cgpa (
-            roll,
-            gpa1,
-            gpa2,
-            gpa3,
-            gpa4,
-            gpa5,
-            gpa6,
-            gpa7,
-            gpa8,
-            cgpa,
-            failed_subjects,
-            failed_count
-        )
-        VALUES (
-            :roll,
-            :gpa1,
-            :gpa2,
-            :gpa3,
-            :gpa4,
-            :gpa5,
-            :gpa6,
-            :gpa7,
-            :gpa8,
-            :cgpa,
-            :failed_subjects,
-            :failed_count
+    try:
+        # 2. Fetch existing students using SQLAlchemy ORM.
+        existing_students = (
+            StudentCGPA.query
+            .filter(StudentCGPA.roll.in_(rolls))
+            .all()
         )
 
-        ON CONFLICT(roll)
-        DO UPDATE SET
+        existing_map = {
+            student.roll: student
+            for student in existing_students
+        }
 
-            gpa1 = excluded.gpa1,
-            gpa2 = excluded.gpa2,
-            gpa3 = excluded.gpa3,
-            gpa4 = excluded.gpa4,
-            gpa5 = excluded.gpa5,
-            gpa6 = excluded.gpa6,
-            gpa7 = excluded.gpa7,
-            gpa8 = excluded.gpa8,
+        # 3. Create or update records.
+        for row in rows:
+            roll = str(row["roll"])
+            student = existing_map.get(roll)
 
-            cgpa = excluded.cgpa,
+            if student is None:
+                student = StudentCGPA(roll=roll)
+                db.session.add(student)
 
-            failed_subjects = excluded.failed_subjects,
-            failed_count = excluded.failed_count
-    """)
+            # Update GPA fields.
+            student.gpa1 = row.get("gpa1")
+            student.gpa2 = row.get("gpa2")
+            student.gpa3 = row.get("gpa3")
+            student.gpa4 = row.get("gpa4")
+            student.gpa5 = row.get("gpa5")
+            student.gpa6 = row.get("gpa6")
+            student.gpa7 = row.get("gpa7")
+            student.gpa8 = row.get("gpa8")
 
-    db.session.execute(sql, rows)
+            # Update CGPA and failed subjects.
+            student.cgpa = row.get("cgpa")
+            student.failed_subjects = row.get(
+                "failed_subjects"
+            )
+            student.failed_count = row.get(
+                "failed_count", 0
+            )
 
-    return len(rows)
+        # 4. Save all changes in one transaction.
+        db.session.commit()
+
+        return len(rows)
+
+    except Exception:
+        db.session.rollback()
+        raise
+
 
 
 # =========================================================

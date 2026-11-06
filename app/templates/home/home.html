@@ -4,110 +4,165 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
 
 {% block content %}
-  <!-- Decorative Background Elements -->
-  <div class="decoration-circle decoration-circle-1"></div>
-  <div class="decoration-circle decoration-circle-2"></div>
+  <main class="hm-page">
+    <div class="hm-card">
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Welcome to Result Management System</h1>
-      <p>Search your results by roll number and view your academic performance instantly</p>
-    </div>
-  </section>
+      <!-- Illustration: result sheet + magnifier -->
+      <svg class="hm-illo" viewBox="0 0 210 150" aria-hidden="true">
+        <defs>
+          <linearGradient id="hmg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0361cc"/>
+            <stop offset=".55" stop-color="#049fe8"/>
+            <stop offset="1" stop-color="#00d0ff"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="105" cy="136" rx="78" ry="8" fill="#dcebff"/>
+        <rect x="38" y="18" width="104" height="108" rx="14" fill="#dcebff"/>
+        <rect x="60" y="30" width="108" height="108" rx="14" fill="#fff" style="stroke:#dbe5f1;stroke-width:1.5"/>
+        <rect x="76" y="48" width="52" height="9" rx="4.5" fill="#dbe5f1"/>
+        <rect x="76" y="68" width="76" height="7" rx="3.5" fill="#dbe5f1"/>
+        <rect x="76" y="84" width="76" height="7" rx="3.5" fill="#dbe5f1"/>
+        <rect x="76" y="100" width="76" height="9" rx="4.5" fill="#dcebff"/>
+        <rect class="hm-fill" x="76" y="100" width="54" height="9" rx="4.5" fill="url(#hmg)"/>
+        <g class="hm-check">
+          <circle cx="160" cy="38" r="19" fill="url(#hmg)"/>
+          <path d="M151 38l6 6 11-12" fill="none" style="stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round"/>
+        </g>
+        <g class="hm-lens">
+          <circle cx="64" cy="104" r="23" fill="#fff" fill-opacity=".85" style="stroke:url(#hmg);stroke-width:6"/>
+          <path d="M81 121l18 18" fill="none" style="stroke:url(#hmg);stroke-width:7;stroke-linecap:round"/>
+        </g>
+      </svg>
 
-  <!-- Main Container -->
-  <div class="container">
-    <!-- Search Card -->
-    <div class="search-card card">
-      <div class="card-header">
-        <h2 class="card-title">Search Your Results</h2>
-        <p class="card-description">Enter your roll number to view detailed results and performance metrics</p>
-      </div>
+      <h1 class="hm-title">Find your result</h1>
 
-      <!-- Search Form -->
-      <form method="POST" class="search-form">
+      <!-- Search form -->
+      <form method="POST" class="hm-form">
         {% if search.hidden_tag %}
           {{ search.hidden_tag() }}
         {% endif %}
 
-        <!-- Roll Number Input -->
-        <div class="search-form-group">
-          <label for="{{ search.roll.id }}" class="form-label">
-            Roll Number
-            <span style="color: var(--danger-color);">*</span>
-          </label>
-          {{ search.roll(
-            class="form-control",
-            id=search.roll.id,
-            placeholder="Enter your roll number",
-            required="required",
-            autocomplete="off"
-          ) }}
+        <div class="hm-field">
+          <label for="{{ search.roll.id }}" class="hm-sr">Roll Number</label>
+          <div class="hm-input-wrap">
+            <svg class="hm-input-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+            </svg>
+            {{ search.roll(
+              class="hm-input",
+              id=search.roll.id,
+              placeholder="Roll number",
+              required="required",
+              autocomplete="off"
+            ) }}
+          </div>
           {% if search.roll.errors %}
-            <small style="color: var(--danger-color); margin-top: 0.25rem;">
-              {{ search.roll.errors[0] }}
-            </small>
+            <small class="hm-error">{{ search.roll.errors[0] }}</small>
           {% endif %}
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-lg">
-          <span>Search Results</span>
+        <button type="submit" class="hm-btn">
+          <span>Search</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
       </form>
 
-      <!-- Footer CTA -->
-      <div class="footer-cta">
-        <p class="text-muted">Not a student?</p>
-        <a href="{{ url_for('login.login') }}" class="btn-link">
-          Sign in as Staff/Admin
-        </a>
-      </div>
+      <a href="{{ url_for('login.login') }}" class="hm-link">Staff sign in</a>
+
     </div>
-  </div>
 
-  <!-- Additional Info Section (Optional) -->
-  <section style="margin-top: 5rem; padding: 3rem var(--spacing-md); text-align: center; color: var(--medium-gray);">
-    <p>
-      <small>
-        For technical support, contact the administration office or send an email to support@example.com
-      </small>
-    </p>
-  </section>
+    <!-- Scroll hint -->
+    <a href="#about" class="hm-more" aria-label="Scroll down to learn more about the portal">
+      <span>Learn more about the portal</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
 
+    <!-- About the portal -->
+    <section class="hm-about" id="about">
+
+      <div class="hm-intro">
+        <span class="hm-eyebrow">About the portal</span>
+        <h2>Your results, all in one place</h2>
+        <p>The Result Management System lets students look up their academic results with just a roll number and see their performance details instantly. Results appear here as soon as your school publishes them.</p>
+      </div>
+
+      <div class="hm-cards">
+        <article class="hm-feature">
+          <span class="hm-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          </span>
+          <h3>Search by roll number</h3>
+          <p>Enter your roll number and find your result in seconds.</p>
+        </article>
+
+        <article class="hm-feature is-teal">
+          <span class="hm-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>
+          </span>
+          <h3>View your performance</h3>
+          <p>See subject-wise marks, grades and your overall result.</p>
+        </article>
+
+        <article class="hm-feature is-amber">
+          <span class="hm-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+          </span>
+          <h3>Instant access</h3>
+          <p>No sign-up needed. Open the page, search, and you are done.</p>
+        </article>
+      </div>
+
+      <div class="hm-help">
+        <span class="hm-help-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.2 1.8-2.2 3.5"/><path d="M12 17h.01"/></svg>
+        </span>
+        <div class="hm-help-text">
+          <h3>Need help?</h3>
+          <p>For technical support, contact the administration office or email <a href="mailto:support@example.com">support@example.com</a></p>
+        </div>
+      </div>
+
+    </section>
+
+    <footer class="hm-footer">&copy; Result Management System</footer>
+  </main>
 {% endblock %}
 
 {% block extra_js %}
   <script>
-    // Smooth form validation feedback
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.querySelector('.search-form');
-      const rollInput = form.querySelector('input[type="text"]');
+    document.addEventListener('DOMContentLoaded', function () {
+      // Scroll hint: fades out once the visitor starts scrolling
+      var more = document.querySelector('.hm-more');
+      if (more) {
+        var toggleHint = function () { more.classList.toggle('is-hidden', window.scrollY > 60); };
+        window.addEventListener('scroll', toggleHint, { passive: true });
+        toggleHint();
+      }
 
-      // Add real-time validation feedback
-      rollInput.addEventListener('blur', function() {
-        if (this.value.trim() === '') {
-          this.style.borderColor = 'var(--danger-color)';
-        } else {
-          this.style.borderColor = 'var(--border-color)';
+      var form  = document.querySelector('.hm-form');
+      var input = form && form.querySelector('.hm-input');
+      if (!input) return;
+
+      function check() {
+        if (input.value.trim() === '') {
+          input.classList.add('is-error');
+          return false;
         }
-      });
+        input.classList.remove('is-error');
+        return true;
+      }
 
-      // Reset on focus
-      rollInput.addEventListener('focus', function() {
-        this.style.borderColor = 'var(--primary-color)';
-      });
+      input.addEventListener('blur', check);
+      input.addEventListener('focus', function () { input.classList.remove('is-error'); });
 
-      // Prevent form submission if empty
-      form.addEventListener('submit', function(e) {
-        if (rollInput.value.trim() === '') {
+      form.addEventListener('submit', function (e) {
+        if (!check()) {
           e.preventDefault();
-          rollInput.focus();
-          rollInput.style.borderColor = 'var(--danger-color)';
+          input.focus();
         }
       });
     });

@@ -1,50 +1,82 @@
 {% extends "base/base.html" %}
-{% block title %} Assign Teacher {% endblock %}
+{% block title %}Assign Teacher{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/assign_sub_tea_form.css') }}">
+{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
+{# One field = numbered label + input + validation errors (fid = custom element id) #}
+{% macro field(f, n, fid=None) %}
+{% set i = fid or f.id %}
+<div class="af-field">
+  <label class="af-label" for="{{ i }}"><span class="af-num">{{ n }}</span>{{ f.label.text }}</label>
+  {{ f(id=i, class="af-input", **{"data-step": n}) }}
+  {% for e in f.errors %}<p class="af-error" role="alert">{{ e }}</p>{% endfor %}
+</div>
+{% endmacro %}
 
-    <h2>Assign Teacher</h2>
+<div class="af-page">
 
-    <form method="POST">
+  <!-- HEADER: title (left) + back button (right) -->
+  <header class="af-header af-rise">
+    <div class="af-brand">
+      <span class="af-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/><path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/></svg>
+      </span>
+      <div>
+        <h1 class="af-title">Assign teacher</h1>
+        <p class="af-lead">Link a teacher to a department, semester and subject.</p>
+      </div>
+    </div>
+    {# swap href for your dashboard, e.g. {{ url_for('your_blueprint.your_dashboard') }} #}
+    <a href="javascript:history.back()" class="af-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to dashboard
+    </a>
+  </header>
 
-        {{ form.hidden_tag() }}
+  <form method="POST" class="af-form af-rise">
+    {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-            {{ form.teacher_id.label(class="form-label") }}
-            {{ form.teacher_id(class="form-select") }}
-        </div>
+    <!-- CARD 1: teacher -->
+    <section class="af-card">
+      {{ field(form.teacher_id, 1) }}
+    </section>
 
-        <div class="mb-3">
-            {{ form.department_id.label(class="form-label") }}
-            {{ form.department_id(
-                id="department",
-                class="form-select"
-            ) }}
-        </div>
+    <!-- CARD 2: department, semester, subject -->
+    <section class="af-card">
+      <div class="af-grid">
+        {{ field(form.department_id, 2, 'department') }}
+        {{ field(form.semester, 3, 'semester') }}
+        {{ field(form.subject_id, 4, 'subject') }}
+      </div>
+    </section>
 
-        <div class="mb-3">
-            {{ form.semester.label(class="form-label") }}
-            {{ form.semester(
-                id="semester",
-                class="form-select"
-            ) }}
-        </div>
+    <!-- BOTTOM BAR: live summary + submit -->
+    <div class="af-bar">
+      <div class="af-bar-progress" aria-hidden="true"><span data-progress></span></div>
 
-        <div class="mb-3">
-            {{ form.subject_id.label(class="form-label") }}
-            {{ form.subject_id(
-                id="subject",
-                class="form-select"
-            ) }}
-        </div>
+      <div class="af-bar-info">
+        <span class="af-status" data-status>0 of 4 selected</span>
+        <p class="af-summary" aria-live="polite">
+          <span class="is-empty" data-summary="1" data-placeholder="Teacher">Teacher</span>
+          <span class="af-sep">&rarr;</span>
+          <span class="is-empty" data-summary="2" data-placeholder="Department">Department</span>
+          <span class="af-sep">&middot;</span>
+          <span class="is-empty" data-summary="3" data-placeholder="Semester">Semester</span>
+          <span class="af-sep">&middot;</span>
+          <span class="is-empty" data-summary="4" data-placeholder="Subject">Subject</span>
+        </p>
+      </div>
 
-        <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-
-    </form>
+      {{ form.submit(class="af-submit") }}
+    </div>
+  </form>
 
 </div>
 
@@ -52,109 +84,99 @@
 
 
 {% block extra_js %}
-
 <script>
+(function () {
+  var department = document.getElementById("department");
+  var semester   = document.getElementById("semester");
+  var subject    = document.getElementById("subject");
 
-const department = document.getElementById("department");
-const semester = document.getElementById("semester");
-const subject = document.getElementById("subject");
+  var fields = document.querySelectorAll('[data-step]');
+  var bar    = document.querySelector('[data-progress]');
+  var status = document.querySelector('[data-status]');
 
-function loadSubjects() {
+  /* ── live summary ─────────────────────────── */
+  function label(el) {
+    if (el.tagName === 'SELECT') {
+      var o = el.options[el.selectedIndex];
+      return o && el.value !== '' && el.value !== '0' ? o.text.trim() : '';
+    }
+    return el.value.trim();
+  }
 
-    const dept = department.value;
-    const sem = semester.value;
+  function update() {
+    var done = 0;
+
+    fields.forEach(function (el) {
+      var n = el.getAttribute('data-step'), text = label(el);
+      var out   = document.querySelector('[data-summary="' + n + '"]');
+      var field = el.closest('.af-field');
+
+      if (text) done++;
+      if (field) field.classList.toggle('is-filled', !!text);
+      if (out) {
+        out.textContent = text || out.getAttribute('data-placeholder');
+        out.classList.toggle('is-empty', !text);
+      }
+    });
+
+    if (bar) bar.style.width = (done / fields.length * 100) + '%';
+    if (status) status.textContent = done === fields.length ? 'Ready to assign' : done + ' of ' + fields.length + ' selected';
+  }
+
+  /* ── load subjects for department + semester ─ */
+  function setPlaceholder(text) {
+    subject.innerHTML = '';
+    var opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = text;
+    subject.appendChild(opt);
+  }
+
+  function loadSubjects() {
+    var dept = department.value;
+    var sem  = semester.value;
 
     if (!dept || !sem) {
-
-        subject.innerHTML = `
-            <option value="">
-                Select Subject
-            </option>
-        `;
-
-        return;
+      setPlaceholder('Select subject');
+      update();
+      return;
     }
 
-    fetch(`/api/get-subjects/?department_id=${dept}&semester=${sem}`)
+    fetch('/api/get-subjects/?department_id=' + dept + '&semester=' + sem)
+      .then(function (response) {
+        if (!response.ok) throw new Error('Server returned ' + response.status);
+        return response.json();
+      })
+      .then(function (data) {
+        if (data.length === 0) {
+          setPlaceholder('No subjects found');
+        } else {
+          setPlaceholder('Select subject');
+          data.forEach(function (item) {
+            var option = document.createElement('option');
+            option.value = item.subject_id;
+            option.textContent = item.subject_code + ' - ' + item.subject_name;
+            subject.appendChild(option);
+          });
+        }
+        update();
+      })
+      .catch(function (error) {
+        console.error('Failed to load subjects:', error);
+        setPlaceholder('Error loading subjects');
+        update();
+      });
+  }
 
-        .then(response => {
+  fields.forEach(function (el) {
+    el.addEventListener('change', update);
+    el.addEventListener('input', update);
+  });
+  department.addEventListener('change', loadSubjects);
+  semester.addEventListener('change', loadSubjects);
 
-            if (!response.ok) {
-                throw new Error(
-                    `Server returned ${response.status}`
-                );
-            }
-
-            return response.json();
-        })
-
-        .then(data => {
-
-            subject.innerHTML = "";
-
-            if (data.length === 0) {
-
-                subject.innerHTML = `
-                    <option value="">
-                        No Subjects Found
-                    </option>
-                `;
-
-                return;
-            }
-
-            const defaultOption =
-                document.createElement("option");
-
-            defaultOption.value = "";
-            defaultOption.textContent =
-                "Select Subject";
-
-            subject.appendChild(defaultOption);
-
-            data.forEach(item => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value = item.subject_id;
-
-                option.textContent =
-                    `${item.subject_code} - ${item.subject_name}`;
-
-                subject.appendChild(option);
-
-            });
-
-        })
-
-        .catch(error => {
-
-            console.error(
-                "Failed to load subjects:",
-                error
-            );
-
-            subject.innerHTML = `
-                <option value="">
-                    Error Loading Subjects
-                </option>
-            `;
-        });
-}
-
-department.addEventListener(
-    "change",
-    loadSubjects
-);
-
-semester.addEventListener(
-    "change",
-    loadSubjects
-);
-
-loadSubjects();
-
+  update();
+  loadSubjects();
+})();
 </script>
-
 {% endblock %}

@@ -1,0 +1,161 @@
+/* ============================================
+   SHOW_SUB_DEP.CSS  (All subjects / All departments: top search bar + list)
+   Builds on colors.css + styles.css. All classes: .sl-
+   ============================================ */
+
+:root {
+  --sl-sky:      #5aabf6;
+  --sl-blue:     #2f86e0;
+  --sl-blue-d:   #2a6fb8;
+  --sl-cyan:     #2bb5ec;
+  --sl-ring:     rgba(47, 134, 224, .25);
+  --sl-ink:      var(--text-dark, #1a1a1a);
+  --sl-muted:    var(--medium-gray, #6c757d);
+  --sl-soft:     #6b7a90;
+  --sl-line:     #dde7f3;
+  --sl-tint:     #e8f3fd;
+  --sl-danger:   #dc2626;
+  --sl-head:     'Poppins', sans-serif;
+}
+
+@keyframes sl-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.sl-rise { animation: sl-rise .5s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* ── PAGE + HEADER ────────────────────────── */
+.sl-page { max-width: 1040px; margin: 0 auto; padding: 2rem 1.5rem 3rem; color: var(--sl-ink); }
+
+.sl-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.sl-brand { display: flex; align-items: center; gap: 1rem; }
+.sl-icon { width: 48px; height: 48px; flex-shrink: 0; display: grid; place-items: center; border-radius: 14px; background: #fff; border: 1px solid var(--sl-line); color: var(--sl-blue); }
+.sl-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* gradient title (same look as Add Department) */
+.sl-title {
+  display: inline-block; margin: 0; padding-bottom: .1em;
+  font-family: var(--sl-head); font-size: 1.6rem; font-weight: 800; line-height: 1.2;
+  background: linear-gradient(90deg, var(--sl-blue) 0%, var(--sl-cyan) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.sl-lead { margin: .1rem 0 0; font-size: .9rem; color: var(--sl-soft); }
+
+.sl-back {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .6rem 1.15rem; border: 1.5px solid var(--sl-line); border-radius: 999px;
+  background: #fff; font-size: .86rem; font-weight: 600; color: var(--sl-muted); text-decoration: none;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.sl-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.sl-back:hover { color: var(--sl-blue-d); border-color: #b7cde8; background: var(--sl-tint); }
+.sl-back:focus-visible, .sl-btn:focus-visible, .sl-del:focus-visible, .sl-view:focus-visible { outline: 3px solid var(--sl-ring); outline-offset: 2px; }
+
+/* ── TOP BAR: search + count ──────────────── */
+.sl-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+
+.sl-find { position: relative; display: block; flex: 1 1 auto; min-width: 0; }
+.sl-find svg {
+  position: absolute; left: 20px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%);
+  fill: none; stroke: var(--sl-soft); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+}
+.sl-find input {
+  width: 100%; height: 54px; padding: 0 1.25rem 0 3.2rem;
+  border: 1.5px solid var(--sl-line); border-radius: 999px; background: #fff;
+  font: inherit; font-size: .95rem; color: var(--sl-ink);
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .05), 0 10px 28px rgba(47, 134, 224, .08);
+  transition: border-color .15s, box-shadow .15s;
+}
+.sl-find input::placeholder { color: var(--sl-soft); }
+.sl-find input:hover { border-color: #b7cde8; }
+.sl-find input:focus { outline: none; border-color: var(--sl-blue); box-shadow: 0 0 0 4px var(--sl-ring); }
+.sl-find input:disabled { opacity: .6; cursor: not-allowed; background: #f8fbff; }
+
+/* count pill */
+.sl-count {
+  flex-shrink: 0; display: flex; align-items: center; gap: .65rem;
+  height: 54px; padding: 0 1.4rem; border-radius: 999px; color: #fff;
+  background: linear-gradient(135deg, var(--sl-sky) 0%, var(--sl-blue) 60%, var(--sl-blue-d) 100%);
+  box-shadow: 0 10px 28px rgba(47, 134, 224, .22);
+}
+.sl-count-num { font-family: var(--sl-head); font-size: 1.5rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.sl-count-label { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .92); white-space: nowrap; }
+
+/* ── LIST CARD ────────────────────────────── */
+.sl-card {
+  background: #fff; border: 1px solid var(--sl-line); border-radius: 20px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .05), 0 20px 48px rgba(47, 134, 224, .08);
+}
+.sl-list { margin: 0; padding: 0; list-style: none; }
+
+.sl-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .75rem 1rem;
+  padding: 1.05rem 1.5rem; border-bottom: 1px solid var(--sl-line);
+  transition: background-color .15s;
+}
+.sl-row:last-child { border-bottom: 0; }
+.sl-row:hover { background: #f8fbff; }
+.sl-row[hidden] { display: none; }
+
+.sl-code { min-width: 66px; padding: .3rem .75rem; border-radius: 8px; background: var(--sl-tint); color: var(--sl-blue-d); font-size: .82rem; font-weight: 700; letter-spacing: .02em; text-align: center; }
+
+/* subject / department name: lighter + smaller, a bit more breathing room */
+.sl-name {
+  flex: 1 1 160px; min-width: 0;
+  font-family: var(--sl-head); font-size: .95rem; font-weight: 500;
+  letter-spacing: .01em; word-spacing: .08em; line-height: 1.4;
+  text-transform: capitalize;
+  color: var(--sl-ink); overflow-wrap: anywhere;
+}
+
+.sl-actions { display: flex; align-items: center; gap: .6rem; margin-left: auto; }
+.sl-actions form { margin: 0; display: inline-flex; }
+
+/* view link */
+.sl-view { display: inline-flex; align-items: center; gap: .25rem; margin-right: .25rem; font-size: .84rem; font-weight: 700; color: var(--sl-blue); text-decoration: none; border-radius: 6px; }
+.sl-view span { font-size: 1.2rem; line-height: 1; transition: transform .15s; }
+.sl-view:hover { color: var(--sl-blue-d); }
+.sl-view:hover span { transform: translateX(3px); }
+
+.sl-btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .5rem 1.05rem; border: 0; border-radius: 999px;
+  background: var(--sl-tint); color: var(--sl-blue-d);
+  font: inherit; font-size: .8rem; font-weight: 700; line-height: 1.2; text-decoration: none; cursor: pointer;
+  transition: background-color .15s, color .15s, transform .15s;
+}
+.sl-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sl-btn:hover { background: var(--sl-blue); color: #fff; }
+.sl-btn:active { transform: scale(.97); }
+
+.sl-del {
+  width: 34px; height: 34px; display: grid; place-items: center; padding: 0;
+  border: 1.5px solid #fecaca; border-radius: 50%; background: #fff; color: var(--sl-danger); cursor: pointer;
+  transition: background-color .15s, border-color .15s, transform .15s;
+}
+.sl-del svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sl-del:hover { background: #fee2e2; border-color: #fca5a5; }
+.sl-del:active { transform: scale(.94); }
+
+/* ── EMPTY STATES ─────────────────────────── */
+.sl-empty { display: flex; flex-direction: column; align-items: center; gap: .55rem; text-align: center; padding: 3.25rem 1.5rem; }
+.sl-empty[hidden] { display: none; }
+.sl-empty-icon { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 16px; background: var(--sl-tint); color: var(--sl-blue); }
+.sl-empty-icon svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sl-empty-title { margin: 0; font-family: var(--sl-head); font-size: 1.05rem; font-weight: 700; color: var(--sl-ink); }
+.sl-empty-sub { margin: 0; font-size: .88rem; color: var(--sl-soft); }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 640px) {
+  .sl-top { flex-direction: column; align-items: stretch; gap: .75rem; }
+  .sl-count { height: 48px; justify-content: center; }
+}
+@media (max-width: 560px) {
+  .sl-page { padding: 1.25rem 1rem 2rem; }
+  .sl-title { font-size: 1.35rem; }
+  .sl-row { padding: 1rem 1.15rem; }
+  .sl-name { font-size: .92rem; }
+  .sl-find input { height: 50px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sl-rise { animation: none; }
+  .sl-page * { transition: none !important; }
+}

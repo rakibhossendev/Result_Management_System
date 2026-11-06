@@ -1,27 +1,114 @@
 {% extends "base/base.html" %}
-{% block title %} Assign Subject {% endblock %}
+{% block title %}Assign Subject{% endblock %}
 
-{% block content%}
-<div class="form">
-    <h2>Assign Subject page</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.department_id.label(class="ap-label")}}
-            {{ form.department_id(class="form-control")}}
-        </div>
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/assign_sub_tea_form.css') }}">
+{% endblock %}
 
-        <div class="mb-3">
-            {{ form.semester.label(class="ap-label")}}
-            {{ form.semester(class="form-control")}}
-        </div>
+{% block content %}
 
-        <div class="mb-3">
-            {{ form.subject_id.label(class="ap-label")}}
-            {{ form.subject_id(class="form-control")}}
-        </div>
-
-        <div class="mb-3">{{ form.submit() }}</div>
+{# One field = numbered label + input + validation errors (fid = custom element id) #}
+{% macro field(f, n, fid=None) %}
+{% set i = fid or f.id %}
+<div class="af-field">
+  <label class="af-label" for="{{ i }}"><span class="af-num">{{ n }}</span>{{ f.label.text }}</label>
+  {{ f(id=i, class="af-input", **{"data-step": n}) }}
+  {% for e in f.errors %}<p class="af-error" role="alert">{{ e }}</p>{% endfor %}
 </div>
+{% endmacro %}
+
+<div class="af-page">
+
+  <!-- HEADER: title (left) + back button (right) -->
+  <header class="af-header af-rise">
+    <div class="af-brand">
+      <span class="af-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      <div>
+        <h1 class="af-title">Assign subject</h1>
+        <p class="af-lead">Link a subject to a department and semester.</p>
+      </div>
+    </div>
+    <a href="{{ url_for('assign_subject_dashboard.assign_subject_dashboard') }}" class="af-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to dashboard
+    </a>
+  </header>
+
+  <form method="POST" class="af-form af-rise">
+    {{ form.hidden_tag() }}
+
+    <!-- CARD: department, semester, subject -->
+    <section class="af-card">
+      <div class="af-grid">
+        {{ field(form.department_id, 1) }}
+        {{ field(form.semester, 2) }}
+        {{ field(form.subject_id, 3) }}
+      </div>
+    </section>
+
+    <!-- BOTTOM BAR: live summary + submit -->
+    <div class="af-bar">
+      <div class="af-bar-progress" aria-hidden="true"><span data-progress></span></div>
+
+      <div class="af-bar-info">
+        <span class="af-status" data-status>0 of 3 selected</span>
+        <p class="af-summary" aria-live="polite">
+          <span class="is-empty" data-summary="1" data-placeholder="Department">Department</span>
+          <span class="af-sep">&middot;</span>
+          <span class="is-empty" data-summary="2" data-placeholder="Semester">Semester</span>
+          <span class="af-sep">&middot;</span>
+          <span class="is-empty" data-summary="3" data-placeholder="Subject">Subject</span>
+        </p>
+      </div>
+
+      {{ form.submit(class="af-submit") }}
+    </div>
+  </form>
+
+</div>
+
+<script>
+(function () {
+  var fields = document.querySelectorAll('[data-step]');
+  var bar    = document.querySelector('[data-progress]');
+  var status = document.querySelector('[data-status]');
+
+  function label(el) {
+    if (el.tagName === 'SELECT') {
+      var o = el.options[el.selectedIndex];
+      return o && el.value !== '' && el.value !== '0' ? o.text.trim() : '';
+    }
+    return el.value.trim();
+  }
+
+  function update() {
+    var done = 0;
+
+    fields.forEach(function (el) {
+      var n = el.getAttribute('data-step'), text = label(el);
+      var out   = document.querySelector('[data-summary="' + n + '"]');
+      var field = el.closest('.af-field');
+
+      if (text) done++;
+      if (field) field.classList.toggle('is-filled', !!text);
+      if (out) {
+        out.textContent = text || out.getAttribute('data-placeholder');
+        out.classList.toggle('is-empty', !text);
+      }
+    });
+
+    if (bar) bar.style.width = (done / fields.length * 100) + '%';
+    if (status) status.textContent = done === fields.length ? 'Ready to assign' : done + ' of ' + fields.length + ' selected';
+  }
+
+  fields.forEach(function (el) { el.addEventListener('change', update); el.addEventListener('input', update); });
+  update();
+})();
+</script>
 
 {% endblock %}

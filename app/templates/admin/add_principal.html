@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-{% block title %}Add Principal{% endblock %}
+{% block title %} Add Principal {% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
@@ -9,200 +9,80 @@
 
 {% block content %}
 
-<!-- Decorative blobs -->
-<div class="ap-blob ap-blob-1"></div>
-<div class="ap-blob ap-blob-2"></div>
+{% macro field(f, full=False, auto=None) -%}
+{% set cls = 'ap-input' ~ (' ap-input-error' if f.errors else '') %}
+<div class="ap-field{{ ' ap-field-full' if full }}">
+  <label class="ap-label" for="{{ f.id }}">{{ f.label.text }}{% if f.flags.required %}<span class="req" aria-hidden="true">*</span>{% endif %}</label>
+  {% if auto %}{{ f(class_=cls, autocomplete=auto) }}{% else %}{{ f(class_=cls) }}{% endif %}
+  {% for err in f.errors %}<span class="ap-error">{{ err }}</span>{% endfor %}
+</div>
+{%- endmacro %}
 
-<!-- Page Hero -->
-<section class="ap-hero">
+<div class="ap-blob ap-blob-1" aria-hidden="true"></div>
+<div class="ap-blob ap-blob-2" aria-hidden="true"></div>
+
+<!-- HERO BAR -->
+<header class="ap-hero">
   <div class="ap-hero-inner">
-    <div class="ap-hero-icon">🏫</div>
+    <div class="ap-hero-icon" aria-hidden="true">👤</div>
     <div>
-      <h1 class="ap-hero-title">Add New Principal</h1>
-      <p class="ap-hero-sub">Fill in the details below to register a principal to the system</p>
+      <h1 class="ap-hero-title">Add Principal</h1>
+      <p class="ap-hero-sub">Register a new principal account.</p>
     </div>
   </div>
-  <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-outline btn-sm ap-back-btn">
-    ← Back to Dashboard
-  </a>
-</section>
+  <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-outline btn-sm ap-back-btn">&larr; Back to dashboard</a>
+</header>
 
-<!-- Form Card -->
+<!-- FORM -->
 <div class="ap-wrapper">
   <div class="ap-card">
 
-    <!-- Card Header -->
     <div class="ap-card-header">
-      <h2 class="ap-card-title">Principal Registration Form</h2>
-      <p class="ap-card-desc">All fields marked <span class="req">*</span> are required</p>
+      <h2 class="ap-card-title">Principal details</h2>
+      <p class="ap-card-desc">Fields marked with <span class="req">*</span> are required.</p>
     </div>
 
     <form method="POST" class="ap-form" novalidate>
       {{ principal_data_form.hidden_tag() }}
 
-      <!-- ── SECTION: Identity ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">01</span> Identity Information
-        </h3>
+      <!-- 1. Personal info -->
+      <section class="ap-section">
+        <h3 class="ap-section-title"><span class="ap-section-num">1</span>Personal information</h3>
         <div class="ap-grid-2">
-
-          <div class="ap-field">
-            {{ principal_data_form.principal_id.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.principal_id(class="ap-input", placeholder="e.g. PRC-2024-001") }}
-            {% if principal_data_form.principal_id.errors %}
-              <span class="ap-error">{{ principal_data_form.principal_id.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.first_name.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.first_name(class="ap-input", placeholder="Enter first name") }}
-            {% if principal_data_form.first_name.errors %}
-              <span class="ap-error">{{ principal_data_form.first_name.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.last_name.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.last_name(class="ap-input", placeholder="Enter last name") }}
-            {% if principal_data_form.last_name.errors %}
-              <span class="ap-error">{{ principal_data_form.last_name.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.mobile_number.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.mobile_number(class="ap-input", placeholder="e.g. 01XXXXXXXXX") }}
-            {% if principal_data_form.mobile_number.errors %}
-              <span class="ap-error">{{ principal_data_form.mobile_number.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field ap-field-full">
-            {{ principal_data_form.email.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.email(class="ap-input", placeholder="principal@school.edu") }}
-            {% if principal_data_form.email.errors %}
-              <span class="ap-error">{{ principal_data_form.email.errors[0] }}</span>
-            {% endif %}
-          </div>
-
+          {{ field(principal_data_form.principal_id) }}
+          {{ field(principal_data_form.mobile_number, auto='tel') }}
+          {{ field(principal_data_form.first_name) }}
+          {{ field(principal_data_form.last_name) }}
+          {{ field(principal_data_form.email, full=True, auto='email') }}
         </div>
-      </div>
+      </section>
 
-      <!-- ── SECTION: Institute ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">02</span> Institute Details
-        </h3>
+      <!-- 2. Institute -->
+      <section class="ap-section">
+        <h3 class="ap-section-title"><span class="ap-section-num">2</span>Institute</h3>
         <div class="ap-grid-2">
-
-          <div class="ap-field ap-field-full">
-            {{ principal_data_form.institute.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.institute(class="ap-input", placeholder="Full institute name") }}
-            {% if principal_data_form.institute.errors %}
-              <span class="ap-error">{{ principal_data_form.institute.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.institute_code.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.institute_code(class="ap-input", placeholder="e.g. INST-001") }}
-            {% if principal_data_form.institute_code.errors %}
-              <span class="ap-error">{{ principal_data_form.institute_code.errors[0] }}</span>
-            {% endif %}
-          </div>
-
+          {{ field(principal_data_form.institute) }}
+          {{ field(principal_data_form.institute_code) }}
         </div>
-      </div>
+      </section>
 
-      <!-- ── SECTION: Account Credentials ── -->
-      <div class="ap-section">
-        <h3 class="ap-section-title">
-          <span class="ap-section-num">03</span> Account Credentials
-        </h3>
+      <!-- 3. Account -->
+      <section class="ap-section">
+        <h3 class="ap-section-title"><span class="ap-section-num">3</span>Account</h3>
         <div class="ap-grid-2">
-
-          <div class="ap-field ap-field-full">
-            {{ principal_data_form.username.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.username(class="ap-input", placeholder="Choose a username") }}
-            {% if principal_data_form.username.errors %}
-              <span class="ap-error">{{ principal_data_form.username.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.password.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.password(class="ap-input", placeholder="Create a strong password") }}
-            {% if principal_data_form.password.errors %}
-              <span class="ap-error">{{ principal_data_form.password.errors[0] }}</span>
-            {% endif %}
-          </div>
-
-          <div class="ap-field">
-            {{ principal_data_form.retype_password.label(class="ap-label") }}
-            <span class="req">*</span>
-            {{ principal_data_form.retype_password(class="ap-input", placeholder="Repeat the password") }}
-            {% if principal_data_form.retype_password.errors %}
-              <span class="ap-error">{{ principal_data_form.retype_password.errors[0] }}</span>
-            {% endif %}
-          </div>
-
+          {{ field(principal_data_form.username, full=True, auto='username') }}
+          {{ field(principal_data_form.password, auto='new-password') }}
+          {{ field(principal_data_form.retype_password, auto='new-password') }}
         </div>
-      </div>
+      </section>
 
-      <!-- ── Actions ── -->
       <div class="ap-actions">
-        <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-secondary">
-          Cancel
-        </a>
+        <a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
         {{ principal_data_form.submit(class="btn btn-primary ap-submit") }}
       </div>
-
     </form>
+
   </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Animate card in
-  const card = document.querySelector('.ap-card');
-  if (card) {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(28px)';
-    requestAnimationFrame(() => {
-      card.style.transition = 'opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1)';
-      card.style.opacity = '1';
-      card.style.transform = 'translateY(0)';
-    });
-  }
-
-  // Live validation highlight
-  document.querySelectorAll('.ap-input').forEach(input => {
-    input.addEventListener('blur', () => {
-      if (input.value.trim() === '') {
-        input.classList.add('ap-input-error');
-      } else {
-        input.classList.remove('ap-input-error');
-        input.classList.add('ap-input-ok');
-      }
-    });
-    input.addEventListener('focus', () => {
-      input.classList.remove('ap-input-error');
-    });
-  });
-});
-</script>
 {% endblock %}

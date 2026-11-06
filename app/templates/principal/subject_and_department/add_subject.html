@@ -50,7 +50,7 @@
 
                 <div class="af-field">
                     {{ form.subject_code.label(class="ap-label") }}
-                    {{ form.subject_code(class="form-control", placeholder="e.g. CS101") }}
+                    {{ form.subject_code(class="form-control", placeholder="e.g. 28541") }}
                     {% for error in form.subject_code.errors %}
                         <div class="af-error">{{ error }}</div>
                     {% endfor %}
@@ -58,7 +58,7 @@
 
                 <div class="af-field">
                     {{ form.subject_name.label(class="ap-label") }}
-                    {{ form.subject_name(class="form-control", placeholder="e.g. Data Structures") }}
+                    {{ form.subject_name(class="form-control", placeholder="e.g. Java programming") }}
                     {% for error in form.subject_name.errors %}
                         <div class="af-error">{{ error }}</div>
                     {% endfor %}

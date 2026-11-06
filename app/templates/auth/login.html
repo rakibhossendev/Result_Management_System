@@ -12,194 +12,145 @@
   <div class="decoration-circle decoration-circle-1"></div>
   <div class="decoration-circle decoration-circle-2"></div>
 
-  <!-- Hero Section -->
-  <section class="login-hero">
-    <div class="hero-content">
-      <h1>Welcome Back</h1>
-      <p>Sign in to access your results and academic information</p>
-    </div>
-  </section>
+  <main class="lg-page">
+    <div class="lg-card">
 
-  <!-- Login Container -->
-  <div class="container">
-    <!-- Login Card -->
-    <div class="login-card card">
-      <!-- Card Header -->
-      <div class="card-header">
-        <h2 class="card-title">Login to Your Account</h2>
-        <p class="card-description">Enter your credentials to continue</p>
-      </div>
+      <span class="lg-accent" aria-hidden="true"></span>
+      <h1 class="lg-title">Sign in</h1>
 
-      <!-- Login Form -->
-      <form method="POST" class="login-form">
+      <!-- Login form -->
+      <form method="POST" class="lg-form">
         {% if login_form.hidden_tag %}
           {{ login_form.hidden_tag() }}
         {% endif %}
 
-        <!-- Username Input -->
-        <div class="form-group">
-          <label for="{{ login_form.username.id }}" class="form-label">
-            Username
-            <span class="required-asterisk">*</span>
-          </label>
+        <!-- Form errors -->
+        {% if login_form.errors %}
+          <div class="lg-alert" role="alert">
+            <span><strong>Error!</strong> Check your credentials and try again.</span>
+            <button type="button" class="lg-alert-close" aria-label="Close">&times;</button>
+          </div>
+        {% endif %}
+
+        <!-- Username -->
+        <div class="lg-field">
+          <label for="{{ login_form.username.id }}" class="lg-sr">Username</label>
           {{ login_form.username(
-            class="form-control",
+            class="lg-input",
             id=login_form.username.id,
-            placeholder="Enter your username",
+            placeholder="Username",
             autocomplete="username",
             required="required"
           ) }}
           {% if login_form.username.errors %}
-            <small class="form-error">
-              {{ login_form.username.errors[0] }}
-            </small>
+            <small class="lg-error">{{ login_form.username.errors[0] }}</small>
           {% endif %}
         </div>
 
-        <!-- Password Input -->
-        <div class="form-group">
-          <label for="{{ login_form.password.id }}" class="form-label">
-            Password
-            <span class="required-asterisk">*</span>
-          </label>
-          {{ login_form.password(
-            class="form-control",
-            id=login_form.password.id,
-            placeholder="Enter your password",
-            autocomplete="current-password",
-            required="required"
-          ) }}
-          {% if login_form.password.errors %}
-            <small class="form-error">
-              {{ login_form.password.errors[0] }}
-            </small>
-          {% endif %}
-        </div>
-
-        <!-- Form Errors -->
-        {% if login_form.errors %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error!</strong> Please check your credentials and try again.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <!-- Password -->
+        <div class="lg-field">
+          <label for="{{ login_form.password.id }}" class="lg-sr">Password</label>
+          <div class="lg-input-wrap">
+            {{ login_form.password(
+              class="lg-input",
+              id=login_form.password.id,
+              placeholder="Password",
+              autocomplete="current-password",
+              required="required"
+            ) }}
+            <button type="button" class="lg-toggle" aria-label="Show password" aria-pressed="false">
+              <svg class="lg-eye" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="lg-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M17.94 17.94A10.9 10.9 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/>
+                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+              </svg>
+            </button>
           </div>
-        {% endif %}
-          
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-lg login-btn">
-          Sign In
-        </button>
-
-        <!-- Remember Me & Forgot Password -->
-        <div class="login-links">
-          <label class="remember-me">
-            <input type="checkbox" name="remember" value="true">
-            <span>Remember me</span>
-          </label>
-          <a href="#" class="forgot-password-link">Forgot password?</a>
+          {% if login_form.password.errors %}
+            <small class="lg-error">{{ login_form.password.errors[0] }}</small>
+          {% endif %}
         </div>
+
+        <!-- Remember me + forgot password -->
+        <div class="lg-row">
+          <label class="lg-check">
+            {# Needs backend support to actually persist the session, e.g. login_user(user, remember=bool(request.form.get('remember'))) #}
+            <input type="checkbox" name="remember" class="lg-check-input">
+            <span class="lg-check-box" aria-hidden="true"></span>
+            Remember me
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="lg-btn">Sign In</button>
       </form>
 
-      <!-- Footer CTA -->
-      <div class="login-footer">
-        <p class="text-muted">Not a staff member?</p>
-        <a href="{{ url_for('home.home') }}" class="btn-link">
-          Return to Student Search
-        </a>
-      </div>
+      <!-- Student search -->
+      <a href="{{ url_for('home.home') }}" class="lg-link">&larr; Sign as Student</a>
+
     </div>
-  </div>
-
-  <!-- Additional Info Section -->
-  <section class="login-info-section">
-    <div class="container">
-      <div class="info-grid">
-        <!-- Security Info -->
-        <div class="info-card">
-          <div class="info-icon">🔒</div>
-          <h3>Secure</h3>
-          <p>Your data is encrypted and protected with industry-standard security</p>
-        </div>
-
-        <!-- Support Info -->
-        <div class="info-card">
-          <div class="info-icon">💬</div>
-          <h3>Support</h3>
-          <p>Contact our support team if you need help accessing your account</p>
-        </div>
-
-        <!-- Privacy Info -->
-        <div class="info-card">
-          <div class="info-icon">📋</div>
-          <h3>Privacy</h3>
-          <p>Your information is confidential and used only for academic purposes</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  </main>
 {% endblock %}
 
 {% block extra_js %}
   <script>
-    // Enhanced form validation
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.querySelector('.login-form');
-      const usernameInput = form.querySelector('input[type="text"]');
-      const passwordInput = form.querySelector('input[type="password"]');
+    document.addEventListener('DOMContentLoaded', function () {
+      var form = document.querySelector('.lg-form');
+      if (!form) return;
 
-      // Username validation
-      usernameInput.addEventListener('blur', function() {
-        if (this.value.trim() === '') {
-          this.classList.add('error');
-        } else {
-          this.classList.remove('error');
+      var user   = form.querySelector('input[type="text"]');
+      var pass   = form.querySelector('input[type="password"]');
+      var toggle = form.querySelector('.lg-toggle');
+
+      function check(input) {
+        if (input.value.trim() === '') {
+          input.classList.add('is-error');
+          return false;
         }
-      });
+        input.classList.remove('is-error');
+        return true;
+      }
 
-      usernameInput.addEventListener('focus', function() {
-        this.classList.remove('error');
-      });
-
-      // Password validation
-      passwordInput.addEventListener('blur', function() {
-        if (this.value.trim() === '') {
-          this.classList.add('error');
-        } else {
-          this.classList.remove('error');
-        }
-      });
-
-      passwordInput.addEventListener('focus', function() {
-        this.classList.remove('error');
+      // Field validation
+      [user, pass].forEach(function (input) {
+        if (!input) return;
+        input.addEventListener('blur', function () { check(input); });
+        input.addEventListener('focus', function () { input.classList.remove('is-error'); });
       });
 
       // Form submission
-      form.addEventListener('submit', function(e) {
-        let isValid = true;
-
-        if (usernameInput.value.trim() === '') {
-          usernameInput.classList.add('error');
-          isValid = false;
-        }
-
-        if (passwordInput.value.trim() === '') {
-          passwordInput.classList.add('error');
-          isValid = false;
-        }
-
-        if (!isValid) {
-          e.preventDefault();
-        }
+      form.addEventListener('submit', function (e) {
+        var ok = true;
+        [user, pass].forEach(function (input) {
+          if (input && !check(input)) ok = false;
+        });
+        if (!ok) e.preventDefault();
       });
 
-      // Auto-dismiss alerts after 5 seconds
-      const alerts = document.querySelectorAll('.alert');
-      alerts.forEach(alert => {
-        setTimeout(() => {
-          alert.style.transition = 'opacity 0.3s ease-out';
-          alert.style.opacity = '0';
-          setTimeout(() => alert.remove(), 300);
-        }, 5000);
+      // Show / hide password
+      if (toggle && pass) {
+        toggle.addEventListener('click', function () {
+          var show = pass.type === 'password';
+          pass.type = show ? 'text' : 'password';
+          toggle.classList.toggle('is-on', show);
+          toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+          toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+      }
+
+      // Error alert: close button + auto-dismiss after 5 seconds
+      document.querySelectorAll('.lg-alert').forEach(function (alertBox) {
+        function close() {
+          alertBox.style.transition = 'opacity 0.3s ease-out';
+          alertBox.style.opacity = '0';
+          setTimeout(function () { alertBox.remove(); }, 300);
+        }
+        var btn = alertBox.querySelector('.lg-alert-close');
+        if (btn) btn.addEventListener('click', close);
+        setTimeout(close, 5000);
       });
     });
   </script>

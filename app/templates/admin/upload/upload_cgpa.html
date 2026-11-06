@@ -1,111 +1,186 @@
 {% extends "base/base.html" %}
+{% block title %}Upload CGPA PDF{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="dash-blob dash-blob-1"></div>
+<div class="dash-blob dash-blob-2"></div>
 
-    <h3 class="mb-4">
-        Upload CGPA PDF
-    </h3>
+<main class="pu-page">
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-    >
+  <!-- Header -->
+  <header class="up-head">
+    <div class="up-head-left">
+      <div class="up-head-icon">
+        <svg viewBox="0 0 24 24">
+          <polyline points="16 16 12 12 8 16"/>
+          <line x1="12" y1="12" x2="12" y2="21"/>
+          <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+        </svg>
+      </div>
+      <h1 class="up-title">Upload CGPA PDF</h1>
+    </div>
+    <a href="{{ url_for('upload_dashboard.upload_dashboard') }}" class="up-back">← Back</a>
+  </header>
 
-        <div class="mb-3">
+  <!-- Upload panel -->
+  <section class="pu-panel" aria-label="Upload PDF files">
 
-            <label class="form-label">
-                Select PDF files
-            </label>
+    <form method="POST" enctype="multipart/form-data" id="pu-form">
 
-            <input
-                type="file"
-                name="pdf_files"
-                class="form-control"
-                accept=".pdf"
-                multiple
-                required
-            >
+      <div class="pu-box" id="pu-box">
 
-            <small class="text-muted">
-                You can upload multiple PDF files.
-            </small>
+        <!-- Choose files -->
+        <label class="pu-pick">
+          <input
+            type="file"
+            name="pdf_files"
+            id="pdf_files"
+            accept=".pdf"
+            multiple
+            required
+          >
+          <span class="pu-drop-icon">
+            <svg viewBox="0 0 24 24">
+              <polyline points="16 16 12 12 8 16"/>
+              <line x1="12" y1="12" x2="12" y2="21"/>
+              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+            </svg>
+          </span>
+          <span class="pu-drop-title">Choose or drop PDF files</span>
+          <span class="pu-drop-hint">You can upload multiple PDF files.</span>
+        </label>
 
+        <!-- Selected files (shown after choosing) -->
+        <div class="pu-picked" id="pu-picked" hidden>
+          <p class="pu-count" id="pu-count"></p>
+          <ul class="pu-selected" id="pu-selected"></ul>
         </div>
 
-        <button
-            type="submit"
-            class="btn btn-primary"
-        >
-            Upload PDFs
+        <!-- Upload button, at the bottom of the drop box -->
+        <button type="submit" class="pu-submit" id="pu-submit">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>Upload PDFs</span>
         </button>
 
+      </div>
+
     </form>
+  </section>
 
+  <p class="pu-note">Uploaded files can be viewed under Show Imported Files.</p>
 
-    <hr class="my-4">
+</main>
 
+{% endblock %}
 
-    <h5>
-        Uploaded PDF Files
-    </h5>
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
 
-    <div class="table-responsive">
+    var form   = document.getElementById('pu-form');
+    var box    = document.getElementById('pu-box');
+    var input  = document.getElementById('pdf_files');
+    var picked = document.getElementById('pu-picked');
+    var list   = document.getElementById('pu-selected');
+    var count  = document.getElementById('pu-count');
+    var submit = document.getElementById('pu-submit');
+    var label  = submit.querySelector('span');
 
-        <table class="table table-bordered">
+    var PDF_ICON =
+      '<svg viewBox="0 0 24 24">' +
+      '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
+      '<polyline points="14 2 14 8 20 8"/>' +
+      '<line x1="16" y1="13" x2="8" y2="13"/>' +
+      '<line x1="16" y1="17" x2="8" y2="17"/>' +
+      '</svg>';
 
-            <thead>
+    function fmt(bytes) {
+      return bytes < 1048576
+        ? Math.max(1, Math.round(bytes / 1024)) + ' KB'
+        : (bytes / 1048576).toFixed(1) + ' MB';
+    }
 
-                <tr>
-                    <th>#</th>
-                    <th>File Name</th>
-                    <th>Uploaded At</th>
-                </tr>
+    /* ---------- selected files preview + button text ---------- */
+    function update() {
+      var files = Array.prototype.slice.call(input.files);
 
-            </thead>
+      list.innerHTML = '';
+      picked.hidden = files.length === 0;
 
-            <tbody>
+      if (files.length === 0) {
+        label.textContent = 'Upload PDFs';
+        return;
+      }
 
-                {% for file in files %}
+      count.textContent = files.length === 1 ? '1 file selected' : files.length + ' files selected';
+      label.textContent = files.length === 1 ? 'Upload 1 PDF' : 'Upload ' + files.length + ' PDFs';
 
-                <tr>
+      files.forEach(function (f) {
+        var li   = document.createElement('li');
+        li.className = 'pu-sel-item';
 
-                    <td>
-                        {{ loop.index }}
-                    </td>
+        var icon = document.createElement('span');
+        icon.className = 'pu-sel-icon';
+        icon.innerHTML = PDF_ICON;
 
-                    <td>
-                        {{ file.filename }}
-                    </td>
+        var name = document.createElement('span');
+        name.className = 'pu-sel-name';
+        name.textContent = f.name;
 
-                    <td>
-                        {{ file.uploaded_at }}
-                    </td>
+        var size = document.createElement('span');
+        size.className = 'pu-sel-size';
+        size.textContent = fmt(f.size);
 
-                </tr>
+        li.appendChild(icon);
+        li.appendChild(name);
+        li.appendChild(size);
+        list.appendChild(li);
+      });
+    }
 
-                {% else %}
+    input.addEventListener('change', update);
 
-                <tr>
+    /* ---------- drag and drop anywhere on the box ---------- */
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      box.addEventListener(ev, function (e) {
+        e.preventDefault();
+        box.classList.add('is-over');
+      });
+    });
 
-                    <td
-                        colspan="3"
-                        class="text-center"
-                    >
-                        No PDF uploaded yet.
-                    </td>
+    box.addEventListener('dragleave', function (e) {
+      if (!box.contains(e.relatedTarget)) box.classList.remove('is-over');
+    });
 
-                </tr>
+    box.addEventListener('drop', function (e) {
+      e.preventDefault();
+      box.classList.remove('is-over');
 
-                {% endfor %}
+      var dropped = Array.prototype.filter.call(e.dataTransfer.files, function (f) {
+        return /\.pdf$/i.test(f.name);
+      });
+      if (!dropped.length) return;
 
-            </tbody>
+      var dt = new DataTransfer();
+      dropped.forEach(function (f) { dt.items.add(f); });
+      input.files = dt.files;
+      update();
+    });
 
-        </table>
-
-    </div>
-
-</div>
-
+    /* ---------- uploading state ---------- */
+    form.addEventListener('submit', function () {
+      submit.classList.add('is-loading');
+      label.textContent = 'Uploading…';
+    });
+  });
+</script>
 {% endblock %}

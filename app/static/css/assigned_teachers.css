@@ -1,0 +1,180 @@
+/* ============================================
+   ASSIGNED_TEACHERS.CSS  (header + semester dropdown + teacher list)
+   Builds on colors.css + styles.css. All classes: .at-
+   ============================================ */
+
+:root {
+  --at-sky:     #5aabf6;
+  --at-blue:    #2f86e0;
+  --at-blue-d:  #2a6fb8;
+  --at-cyan:    #2bb5ec;
+  --at-ring:    rgba(47, 134, 224, .25);
+  --at-ink:     var(--text-dark, #1a1a1a);
+  --at-muted:   var(--medium-gray, #6c757d);
+  --at-soft:    #6b7a90;
+  --at-line:    #dde7f3;
+  --at-tint:    #e8f3fd;
+  --at-danger:  #dc2626;
+  --at-head:    'Poppins', sans-serif;
+
+  /* shared column layout for the heading row + every teacher row */
+  --at-cols:    minmax(0, 1.6fr) minmax(0, 1.2fr) 120px 56px;
+}
+
+@keyframes at-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.at-rise { animation: at-rise .5s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* ── PAGE + HEADER ────────────────────────── */
+.at-page { max-width: 1040px; margin: 0 auto; padding: 2rem 1.5rem 3rem; color: var(--at-ink); }
+
+.at-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.at-brand { display: flex; align-items: center; gap: 1rem; }
+.at-icon { width: 48px; height: 48px; flex-shrink: 0; display: grid; place-items: center; border-radius: 14px; background: #fff; border: 1px solid var(--at-line); color: var(--at-blue); }
+.at-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.at-title {
+  display: inline-block; margin: 0; padding-bottom: .1em;
+  font-family: var(--at-head); font-size: 1.6rem; font-weight: 700; line-height: 1.2; letter-spacing: 0;
+  background: linear-gradient(90deg, var(--at-blue) 0%, var(--at-cyan) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.at-lead { margin: .1rem 0 0; font-size: .9rem; color: var(--at-soft); }
+
+.at-back {
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .6rem 1.15rem; border: 1.5px solid var(--at-line); border-radius: 999px;
+  background: #fff; font-size: .86rem; font-weight: 600; color: var(--at-muted); text-decoration: none;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.at-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.at-back:hover { color: var(--at-blue-d); border-color: #b7cde8; background: var(--at-tint); }
+.at-back:focus-visible, .at-del:focus-visible { outline: 3px solid var(--at-ring); outline-offset: 2px; }
+
+/* ── MAIN CARD ────────────────────────────── */
+.at-card {
+  background: #fff; border: 1px solid var(--at-line); border-radius: 20px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(47, 134, 224, .05), 0 20px 48px rgba(47, 134, 224, .08);
+}
+
+/* ── TOOLBAR: dropdown + count ────────────── */
+.at-toolbar {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem 1rem;
+  min-height: 70px; padding: 1rem 1.5rem; border-bottom: 1px solid var(--at-line);
+}
+
+.at-filter { display: flex; align-items: center; }
+
+/* semester dropdown */
+.at-select { display: flex; align-items: center; gap: .75rem; margin: 0; cursor: pointer; }
+.at-select-label { font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--at-soft); }
+
+.at-select-wrap { position: relative; display: block; }
+.at-select-wrap select {
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  min-width: 190px; height: 42px; padding: 0 2.6rem 0 1.1rem;
+  border: 1.5px solid var(--at-line); border-radius: 999px; background: #f8fbff;
+  font: inherit; font-size: .88rem; font-weight: 600; color: var(--at-ink); cursor: pointer;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.at-select-wrap select:hover { border-color: #b7cde8; background: #fff; }
+.at-select-wrap select:focus { outline: none; background: #fff; border-color: var(--at-blue); box-shadow: 0 0 0 4px var(--at-ring); }
+.at-select-wrap svg {
+  position: absolute; right: 14px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%);
+  fill: none; stroke: var(--at-soft); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+  transition: stroke .15s;
+}
+.at-select-wrap select:focus + svg { stroke: var(--at-blue); }
+
+.at-count { display: flex; align-items: baseline; gap: .5rem; margin: 0 0 0 auto; }
+.at-count strong { font-family: var(--at-head); font-size: 1.4rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; color: var(--at-blue-d); }
+.at-count span { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--at-soft); }
+
+/* ── COLUMN HEADINGS ──────────────────────── */
+.at-cols {
+  display: grid; grid-template-columns: var(--at-cols); align-items: center; gap: 1rem;
+  padding: .75rem 1.5rem; border-bottom: 1px solid var(--at-line); background: #f8fbff;
+  font-size: .7rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--at-soft);
+}
+.at-cols span:nth-child(3) { text-align: center; }
+.at-cols span:last-child   { text-align: right; }
+
+/* ── TEACHER ROWS ─────────────────────────── */
+.at-list { margin: 0; padding: 0; list-style: none; }
+
+.at-row {
+  display: grid; grid-template-columns: var(--at-cols); align-items: center; gap: 1rem;
+  padding: 1rem 1.5rem; border-bottom: 1px solid var(--at-line);
+  transition: background-color .15s;
+}
+.at-row:last-child { border-bottom: 0; }
+.at-row:hover { background: #f8fbff; }
+.at-row[hidden] { display: none; }
+
+.at-person { display: flex; align-items: center; gap: .85rem; min-width: 0; }
+
+.at-avatar {
+  width: 42px; height: 42px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%;
+  background: var(--at-tint); color: var(--at-blue-d);
+  font-family: var(--at-head); font-size: .85rem; font-weight: 600; letter-spacing: .02em;
+}
+
+.at-name {
+  min-width: 0;
+  font-family: var(--at-head); font-size: .95rem; font-weight: 500; line-height: 1.4;
+  letter-spacing: .01em; word-spacing: .08em; text-transform: capitalize;
+  color: var(--at-ink); overflow-wrap: anywhere;
+}
+
+.at-dept { min-width: 0; font-size: .9rem; color: var(--at-soft); text-transform: capitalize; overflow-wrap: anywhere; }
+
+/* semester badge: fixed width so every row lines up */
+.at-sem-cell { display: flex; justify-content: center; }
+.at-sem {
+  display: inline-block; width: 100px; padding: .32rem 0; border-radius: 999px; text-align: center;
+  background: var(--at-tint); color: var(--at-blue-d);
+  font-size: .78rem; font-weight: 700; letter-spacing: .02em; line-height: 1.3; white-space: nowrap;
+}
+
+/* action: small round trash icon */
+.at-form { margin: 0; display: flex; justify-content: flex-end; }
+
+.at-del {
+  width: 36px; height: 36px; display: grid; place-items: center; padding: 0;
+  border: 1.5px solid #fecaca; border-radius: 50%; background: #fff; color: var(--at-danger); cursor: pointer;
+  transition: background-color .15s, border-color .15s, transform .15s;
+}
+.at-del svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.at-del:hover { background: #fee2e2; border-color: #fca5a5; }
+.at-del:active { transform: scale(.94); }
+
+/* ── EMPTY STATES ─────────────────────────── */
+.at-empty { display: flex; flex-direction: column; align-items: center; gap: .55rem; text-align: center; padding: 3.25rem 1.5rem; }
+.at-empty[hidden] { display: none; }
+.at-empty-icon { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 16px; background: var(--at-tint); color: var(--at-blue); }
+.at-empty-icon svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.at-empty-title { margin: 0; font-family: var(--at-head); font-size: 1.05rem; font-weight: 700; color: var(--at-ink); }
+.at-empty-sub { margin: 0; font-size: .88rem; color: var(--at-soft); }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 760px) {
+  .at-cols { display: none; }
+
+  .at-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+  .at-person { flex: 1 1 100%; }
+  .at-dept { flex: 1 1 auto; }
+  .at-sem { width: auto; padding: .32rem .8rem; }
+  .at-form { margin-left: auto; }
+}
+@media (max-width: 560px) {
+  .at-page { padding: 1.25rem 1rem 2rem; }
+  .at-title { font-size: 1.35rem; }
+  .at-toolbar { padding: .9rem 1.15rem; }
+  .at-select-label { display: none; }
+  .at-select-wrap select { min-width: 160px; }
+  .at-row { padding: 1rem 1.15rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .at-rise { animation: none; }
+  .at-page * { transition: none !important; }
+}

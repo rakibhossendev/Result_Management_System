@@ -1,7 +1,8 @@
 {% extends "base/base.html" %}
-{% block title %} Add teacher {% endblock %}
+{% block title %}Add Teacher{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/add_teacher.css') }}">
@@ -9,101 +10,167 @@
 
 {% block content %}
 
-<div class="at-page-header">
-    <div class="at-header-left">
-        <div class="at-header-icon">👨‍🏫</div>
-        <div>
-            <h1>Add New Teacher</h1>
-            <p>Fill in the details below to register a teacher to the system</p>
-        </div>
-    </div>
-    <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="at-back-btn">
-        <span>&larr;</span> Back to Dashboard
-    </a>
+{% macro field(f, full=False, toggle=False, auto='off') %}
+<div class="nt-field{% if full %} nt-field--full{% endif %}{% if f.errors %} nt-field--error{% endif %}">
+  <label class="nt-label" for="{{ f.id }}">{{ f.label.text }}{% if f.flags.required %}<span class="nt-req">*</span>{% endif %}</label>
+  <div class="nt-control{% if toggle %} nt-control--pw{% endif %}">
+    {{ f(class="nt-input", autocomplete=auto) }}
+    {% if toggle %}
+    <button type="button" class="nt-eye" data-toggle="{{ f.id }}" aria-label="Show or hide password">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+    {% endif %}
+  </div>
+  {% for error in f.errors %}
+  <p class="nt-error">{{ error }}</p>
+  {% endfor %}
 </div>
+{% endmacro %}
 
-<div class="card form-box">
+<div class="nt-page">
 
-    <div class="at-banner">
-        <h2>Teacher Registration Form</h2>
-        <p>All fields marked <span class="at-required">*</span> are required</p>
-    </div>
+  <header class="nt-header">
+    <h1 class="nt-title">Add teacher</h1>
+    <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="nt-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Dashboard
+    </a>
+  </header>
 
-    <form method="POST">
+  <section class="nt-card">
+
+    <!-- progress bar -->
+    <div class="nt-bar"><span class="nt-bar-fill"></span></div>
+
+    <div class="nt-inner">
+
+      <!-- step dots -->
+      <ol class="nt-steps" aria-label="Progress">
+        <li class="nt-dot is-active"><button type="button"><span class="nt-dot-num">1</span><span class="nt-dot-label">Personal</span></button></li>
+        <li class="nt-dot"><button type="button"><span class="nt-dot-num">2</span><span class="nt-dot-label">Institute</span></button></li>
+        <li class="nt-dot"><button type="button"><span class="nt-dot-num">3</span><span class="nt-dot-label">Contact</span></button></li>
+        <li class="nt-dot"><button type="button"><span class="nt-dot-num">4</span><span class="nt-dot-label">Account</span></button></li>
+      </ol>
+
+      <form method="POST" class="nt-form" novalidate>
         {{ add_teacher_form.hidden_tag() }}
 
-        <div class="at-section-title">
-            <span class="at-step">01</span>
-            <span>PERSONAL INFORMATION</span>
+        <!-- step 1 -->
+        <div class="nt-panel is-active">
+          {{ field(add_teacher_form.teacher_id, full=True) }}
+          {{ field(add_teacher_form.first_name) }}
+          {{ field(add_teacher_form.last_name) }}
         </div>
 
-        <div class="mb-3">
-            {{ add_teacher_form.teacher_id.label(class="ap-label")}}
-            {{ add_teacher_form.teacher_id(class="form-control")}}
-        </div>
-        <div class="mb-3">
-            {{ add_teacher_form.first_name.label(class="ap-label")}}
-            {{ add_teacher_form.first_name(class="form-control")}}
-        </div>
-        <div class="mb-3">
-            {{ add_teacher_form.last_name.label(class="ap-label")}}
-            {{ add_teacher_form.last_name(class="form-control")}}
+        <!-- step 2 -->
+        <div class="nt-panel">
+          {{ field(add_teacher_form.institute) }}
+          {{ field(add_teacher_form.institute_code) }}
         </div>
 
-        <div class="at-section-title">
-            <span class="at-step">02</span>
-            <span>INSTITUTE DETAILS</span>
+        <!-- step 3 -->
+        <div class="nt-panel">
+          {{ field(add_teacher_form.phone, auto='tel') }}
+          {{ field(add_teacher_form.email, auto='email') }}
         </div>
 
-        <div class="mb-3">
-            {{ add_teacher_form.institute.label(class="ap-label")}}
-            {{ add_teacher_form.institute(class="form-control")}}
-        </div>
-        <div class="mb-3">
-            {{ add_teacher_form.institute_code.label(class="ap-label")}}
-            {{ add_teacher_form.institute_code(class="form-control")}}
+        <!-- step 4 -->
+        <div class="nt-panel">
+          {{ field(add_teacher_form.username, full=True, auto='username') }}
+          {{ field(add_teacher_form.password, toggle=True, auto='new-password') }}
+          {{ field(add_teacher_form.retype_password, toggle=True, auto='new-password') }}
         </div>
 
-        <div class="at-section-title">
-            <span class="at-step">03</span>
-            <span>CONTACT INFORMATION</span>
+        <!-- buttons -->
+        <div class="nt-footer">
+          <div class="nt-footer-left">
+            <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="nt-ghost" data-cancel>Cancel</a>
+            <button type="button" class="nt-ghost" data-prev hidden>Back</button>
+          </div>
+          <div class="nt-footer-right">
+            <button type="button" class="nt-next" data-next hidden>
+              Next
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+            </button>
+            <span data-submit>{{ add_teacher_form.submit(value="Add Teacher", class="nt-submit") }}</span>
+          </div>
         </div>
+      </form>
 
-        <div class="mb-3">
-            {{ add_teacher_form.phone.label(class="ap-label")}}
-            {{ add_teacher_form.phone(class="form-control")}}
-        </div>
-        <div class="mb-3">
-            {{ add_teacher_form.email.label(class="ap-label")}}
-            {{ add_teacher_form.email(class="form-control")}}
-        </div>
-
-        <div class="at-section-title">
-            <span class="at-step">04</span>
-            <span>ACCOUNT CREDENTIALS</span>
-        </div>
-
-        <div class="mb-3">
-            {{ add_teacher_form.username.label(class="ap-label")}}
-            {{ add_teacher_form.username(class="form-control")}}
-        </div>
-        <div class="mb-3">
-            {{ add_teacher_form.password.label(class="ap-label")}}
-            {{ add_teacher_form.password(class="form-control")}}
-        </div>
-        <div class="mb-3">
-            {{ add_teacher_form.retype_password .label(class="ap-label")}}
-            {{ add_teacher_form.retype_password (class="form-control")}}
-        </div>
-
-        <div class="mb-3 form-actions">
-            <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="btn-cancel">Cancel</a>
-            {{ add_teacher_form.submit(value="Add Teacher", class="btn-submit") }}
-        </div>
-
-    </form>
+    </div>
+  </section>
 
 </div>
 
+<script>
+(function () {
+  var form = document.querySelector('.nt-form');
+  if (!form) return;
+  form.classList.add('nt-js');
+
+  var panels = [].slice.call(form.querySelectorAll('.nt-panel'));
+  var dots   = [].slice.call(document.querySelectorAll('.nt-dot'));
+  var bar    = document.querySelector('.nt-bar-fill');
+  var cancel = form.querySelector('[data-cancel]');
+  var prev   = form.querySelector('[data-prev]');
+  var next   = form.querySelector('[data-next]');
+  var submit = form.querySelector('[data-submit]');
+  var cur = 0;
+  var last = panels.length - 1;
+
+  function show(n) {
+    cur = n;
+    panels.forEach(function (p, i) { p.classList.toggle('is-active', i === n); });
+    dots.forEach(function (d, i) {
+      d.classList.toggle('is-active', i === n);
+      d.classList.toggle('is-done', i < n);
+    });
+    bar.style.width = ((n + 1) / panels.length * 100) + '%';
+    cancel.hidden = n !== 0;
+    prev.hidden   = n === 0;
+    next.hidden   = n === last;
+    submit.hidden = n !== last;
+  }
+
+  function stepIsValid() {
+    var inputs = panels[cur].querySelectorAll('input');
+    for (var i = 0; i < inputs.length; i++) {
+      if (!inputs[i].checkValidity()) { inputs[i].reportValidity(); return false; }
+    }
+    return true;
+  }
+
+  next.addEventListener('click', function () { if (stepIsValid()) show(cur + 1); });
+  prev.addEventListener('click', function () { show(cur - 1); });
+
+  dots.forEach(function (d, i) {
+    d.querySelector('button').addEventListener('click', function () { if (i < cur) show(i); });
+  });
+
+  // Enter moves to the next step instead of submitting early
+  form.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT' && cur < last) {
+      e.preventDefault();
+      next.click();
+    }
+  });
+
+  // password show/hide
+  form.querySelectorAll('.nt-eye').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var input = document.getElementById(btn.getAttribute('data-toggle'));
+      if (!input) return;
+      var showPw = input.type === 'password';
+      input.type = showPw ? 'text' : 'password';
+      btn.classList.toggle('is-on', showPw);
+    });
+  });
+
+  // after a failed submit, jump to the first step that has an error
+  var errIdx = -1;
+  panels.forEach(function (p, i) { if (errIdx < 0 && p.querySelector('.nt-field--error')) errIdx = i; });
+  show(errIdx > -1 ? errIdx : 0);
+})();
+</script>
 
 {% endblock %}

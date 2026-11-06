@@ -1,86 +1,146 @@
 {% extends "base/base.html" %}
+{% block title %}Assigned Teachers{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/assigned_teachers.css') }}">
+{% endblock %}
 
 {% block content %}
 
-<div class="container mt-4">
+{% set items = assignments|list %}
+{% set semesters = items|map(attribute='semester')|unique|sort|list %}
 
-    <h3 class="mb-4">Assigned Teachers</h3>
+<div class="at-page">
 
-    <div class="table-responsive">
+  <!-- HEADER: title (left) + back button (right) -->
+  <header class="at-header at-rise">
+    <div class="at-brand">
+      <span class="at-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </span>
+      <div>
+        <h1 class="at-title">Assigned teachers</h1>
+        <p class="at-lead">Teachers teaching this subject.</p>
+      </div>
+    </div>
+    <a href="{{ url_for('view_assigned.view_assigned') }}" class="at-back">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to subjects
+    </a>
+  </header>
 
-        <table class="table table-bordered table-hover align-middle">
+  <section class="at-card at-rise" style="animation-delay:.06s" aria-label="Assigned teacher list">
 
-            <thead class="table-dark">
-                <tr>
-                    <th>Teacher</th>
-                    <th>Department</th>
-                    <th>Semester</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+    {% if items %}
 
-            <tbody>
+    <!-- TOOLBAR: semester dropdown (left) + count (right) -->
+    <div class="at-toolbar">
+      <div class="at-filter">
+        {% if semesters|length > 1 %}
+        <label class="at-select">
+          <span class="at-select-label">Semester</span>
+          <span class="at-select-wrap">
+            <select id="at-semester" aria-label="Filter by semester">
+              <option value="all">All semesters</option>
+              {% for sem in semesters %}
+              <option value="{{ sem }}">Semester {{ sem }}</option>
+              {% endfor %}
+            </select>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </label>
+        {% endif %}
+      </div>
 
-                {% for assignment in assignments %}
-
-                <tr>
-                    <td>
-                        {{ assignment.teacher.first_name }} {{ assignment.teacher.last_name }}
-                    </td>
-                    <td>
-                        {{ assignment.department.department_name }}
-                    </td>
-
-                    <td>
-                        {{ assignment.semester }}
-                    </td>
-
-                    <td>
-
-    <form
-        action="{{ url_for(
-            'view_assigned.delete_teacher_assignment',
-            assignment_id=assignment.assignment_id
-        ) }}"
-        method="POST"
-        style="display: inline;"
-    >
-
-        <button
-            type="submit"
-            class="btn btn-danger btn-sm"
-        >
-            Delete
-        </button>
-
-    </form>
-
-</td>
-
-                </tr>
-
-                {% else %}
-
-                <tr>
-
-                    <td colspan="4" class="text-center">
-                        No teacher assigned to this subject.
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
+      <p class="at-count" aria-live="polite">
+        <strong data-shown>{{ items|length }}</strong>
+        <span data-label>Teachers assigned</span>
+      </p>
     </div>
 
-    <a href="{{ url_for('view_assigned.view_assigned') }}" class="btn btn-secondary mt-3">
-        Back
-    </a>
+    <!-- COLUMN HEADINGS (desktop only) -->
+    <div class="at-cols" aria-hidden="true">
+      <span>Teacher</span>
+      <span>Department</span>
+      <span>Semester</span>
+      <span>Action</span>
+    </div>
+
+    <ul class="at-list">
+      {% for assignment in items %}
+      <li class="at-row" data-sem="{{ assignment.semester }}">
+
+        <div class="at-person">
+          <span class="at-avatar">{{ assignment.teacher.first_name[:1]|upper }}{{ assignment.teacher.last_name[:1]|upper }}</span>
+          <span class="at-name">{{ assignment.teacher.first_name }} {{ assignment.teacher.last_name }}</span>
+        </div>
+
+        <span class="at-dept">{{ assignment.department.department_name }}</span>
+
+        <span class="at-sem-cell"><span class="at-sem">Semester {{ assignment.semester }}</span></span>
+
+        <form action="{{ url_for('view_assigned.delete_teacher_assignment', assignment_id=assignment.assignment_id) }}" method="POST" class="at-form">
+          <button type="submit" class="at-del" aria-label="Remove assignment" title="Remove assignment"
+                  onclick="return confirm('Remove this teacher from the subject?');">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </form>
+
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- shown when a filter matches nothing -->
+    <div class="at-empty" id="at-nomatch" hidden>
+      <span class="at-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+      <p class="at-empty-title">No teachers in this semester</p>
+      <p class="at-empty-sub">Pick a different semester.</p>
+    </div>
+
+    {% else %}
+
+    <!-- nobody assigned -->
+    <div class="at-empty">
+      <span class="at-empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <p class="at-empty-title">No teacher assigned</p>
+      <p class="at-empty-sub">No teacher has been assigned to this subject yet.</p>
+    </div>
+
+    {% endif %}
+
+  </section>
 
 </div>
+
+{% if items %}
+<script>
+(function () {
+  var select  = document.getElementById('at-semester');
+  var rows    = document.querySelectorAll('.at-row');
+  var shown   = document.querySelector('[data-shown]');
+  var label   = document.querySelector('[data-label]');
+  var nomatch = document.getElementById('at-nomatch');
+  if (!select) return;
+
+  select.addEventListener('change', function () {
+    var f = select.value;
+    var visible = 0;
+
+    rows.forEach(function (row) {
+      var match = f === 'all' || row.getAttribute('data-sem') === f;
+      row.hidden = !match;
+      if (match) visible++;
+    });
+
+    if (shown) shown.textContent = visible;
+    if (label) label.textContent = f === 'all' ? 'Teachers assigned' : 'In semester ' + f;
+    if (nomatch) nomatch.hidden = visible !== 0;
+  });
+})();
+</script>
+{% endif %}
 
 {% endblock %}
