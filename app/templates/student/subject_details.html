@@ -1,78 +1,102 @@
 {% extends "base/base.html" %}
 
-{% block title %}
-Subject Details
+{% block title %}Subject Details{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student/subject_details.css') }}">
 {% endblock %}
 
 {% block content %}
+{% set items = marks|list %}
 
-<div class="container mt-4">
+{# totals and overall percentage (ring circumference for r=40 is 251.33) #}
+{% set full_total = total.full or 0 %}
+{% set got_total = total.obtained or 0 %}
+{% set pct_total = ([got_total|float / full_total|float * 100, 100]|min) if full_total|float > 0 else 0 %}
+{% set ring_dash = (pct_total / 100 * 251.33)|round(1) %}
 
-    <div class="card shadow">
+<div class="sdt-page">
 
-        <div class="card-header">
+    <!-- Top bar: round back button + breadcrumb -->
+    <nav class="sdt-crumbs" aria-label="Breadcrumb">
+        <a href="{{ url_for('subjects_marks.subjects_marks') }}" class="sdt-back-btn" aria-label="Back to Marks" title="Back to Marks">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        </a>
+        <ol class="sdt-crumb-list">
+            <li><a href="{{ url_for('subjects_marks.subjects_marks') }}">Subjects Marks</a></li>
+            <li aria-current="page">{{ subject.subject_name }}</li>
+        </ol>
+    </nav>
 
-            <h3>
-                {{ subject.subject_code }} - {{ subject.subject_name }}
-            </h3>
+    <article class="sdt-sheet">
 
-        </div>
+        <!-- Header: subject + total + score ring -->
+        <header class="sdt-top">
+            <div class="sdt-top-text">
+                <span class="sdt-code">Code {{ subject.subject_code }}</span>
+                <h1 class="sdt-title">{{ subject.subject_name }}</h1>
+                {% if items %}
+                {# '%g' drops the trailing .0 (125.0 shows as 125, 12.5 stays 12.5) #}
+                <p class="sdt-total"><b>{{ '%g'|format(got_total|float) }}</b> out of {{ '%g'|format(full_total|float) }} marks</p>
+                {% endif %}
+            </div>
 
-        <div class="card-body">
+            {% if items %}
+            <div class="sdt-ring" role="img" aria-label="Score {{ pct_total|round(0)|int }} percent">
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="sdt-grad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#0361cc"/>
+                            <stop offset="100%" stop-color="#00c2f0"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="sdt-ring-track" cx="50" cy="50" r="40"/>
+                    <circle class="sdt-ring-fill" cx="50" cy="50" r="40" transform="rotate(-90 50 50)" style="--dash: {{ ring_dash }}"/>
+                </svg>
+                <div class="sdt-ring-text">{{ pct_total|round(0)|int }}%</div>
+            </div>
+            {% endif %}
+        </header>
 
-            <table class="table table-bordered table-striped">
+        {% if items %}
 
-                <thead>
+        <!-- Topics -->
+        <section class="sdt-body" aria-label="Topic marks">
+            <h2 class="sdt-section-title">Topics</h2>
 
-                    <tr>
-                        <th>Topic</th>
-                        <th>Full Marks</th>
-                        <th>Obtained Marks</th>
-                    </tr>
+            <ul class="sdt-list">
+                {% for mark in items %}
+                {% set full = mark.topic.full_marks %}
+                {% set got = mark.obtained_marks %}
+                {% set pct = ([got|float / full|float * 100, 100]|min) if (full is not none and got is not none and full|float > 0) else 0 %}
+                <li class="sdt-row" style="--i: {{ loop.index0 }}">
+                    <span class="sdt-name">{{ mark.topic.marks_topic_name }}</span>
+                    <div class="sdt-bar" aria-hidden="true"><span style="width: {{ pct|round(1) }}%"></span></div>
+                    <span class="sdt-pct">{{ pct|round(0)|int }}%</span>
+                    <span class="sdt-score">
+                        <b>{{ '%g'|format(got|float) if got is not none else '–' }}</b><small>/ {{ '%g'|format(full|float) if full is not none else '–' }}</small>
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
 
-                </thead>
+        {% else %}
 
-                <tbody>
+        <!-- Empty state -->
+        <section class="sdt-empty" aria-label="No marks">
+            <span class="sdt-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z"/>
+                </svg>
+            </span>
+            <p class="sdt-empty-title">No Marks Found</p>
+            <p class="sdt-empty-sub">Marks for this subject will appear here once they are available.</p>
+        </section>
 
-                    {% for mark in marks %}
+        {% endif %}
 
-                    <tr>
-
-                        <td>{{ mark.topic.marks_topic_name }}</td>
-
-                        <td>{{ mark.topic.full_marks }}</td>
-
-                        <td>{{ mark.obtained_marks }}</td>
-
-                    </tr>
-
-                    {% else %}
-
-                    <tr>
-
-                        <td colspan="3" class="text-center">
-                            No Marks Found
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-                <tfoot>
-                    <tr class="table-dark">
-                        <th>Total</th>
-                        <th>{{ total.full or 0 }}</th>
-                        <th>{{ total.obtained or 0 }}</th>
-                    </tr>
-                </tfoot>
-            </table>
-
-        </div>
-
-    </div>
+    </article>
 
 </div>
-
 {% endblock %}
