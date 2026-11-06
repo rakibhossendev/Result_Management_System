@@ -1,0 +1,360 @@
+/* ============================================
+   EDIT_PRINCIPAL.CSS - Edit Principal form
+   Self-contained: only needs base/base.html.
+   Same blue/cyan look as the other pages.
+   Colors come from colors.css (with fallbacks).
+   ============================================ */
+
+.ep-page {
+  --ep-primary: var(--primary-color, #0b5fd0);
+  --ep-primary-dark: var(--primary-dark, #004299);
+  --ep-primary-light: var(--primary-light, #e8f0fe);
+  --ep-primary-10: var(--primary-rgba-10, rgba(11, 95, 208, .1));
+  --ep-gradient: var(--gradient-primary, linear-gradient(135deg, #0361cc 0%, #049fe8 55%, #00d0ff 100%));
+  --ep-danger: var(--danger-color, #ef4444);
+  --ep-warning-light: var(--warning-light, #fdf0c8);
+  --ep-white: var(--white, #ffffff);
+  --ep-bg: var(--off-white, #f4f8fd);
+  --ep-border: var(--border-light, #dbe5f1);
+  --ep-text: var(--text-dark, #0f1b2d);
+  --ep-muted: var(--medium-gray, #64748b);
+  --ep-shadow: 0 1px 2px rgba(11, 95, 208, .04), 0 14px 34px rgba(11, 95, 208, .09);
+
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* pale-blue page backdrop, same as the other pages */
+body:has(.ep-page) {
+  min-height: 100vh;
+  background:
+    radial-gradient(700px 360px at 50% 0%, rgba(0, 150, 235, .14), transparent 72%),
+    linear-gradient(180deg, #eef5ff 0%, #f6faff 55%, #fbfdff 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.ep-page svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Header ---------- */
+.ep-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.ep-head-left { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.ep-head-icon {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 17px;
+  color: #fff;
+  background: var(--ep-gradient);
+  box-shadow: 0 12px 22px -10px rgba(3, 97, 204, .65);
+}
+.ep-page .ep-head-icon svg { width: 26px; height: 26px; }
+.ep-title {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(90deg, var(--ep-primary), #00bfff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ep-sub { margin: .2rem 0 0; font-size: .9rem; color: var(--ep-muted); }
+
+.ep-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .65rem 1.2rem;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--ep-muted);
+  text-decoration: none;
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: 999px;
+  box-shadow: var(--ep-shadow);
+  transition: color .15s ease;
+}
+.ep-ghost:hover { color: var(--ep-primary); }
+
+/* ---------- Card ---------- */
+.ep-card {
+  overflow: hidden;
+  background: var(--ep-white);
+  border-radius: 24px;
+  box-shadow: var(--ep-shadow);
+}
+.ep-form { display: flex; flex-direction: column; padding: 2rem 2.25rem; }
+
+/* ---------- Who is being edited ---------- */
+.ep-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.4rem 2.25rem;
+  background: linear-gradient(100deg, var(--ep-primary-light), var(--ep-white) 80%);
+  border-bottom: 1px solid var(--ep-border);
+}
+.ep-avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--ep-gradient);
+  box-shadow: 0 0 0 4px var(--ep-white), 0 10px 20px -8px rgba(3, 97, 204, .6);
+}
+.ep-profile-text { flex: 1; min-width: 0; }
+.ep-profile-name {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ep-text);
+  overflow-wrap: anywhere;
+}
+.ep-profile-id {
+  display: inline-block;
+  margin-top: .3rem;
+  padding: .15rem .7rem;
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--ep-primary);
+  background: var(--ep-white);
+  border: 1px solid var(--ep-border);
+  border-radius: 999px;
+}
+.ep-editing {
+  flex-shrink: 0;
+  padding: .3rem .85rem;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #92580a;
+  background: var(--ep-warning-light);
+  border-radius: 999px;
+}
+
+/* ---------- Steps with a connecting rail ---------- */
+.ep-step {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 1.4rem;
+}
+.ep-rail { display: flex; flex-direction: column; align-items: center; }
+.ep-num {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--ep-gradient);
+  box-shadow: 0 0 0 5px var(--ep-primary-light), 0 8px 16px -8px rgba(3, 97, 204, .7);
+}
+.ep-rail::after {
+  content: "";
+  flex: 1;
+  width: 2px;
+  margin: .6rem 0;
+  border-radius: 2px;
+  background: var(--ep-border);
+}
+.ep-step:last-of-type .ep-rail::after { display: none; }
+
+.ep-step-body { padding-bottom: 2rem; min-width: 0; }
+.ep-step:last-of-type .ep-step-body { padding-bottom: 1.75rem; }
+.ep-step-title {
+  margin: .15rem 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ep-text);
+}
+.ep-step-sub { margin: .1rem 0 1.25rem; font-size: .85rem; color: var(--ep-muted); }
+
+/* ---------- Fields ---------- */
+.ep-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem 1.25rem;
+}
+.ep-field-full { grid-column: 1 / -1; }
+.ep-field { display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+
+.ep-label { font-size: .85rem; font-weight: 600; color: var(--ep-text); }
+.req { margin-left: .2rem; font-weight: 700; color: var(--ep-danger); }
+
+.ep-control { position: relative; }
+.ep-page .ep-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  width: 19px;
+  height: 19px;
+  transform: translateY(-50%);
+  color: var(--ep-muted);
+  pointer-events: none;
+  transition: color .15s ease;
+}
+.ep-control:focus-within .ep-icon { color: var(--ep-primary); }
+
+.ep-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: .95rem;
+  color: var(--ep-text);
+  background: var(--ep-bg);
+  border: 1.5px solid var(--ep-border);
+  border-radius: 14px;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.ep-input.has-icon { padding-left: 2.9rem; }
+.ep-input.has-toggle { padding-right: 3rem; }
+.ep-input::placeholder { color: var(--ep-muted); opacity: .85; }
+.ep-input:hover { border-color: color-mix(in srgb, var(--ep-primary) 30%, var(--ep-border)); }
+.ep-input:focus {
+  outline: none;
+  background: var(--ep-white);
+  border-color: var(--ep-primary);
+  box-shadow: 0 0 0 4px var(--ep-primary-10);
+}
+.ep-input.ep-input-error {
+  background: var(--ep-white);
+  border-color: var(--ep-danger);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, .1);
+}
+.ep-error { font-size: .8rem; font-weight: 500; color: var(--ep-danger); }
+
+/* show / hide password */
+.ep-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 38px;
+  height: 38px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--ep-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+.ep-toggle:hover { color: var(--ep-primary); background: var(--ep-primary-light); }
+.ep-toggle .ep-eye-off { display: none; }
+.ep-toggle.is-on .ep-eye { display: none; }
+.ep-toggle.is-on .ep-eye-off { display: block; }
+
+/* ---------- Actions ---------- */
+.ep-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ep-border);
+}
+.ep-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 1.8rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: .98rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
+}
+.ep-btn-ghost {
+  color: var(--ep-muted);
+  background: var(--ep-white);
+  border: 1.5px solid var(--ep-border);
+}
+.ep-btn-ghost:hover { color: var(--ep-primary); border-color: var(--ep-primary); }
+.ep-btn-primary {
+  min-width: 190px;
+  color: #fff;
+  background: var(--ep-gradient);
+  border: 0;
+  box-shadow: 0 14px 24px -10px rgba(3, 97, 204, .65);
+}
+.ep-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 28px -10px rgba(3, 97, 204, .7); }
+.ep-btn-primary:active { transform: translateY(0); }
+
+.ep-ghost:focus-visible,
+.ep-btn:focus-visible,
+.ep-toggle:focus-visible { outline: 2px solid var(--ep-primary); outline-offset: 3px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .ep-form { padding: 1.5rem 1.25rem; }
+  .ep-profile { padding: 1.1rem 1.25rem; }
+  .ep-grid { grid-template-columns: minmax(0, 1fr); }
+  .ep-field-full { grid-column: auto; }
+  .ep-step { grid-template-columns: 34px minmax(0, 1fr); column-gap: 1rem; }
+  .ep-num { width: 34px; height: 34px; font-size: .85rem; }
+  .ep-title { font-size: 1.5rem; }
+}
+@media (max-width: 480px) {
+  .ep-page { padding: 1rem .85rem 2rem; }
+  .ep-head-icon { width: 46px; height: 46px; border-radius: 14px; }
+  .ep-actions { flex-direction: column-reverse; align-items: stretch; }
+  .ep-editing { display: none; }
+  .ep-btn-primary { min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ep-ghost, .ep-btn, .ep-input, .ep-toggle, .ep-icon { transition: none; }
+  .ep-btn-primary:hover { transform: none; }
+}
+
+@media print {
+  .ep-ghost, .ep-actions { display: none; }
+  .ep-card { box-shadow: none; border: 1px solid var(--ep-border); }
+}

@@ -1,156 +1,153 @@
 {% extends "base/base.html" %}
-
 {% block title %}Edit Teachers View{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/colors.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/teachers.css') }}">
+{% endblock %}
 
 {% block content %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_teacher_view.css') }}">
-
 {% set teacher_count = teachers_data|length %}
 
-<div class="vt-page">
+<!-- Icons used on this page -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="tp-i-users" viewBox="0 0 24 24"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3.5"/><path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/></symbol>
+    <symbol id="tp-i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="tp-i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="tp-i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+    <symbol id="tp-i-edit" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></symbol>
+    <symbol id="tp-i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol>
+  </defs>
+</svg>
 
-    <!-- Top bar -->
-    <div class="vt-top">
-        <div class="vt-top-left">
-            <div class="vt-title-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/>
-                    <circle cx="10" cy="8" r="3.5"/>
-                    <path d="M17 8.5a3 3 0 0 1 0 5.9M21 20v-1.6c0-1.8-1.3-3.3-3-3.9"/>
-                </svg>
-            </div>
-            <div>
-                <h1 class="vt-title">Edit Teachers</h1>
-                <p class="vt-subtitle">Showing {{ teacher_count }} registered teacher{{ '' if teacher_count == 1 else 's' }}</p>
-            </div>
-        </div>
+<main class="tp-page">
 
-        <div class="vt-top-right">
-            <a href="{{ url_for('add_teacher.add_teachers') }}" class="vt-add">
-                <span>+</span> Add Teacher
-            </a>
-            <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="vt-back">
-                <span>&larr;</span> Dashboard
-            </a>
-        </div>
+  <!-- Header -->
+  <header class="tp-head">
+    <div class="tp-head-left">
+      <span class="tp-head-icon" aria-hidden="true"><svg><use href="#tp-i-users"/></svg></span>
+      <div>
+        <h1 class="tp-title">Edit Teachers</h1>
+        <p class="tp-sub">Showing {{ teacher_count }} registered teacher{{ '' if teacher_count == 1 else 's' }}</p>
+      </div>
     </div>
 
-    <!-- Directory card -->
-    <div class="vt-card">
+    <div class="tp-actions">
+      <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="tp-btn tp-btn-ghost">
+        <svg aria-hidden="true"><use href="#tp-i-back"/></svg>Dashboard
+      </a>
+      <a href="{{ url_for('add_teacher.add_teachers') }}" class="tp-btn tp-btn-primary">
+        <svg aria-hidden="true"><use href="#tp-i-plus"/></svg>Add Teacher
+      </a>
+    </div>
+  </header>
 
-        <div class="vt-card-head">
-            <div class="vt-card-head-text">
-                <h2 class="vt-card-title">Teacher Directory</h2>
-                <span class="vt-count" id="vt-count">{{ teacher_count }} total</span>
-            </div>
+  <!-- Directory card -->
+  <section class="tp-card" aria-label="Teacher directory">
 
-            <div class="vt-search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
-                </svg>
-                <input type="text" id="vt-search-input" placeholder="Search by name or ID..." aria-label="Search teachers">
-            </div>
-        </div>
+    <div class="tp-card-head">
+      <div class="tp-card-head-text">
+        <h2 class="tp-card-title">Teacher Directory</h2>
+        <span class="tp-count" id="vt-count">{{ teacher_count }} total</span>
+      </div>
 
-        {% if teachers_data %}
-        <table class="vt-table">
-            <thead>
-                <tr>
-                    <th class="vt-col-num">#</th>
-                    <th>Teacher ID</th>
-                    <th>Full Name</th>
-                    <th class="vt-col-action">Edit</th>
-                    <th class="vt-col-action">Delete</th>
-                </tr>
-            </thead>
-
-            <tbody id="vt-tbody">
-                {% for teacher in teachers_data %}
-                {% set initials = (teacher.first_name[0] ~ (teacher.last_name[0] if teacher.last_name else "")) | upper %}
-                <tr class="vt-row"
-                    data-search="{{ (teacher.first_name ~ ' ' ~ teacher.last_name ~ ' ' ~ teacher.teacher_id) | lower }}">
-                    <td class="vt-col-num">{{ loop.index }}</td>
-
-                    <td><span class="vt-id">{{ teacher.teacher_id }}</span></td>
-
-                    <td>
-                        <div class="vt-person">
-                            <span class="vt-avatar">{{ initials }}</span>
-                            <span class="vt-name">{{ teacher.first_name }} {{ teacher.last_name }}</span>
-                        </div>
-                    </td>
-
-                    <td class="vt-col-action">
-                        <a href="{{ url_for('edit_teacher.edit_teacher',
-                                            teacher_id=teacher.teacher_id) }}"
-                           class="vt-btn vt-btn-edit">
-                            Edit
-                        </a>
-                    </td>
-
-                    <td class="vt-col-action">
-                        <form action="{{ url_for('edit_teacher.delete_teacher',
-                                                 teacher_id=teacher.teacher_id) }}"
-                              method="POST"
-                              class="vt-inline-form">
-
-                            <button type="submit"
-                                    class="vt-btn vt-btn-delete"
-                                    onclick="return confirm('Are you sure you want to delete this teacher?');">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <p class="vt-no-results" id="vt-no-results" hidden>No teachers match your search.</p>
-
-        {% else %}
-        <div class="vt-empty">
-            <strong>No teachers yet</strong>
-            Add a teacher to see them listed here.
-        </div>
-        {% endif %}
-
-        <div class="vt-card-foot">Result Management System &mdash; Teacher Directory</div>
+      <label class="tp-search">
+        <svg aria-hidden="true"><use href="#tp-i-search"/></svg>
+        <input type="text" id="vt-search-input" placeholder="Search by name or ID..." aria-label="Search teachers" autocomplete="off">
+      </label>
     </div>
 
-</div>
+    {% if teachers_data %}
+    <table class="tp-table">
+      <thead>
+        <tr>
+          <th class="tp-col-num">#</th>
+          <th>Teacher ID</th>
+          <th>Full Name</th>
+          <th class="tp-col-actions">Actions</th>
+        </tr>
+      </thead>
 
+      <tbody id="vt-tbody">
+        {% for teacher in teachers_data %}
+        {% set initials = (teacher.first_name[0] ~ (teacher.last_name[0] if teacher.last_name else "")) | upper %}
+        <tr class="tp-row"
+            data-search="{{ (teacher.first_name ~ ' ' ~ teacher.last_name ~ ' ' ~ teacher.teacher_id) | lower }}">
+          <td class="tp-col-num">{{ loop.index }}</td>
+
+          <td data-label="ID"><span class="tp-id">{{ teacher.teacher_id }}</span></td>
+
+          <td>
+            <div class="tp-person">
+              <span class="tp-avatar" aria-hidden="true">{{ initials }}</span>
+              <span class="tp-name">{{ teacher.first_name }} {{ teacher.last_name }}</span>
+            </div>
+          </td>
+
+          <td class="tp-col-actions">
+            <div class="tp-row-actions">
+              <a href="{{ url_for('edit_teacher.edit_teacher', teacher_id=teacher.teacher_id) }}"
+                 class="tp-sbtn tp-sbtn-edit">
+                <svg aria-hidden="true"><use href="#tp-i-edit"/></svg>Edit
+              </a>
+
+              <form action="{{ url_for('edit_teacher.delete_teacher', teacher_id=teacher.teacher_id) }}"
+                    method="POST" class="tp-inline-form">
+                <button type="submit" class="tp-sbtn tp-sbtn-delete"
+                        onclick="return confirm('Are you sure you want to delete this teacher?');">
+                  <svg aria-hidden="true"><use href="#tp-i-trash"/></svg>Delete
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="tp-no-results" id="vt-no-results" hidden>No teachers match your search.</p>
+
+    {% else %}
+    <div class="tp-empty">
+      <span class="tp-empty-icon" aria-hidden="true"><svg><use href="#tp-i-users"/></svg></span>
+      <strong>No teachers yet</strong>
+      <span>Add a teacher to see them listed here.</span>
+    </div>
+    {% endif %}
+
+    <div class="tp-card-foot">Result Management System &mdash; Teacher Directory</div>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-(function () {
+  (function () {
     var input = document.getElementById('vt-search-input');
     if (!input) return;
 
-    var rows = document.querySelectorAll('.vt-row');
+    var rows = document.querySelectorAll('.tp-row');
     var noResults = document.getElementById('vt-no-results');
     var count = document.getElementById('vt-count');
     var total = rows.length;
 
     input.addEventListener('input', function () {
-        var term = input.value.trim().toLowerCase();
-        var visible = 0;
+      var term = input.value.trim().toLowerCase();
+      var visible = 0;
 
-        rows.forEach(function (row) {
-            var match = row.dataset.search.indexOf(term) !== -1;
-            row.hidden = !match;
-            if (match) visible++;
-        });
+      rows.forEach(function (row) {
+        var match = row.dataset.search.indexOf(term) !== -1;
+        row.hidden = !match;
+        if (match) visible++;
+      });
 
-        if (noResults) noResults.hidden = visible !== 0;
-        if (count) {
-            count.textContent = term
-                ? visible + ' of ' + total
-                : total + ' total';
-        }
+      if (noResults) noResults.hidden = visible !== 0;
+      if (count) count.textContent = term ? visible + ' of ' + total : total + ' total';
     });
-})();
+  })();
 </script>
-
 {% endblock %}
