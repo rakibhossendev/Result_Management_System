@@ -1,209 +1,165 @@
-
 {% extends "base/base.html" %}
 
-{% block title %}
-View CGPA
+{% block title %}View CGPA{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/student/view_cgpa.css') }}">
 {% endblock %}
 
 {% block content %}
 
-<div class="container py-4">
+<div class="cg-page">
 
     <!-- Header -->
-    <div class="mb-4">
-        <h2 class="fw-bold mb-1">
-            Your CGPA
-        </h2>
-
-        <p class="text-muted mb-0">
-            Semester-wise GPA and current CGPA
-        </p>
-    </div>
-
+    <header class="cg-head">
+        <div class="cg-head-left">
+            <span class="cg-head-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20V14"/></svg>
+            </span>
+            <div>
+                <h1 class="cg-title">Your CGPA</h1>
+                <p class="cg-sub">Semester-wise GPA and current CGPA</p>
+            </div>
+        </div>
+        <a href="{{ url_for('student_dashboard.student_dashboard') }}" class="cg-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Back
+        </a>
+    </header>
 
     {% if student %}
 
-    <!-- Student Info -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-body p-4">
+    {# how many semesters are published, and which one is the newest #}
+    {% set ns = namespace(published=0, latest=0) %}
+    {% for s in range(1, 9) %}
+        {% if student["gpa" ~ s] is not none %}
+            {% set ns.published = ns.published + 1 %}
+            {% set ns.latest = s %}
+        {% endif %}
+    {% endfor %}
 
-            <div class="d-flex justify-content-between align-items-center">
+    {# meter: CGPA out of 4.00 #}
+    {% set cgpa_val = student.cgpa|float if student.cgpa is not none else 0 %}
+    {% set meter_pct = ([[cgpa_val / 4, 0]|max, 1]|min) * 100 %}
 
-                <div>
-                    <small class="text-muted">
-                        Student Roll
-                    </small>
-
-                    <h5 class="fw-bold mb-0">
-                        {{ student.roll }}
-                    </h5>
-                </div>
-
-                <div class="text-end">
-                    <small class="text-muted">
-                        Current CGPA
-                    </small>
-
-                    <h2 class="fw-bold text-primary mb-0">
-                        {{ student.cgpa if student.cgpa is not none else "N/A" }}
-                    </h2>
-                </div>
-
-            </div>
-
+    <!-- Banner -->
+    <section class="cg-banner" aria-label="Current CGPA">
+        <div class="cg-banner-main">
+            <span class="cg-banner-label">Current CGPA</span>
+            <span class="cg-banner-value">{{ "%.2f"|format(cgpa_val) if student.cgpa is not none else "N/A" }}</span>
+            <span class="cg-banner-of">out of 4.00</span>
+            <div class="cg-meter" aria-hidden="true"><span style="width: {{ meter_pct|round(1) }}%"></span></div>
         </div>
-    </div>
 
-
-    <!-- Semester GPA -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-        <div class="card-body p-4">
-
-            <h5 class="fw-bold mb-4">
-                Semester Results
-            </h5>
-
-            <div class="row g-3">
-
-                {% for semester in range(1, 9) %}
-
-                {% set gpa = student["gpa" ~ semester] %}
-
-                <div class="col-6 col-md-3">
-
-                    <div class="border rounded-4 p-3 h-100">
-
-                        <small class="text-muted">
-                            Semester {{ semester }}
-                        </small>
-
-                        {% if gpa is not none %}
-
-                            <h4 class="fw-bold text-success mt-2 mb-0">
-                                {{ "%.2f"|format(gpa) }}
-                            </h4>
-
-                            <small class="text-success">
-                                Passed
-                            </small>
-
-                        {% else %}
-
-                            <h5 class="fw-bold text-danger mt-2 mb-0">
-                                Not Pass Yet
-                            </h5>
-
-                            <small class="text-danger">
-                                Result pending / failed
-                            </small>
-
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-                {% endfor %}
-
+        <div class="cg-tiles">
+            <div class="cg-tile">
+                <span class="cg-tile-label">Student Roll</span>
+                <span class="cg-tile-value">{{ student.roll }}</span>
             </div>
-
+            <div class="cg-tile">
+                <span class="cg-tile-label">Published</span>
+                <span class="cg-tile-value">{{ ns.published }} / 8</span>
+            </div>
+            {% if failed_subjects %}
+            <div class="cg-tile">
+                <span class="cg-tile-label">Failed subjects</span>
+                <span class="cg-tile-value">{{ student.failed_count }}</span>
+            </div>
+            {% endif %}
         </div>
-    </div>
+    </section>
 
+    <!-- Semester results -->
+    <section aria-label="Semester results">
+        <h2 class="cg-section-title">Semester Results</h2>
 
-    <!-- Failed Subjects -->
+        <div class="cg-grid">
+            {% for semester in range(1, 9) %}
+            {% set gpa = student["gpa" ~ semester] %}
+
+            {% if gpa is not none %}
+            <div class="cg-sem{{ ' cg-sem-latest' if semester == ns.latest }}" style="--i: {{ loop.index0 }}">
+                <div class="cg-sem-top">
+                    <span class="cg-sem-name">Semester {{ semester }}</span>
+                    {% if semester == ns.latest %}
+                    <span class="cg-sem-latest-tag">Latest</span>
+                    {% else %}
+                    <span class="cg-sem-badge" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    </span>
+                    {% endif %}
+                </div>
+                <span class="cg-sem-gpa">{{ "%.2f"|format(gpa) }}</span>
+                <span class="cg-bar"><span class="cg-bar-fill" style="width: {{ [gpa|float / 4 * 100, 100]|min|round(0) }}%"></span></span>
+                <span class="cg-sem-note">Passed</span>
+            </div>
+            {% else %}
+            <div class="cg-sem cg-sem-pending" style="--i: {{ loop.index0 }}">
+                <div class="cg-sem-top">
+                    <span class="cg-sem-name">Semester {{ semester }}</span>
+                    <span class="cg-sem-badge" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    </span>
+                </div>
+                <span class="cg-sem-gpa">&ndash;</span>
+                <span class="cg-bar"><span class="cg-bar-fill" style="width: 0"></span></span>
+                <span class="cg-sem-note">Not published yet</span>
+            </div>
+            {% endif %}
+
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Failed subjects -->
     {% if failed_subjects %}
-
-    <div class="card border-0 shadow-sm rounded-4">
-
-        <div class="card-body p-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <h5 class="fw-bold mb-0 text-danger">
-                    Failed Subjects
-                </h5>
-
-                <span class="badge bg-danger rounded-pill">
-                    {{ student.failed_count }}
-                </span>
-
-            </div>
-
-
-            <div class="table-responsive">
-
-                <table class="table align-middle mb-0">
-
-                    <thead>
-                        <tr>
-                            <th>Subject Code</th>
-                            <th>Subject Name</th>
-                            <th>Type</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for subject in failed_subjects %}
-
-                        <tr>
-
-                            <td>
-                                <span class="fw-semibold">
-                                    {{ subject.code }}
-                                </span>
-                            </td>
-
-                            <td>
-                                {{ subject.name }}
-                            </td>
-
-                            <td>
-
-                                {% if subject.type == "T" %}
-
-                                    <span class="badge bg-warning text-dark">
-                                        Theory
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge bg-info text-dark">
-                                        Practical
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+    <section class="cg-card cg-section" aria-label="Failed subjects">
+        <div class="cg-section-head">
+            <h2 class="cg-section-title cg-fail-title">Failed Subjects</h2>
+            <span class="cg-count">{{ student.failed_count }}</span>
         </div>
-    </div>
 
+        <div class="cg-table-wrap">
+            <table class="cg-table">
+                <thead>
+                    <tr>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in failed_subjects %}
+                    <tr>
+                        <td data-label="Code"><span class="cg-code">{{ subject.code }}</span></td>
+                        <td data-label="Subject">{{ subject.name }}</td>
+                        <td data-label="Type">
+                            {% if subject.type == "T" %}
+                            <span class="cg-type cg-type-t">Theory</span>
+                            {% else %}
+                            <span class="cg-type cg-type-p">Practical</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
     {% endif %}
-
 
     {% else %}
 
-    <!-- No Data -->
-    <div class="alert alert-warning text-center">
-        CGPA information is not available yet.
-    </div>
+    <!-- No data -->
+    <section class="cg-card cg-empty">
+        <span class="cg-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20V14"/></svg>
+        </span>
+        <p class="cg-empty-title">CGPA not available yet</p>
+        <p class="cg-empty-sub">CGPA information is not available yet.</p>
+    </section>
 
     {% endif %}
 
 </div>
-
 {% endblock %}
-
