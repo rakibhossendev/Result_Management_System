@@ -1,94 +1,148 @@
 {% extends "base/base.html" %}
 
-{% block title %}
-Subjects Marks Details
-{% endblock %}
+{% block title %}Subjects Marks Details{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/student/student_mark.css') }}">
 {% endblock %}
 
 {% block content %}
+{% set items = subjects_marks|list %}
 
-<div class="page-header">
-    <div class="page-header-left">
-        <div class="page-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+{# banner numbers: highest and average total marks #}
+{% set ns = namespace(sum=0, high=none, high_name='') %}
+{% for s in items %}
+    {% set v = s.total_marks|float if s.total_marks is not none else 0 %}
+    {% set ns.sum = ns.sum + v %}
+    {% if ns.high is none or v > ns.high %}
+        {% set ns.high = v %}
+        {% set ns.high_name = s.subject_name %}
+    {% endif %}
+{% endfor %}
+{% set avg = (ns.sum / items|length) if items else 0 %}
+
+<div class="sm-page">
+
+    <!-- Header -->
+    <header class="sm-head">
+        <div class="sm-head-left">
+            <span class="sm-head-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <div>
+                <h1 class="sm-title">Subjects Marks</h1>
+                <p class="sm-sub">View your subject-wise results</p>
+            </div>
         </div>
+        <a href="{{ url_for('student_dashboard.student_dashboard') }}" class="sm-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Back to Dashboard
+        </a>
+    </header>
+
+    {% if items %}
+
+    <!-- Banner -->
+    <section class="sm-banner" aria-label="Marks summary">
         <div>
-            <h4 class="page-header-title">Subjects Marks</h4>
-            <p class="page-header-sub">View your subject-wise results</p>
+            <span class="sm-banner-label">Subjects</span>
+            <span class="sm-banner-value" id="sm-shown">{{ items|length }}</span>
         </div>
-    </div>
-    <div class="page-header-right">
-        <a href="{{ url_for('student_dashboard.student_dashboard') }}" class="btn-outline-pill">&larr; Back to Dashboard</a>
-    </div>
+        <div class="sm-tiles">
+            <div class="sm-tile">
+                <span class="sm-tile-label">Highest marks</span>
+                <span class="sm-tile-value">{{ "%.1f"|format(ns.high) }}</span>
+                <span class="sm-tile-note">{{ ns.high_name }}</span>
+            </div>
+            <div class="sm-tile">
+                <span class="sm-tile-label">Average marks</span>
+                <span class="sm-tile-value">{{ "%.1f"|format(avg) }}</span>
+                <span class="sm-tile-note">across {{ items|length }} subject{{ '' if items|length == 1 else 's' }}</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search -->
+    <label class="sm-find">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+        </svg>
+        <input type="search" id="sm-search" placeholder="Search by subject name or code" autocomplete="off" aria-label="Search subjects">
+    </label>
+
+    <!-- Subject list -->
+    <section aria-label="Subjects list">
+        <ul class="sm-list">
+            {% for subject in items %}
+            <li class="sm-row" style="--i: {{ loop.index0 }}" data-search="{{ (subject.subject_code ~ ' ' ~ subject.subject_name)|lower }}">
+                <span class="sm-letter" aria-hidden="true">{{ subject.subject_name[:1]|upper }}</span>
+                <div class="sm-main">
+                    <span class="sm-name">{{ subject.subject_name }}</span>
+                    <span class="sm-code">Code {{ subject.subject_code }}</span>
+                </div>
+                <span class="sm-marks">
+                    <span class="sm-marks-value">{{ subject.total_marks }}</span>
+                    <span class="sm-marks-label">Total marks</span>
+                </span>
+                <a href="{{ url_for('subjects_marks.subject_details', subject_id=subject.subject_id) }}" class="sm-view">
+                    View details
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- No search results -->
+        <div class="sm-empty" id="sm-nomatch" hidden>
+            <span class="sm-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </span>
+            <p class="sm-empty-title">No subjects match your search</p>
+            <p class="sm-empty-sub">Try a different name or code.</p>
+        </div>
+    </section>
+
+    {% else %}
+
+    <!-- Empty state -->
+    <section class="sm-empty" aria-label="No marks">
+        <span class="sm-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11H15M9 15H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z"/>
+            </svg>
+        </span>
+        <p class="sm-empty-title">No Marks Found</p>
+        <p class="sm-empty-sub">Your subject marks will appear here once they are available.</p>
+    </section>
+
+    {% endif %}
+
 </div>
+{% endblock %}
 
-<div class="container mt-4">
+{% block extra_js %}
+<script>
+  // Live search by subject name or code
+  (function () {
+    var input = document.getElementById('sm-search');
+    if (!input) return;
+    var rows = document.querySelectorAll('.sm-row');
+    var shown = document.getElementById('sm-shown');
+    var none = document.getElementById('sm-nomatch');
 
-    <div class="card shadow">
-
-        <div class="card-header">
-            <h4>Subjects Marks</h4>
-        </div>
-
-        <div class="card-body">
-
-            <table class="table table-bordered table-striped">
-
-                <thead>
-
-                    <tr>
-                        <th>Subject Code</th>
-                        <th>Subject Name</th>
-                        <th>Total Marks</th>
-                        <th>Details</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for subject in subjects_marks %}
-
-                    <tr>
-
-                        <td>{{ subject.subject_code }}</td>
-
-                        <td>{{ subject.subject_name }}</td>
-
-                        <td>{{ subject.total_marks }}</td>
-
-                        <td>
-                            <a href="{{ url_for('subjects_marks.subject_details', subject_id=subject.subject_id) }}"
-                                class="btn btn-sm btn-primary">
-                                View
-                            </a>
-                        </td>
-
-                    </tr>
-
-                    {% else %}
-
-                    <tr>
-                        <td colspan="4" class="text-center">
-                            No Marks Found
-                        </td>
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-
+    input.addEventListener('input', function () {
+      var q = input.value.trim().toLowerCase();
+      var n = 0;
+      rows.forEach(function (row) {
+        var hit = !q || row.getAttribute('data-search').indexOf(q) !== -1;
+        row.hidden = !hit;
+        if (hit) n++;
+      });
+      if (shown) shown.textContent = n;
+      none.hidden = n !== 0;
+    });
+  })();
+</script>
 {% endblock %}
