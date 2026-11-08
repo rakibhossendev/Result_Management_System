@@ -9,6 +9,9 @@
 
 {% block content %}
 
+{# Route name of your Change Password page. Change it here if yours is named differently. #}
+{% set change_password_endpoint = 'admin_change_password.change_password' %}
+
 <div class="dash-page">
 
     <!-- TOP HEADER -->
@@ -80,7 +83,7 @@
 
     </section>
 
-    <!-- TWO PANELS -->
+    <!-- PANELS -->
     <div class="ad-panels">
 
         <!-- PRINCIPALS -->
@@ -152,6 +155,33 @@
                     <span class="ad-big-name">Upload Dashboard</span>
                     <span class="ad-big-desc">Manage and publish results</span>
                     <span class="ad-big-btn">Open <span aria-hidden="true">&rarr;</span></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ACCOUNT -->
+        <section class="ad-panel ad-panel-wide" aria-label="Account">
+            <div class="ad-panel-head">
+                <span class="ad-panel-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                    </svg>
+                </span>
+                <h2 class="ad-panel-title">Account</h2>
+            </div>
+
+            <div class="ad-rows">
+                <a href="{{ url_for(change_password_endpoint) }}" class="ad-row">
+                    <span class="ad-row-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4M18 5l3 3M15 8l3 3"/>
+                        </svg>
+                    </span>
+                    <span class="ad-row-text">
+                        <span class="ad-row-name">Change Password</span>
+                        <span class="ad-row-desc">Update your username and password</span>
+                    </span>
+                    <span class="ad-row-arrow" aria-hidden="true">&rarr;</span>
                 </a>
             </div>
         </section>
