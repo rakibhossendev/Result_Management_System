@@ -2,8 +2,9 @@
    ADMIN_DASHBOARD.CSS
    Fully self-contained: page + header (.dash-)
    and admin layout (.ad-).
-   Layout: blue gradient stats strip, then two
-   panels (Principals action cards, Results tile).
+   Layout: blue gradient stats strip, then
+   panels (Principals action cards, Results tile)
+   and a wide Account panel (Change password).
    Same blue as the Upload Dashboard page.
    Medium sizing.
    Static page: no JavaScript needed.
@@ -196,7 +197,7 @@
   color: rgba(255, 255, 255, .92);
 }
 
-/* ---------- Two panels ---------- */
+/* ---------- Panels ---------- */
 .ad-panels {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
@@ -214,6 +215,11 @@
   padding: 1.3rem;
   box-shadow: 0 1px 2px rgba(0, 102, 204, .04), 0 9px 23px rgba(0, 102, 204, .055);
 }
+
+/* full-width panel (Account) */
+.ad-panel-wide { grid-column: 1 / -1; }
+.ad-panel-wide .ad-rows { flex: none; }
+.ad-panel-wide .ad-row { flex: none; }
 
 .ad-panel-head {
   display: flex;
@@ -257,7 +263,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Principals: action cards ---------- */
+/* ---------- Action cards (Principals, Account) ---------- */
 .ad-rows {
   flex: 1;
   display: flex;
@@ -315,6 +321,23 @@
   font-size: 1.02rem;
   color: var(--d-text);
 }
+
+/* name + small description stacked (used by Change Password) */
+.ad-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .12rem;
+}
+.ad-row-text .ad-row-name { flex: none; }
+.ad-row-desc {
+  font-size: .86rem;
+  line-height: 1.4;
+  color: var(--d-muted);
+  transition: color .15s ease;
+}
+.ad-row:hover .ad-row-desc { color: var(--d-primary); }
 
 .ad-row-arrow {
   flex-shrink: 0;
@@ -445,10 +468,11 @@
   .ad-row { min-height: 66px; padding: .65rem .85rem; }
   .ad-row-icon { width: 42px; height: 42px; }
   .ad-row-arrow { width: 30px; height: 30px; }
+  .ad-row-desc { font-size: .8rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ad-row, .ad-row-icon, .ad-row-arrow, .ad-big, .ad-big-btn span, .dash-signout { transition: none; }
+  .ad-row, .ad-row-icon, .ad-row-arrow, .ad-row-desc, .ad-big, .ad-big-btn span, .dash-signout { transition: none; }
   .ad-row:hover, .ad-big:hover { transform: none; }
   .ad-row:hover .ad-row-arrow, .ad-big:hover .ad-big-btn span { transform: none; }
 }
