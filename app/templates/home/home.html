@@ -18,78 +18,87 @@
           <h2>Your results, <em>all in one place</em></h2>
           <p>Look up your academic results with just a roll number and see your performance details instantly. Results appear here as soon as your school publishes them.</p>
           <ol class="hm-steps">
-          <li><span>1</span>Enter roll number</li>
-          <li><span>2</span>Search</li>
-          <li><span>3</span>View result</li>
-        </ol>
+            <li><span>1</span>Enter roll number</li>
+            <li><span>2</span>Search</li>
+            <li><span>3</span>View result</li>
+          </ol>
         </div>
 
         <div class="hm-cell hm-search">
 
-        <!-- Illustration: result sheet + magnifier -->
-        <svg class="hm-illo" viewBox="0 0 210 150" aria-hidden="true">
-          <defs>
-            <linearGradient id="hmg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#0361cc"/>
-              <stop offset=".55" stop-color="#049fe8"/>
-              <stop offset="1" stop-color="#00d0ff"/>
-            </linearGradient>
-          </defs>
-          <ellipse cx="105" cy="136" rx="78" ry="8" fill="#dcebff"/>
-          <rect x="38" y="18" width="104" height="108" rx="14" fill="#dcebff"/>
-          <rect x="60" y="30" width="108" height="108" rx="14" fill="#fff" style="stroke:#dbe5f1;stroke-width:1.5"/>
-          <rect x="76" y="48" width="52" height="9" rx="4.5" fill="#dbe5f1"/>
-          <rect x="76" y="68" width="76" height="7" rx="3.5" fill="#dbe5f1"/>
-          <rect x="76" y="84" width="76" height="7" rx="3.5" fill="#dbe5f1"/>
-          <rect x="76" y="100" width="76" height="9" rx="4.5" fill="#dcebff"/>
-          <rect class="hm-fill" x="76" y="100" width="54" height="9" rx="4.5" fill="url(#hmg)"/>
-          <g class="hm-check">
-            <circle cx="160" cy="38" r="19" fill="url(#hmg)"/>
-            <path d="M151 38l6 6 11-12" fill="none" style="stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round"/>
-          </g>
-          <g class="hm-lens">
-            <circle cx="64" cy="104" r="23" fill="#fff" fill-opacity=".85" style="stroke:url(#hmg);stroke-width:6"/>
-            <path d="M81 121l18 18" fill="none" style="stroke:url(#hmg);stroke-width:7;stroke-linecap:round"/>
-          </g>
-          <g transform="translate(26 34)"><path class="hm-spark" d="M0-7L2-2 7 0 2 2 0 7-2 2-7 0-2-2z" fill="#00d0ff"/></g>
-          <g transform="translate(191 80)"><path class="hm-spark sp2" d="M0-6L1.7-1.7 6 0 1.7 1.7 0 6-1.7 1.7-6 0-1.7-1.7z" fill="#049fe8"/></g>
-        </svg>
+          <!-- Illustration: result sheet + magnifier -->
+          <svg class="hm-illo" viewBox="0 0 210 150" aria-hidden="true">
+            <defs>
+              <linearGradient id="hmg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0361cc"/>
+                <stop offset=".55" stop-color="#049fe8"/>
+                <stop offset="1" stop-color="#00d0ff"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="105" cy="136" rx="78" ry="8" fill="#dcebff"/>
+            <rect x="38" y="18" width="104" height="108" rx="14" fill="#dcebff"/>
+            <rect x="60" y="30" width="108" height="108" rx="14" fill="#fff" style="stroke:#dbe5f1;stroke-width:1.5"/>
+            <rect x="76" y="48" width="52" height="9" rx="4.5" fill="#dbe5f1"/>
+            <rect x="76" y="68" width="76" height="7" rx="3.5" fill="#dbe5f1"/>
+            <rect x="76" y="84" width="76" height="7" rx="3.5" fill="#dbe5f1"/>
+            <rect x="76" y="100" width="76" height="9" rx="4.5" fill="#dcebff"/>
+            <rect class="hm-fill" x="76" y="100" width="54" height="9" rx="4.5" fill="url(#hmg)"/>
+            <g class="hm-check">
+              <circle cx="160" cy="38" r="19" fill="url(#hmg)"/>
+              <path d="M151 38l6 6 11-12" fill="none" style="stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round"/>
+            </g>
+            <g class="hm-lens">
+              <circle cx="64" cy="104" r="23" fill="#fff" fill-opacity=".85" style="stroke:url(#hmg);stroke-width:6"/>
+              <path d="M81 121l18 18" fill="none" style="stroke:url(#hmg);stroke-width:7;stroke-linecap:round"/>
+            </g>
+            <g transform="translate(26 34)"><path class="hm-spark" d="M0-7L2-2 7 0 2 2 0 7-2 2-7 0-2-2z" fill="#00d0ff"/></g>
+            <g transform="translate(191 80)"><path class="hm-spark sp2" d="M0-6L1.7-1.7 6 0 1.7 1.7 0 6-1.7 1.7-6 0-1.7-1.7z" fill="#049fe8"/></g>
+          </svg>
 
-        <h1 class="hm-title">Find your <em>result</em></h1>
+          <h1 class="hm-title">Find your <em>result</em></h1>
 
-        <!-- Search form -->
-        <form method="POST" class="hm-form">
-          {% if search.hidden_tag %}
-            {{ search.hidden_tag() }}
-          {% endif %}
-
-          <div class="hm-field">
-            <label for="{{ search.roll.id }}" class="hm-sr">Roll Number</label>
-            <div class="hm-input-wrap">
-              <svg class="hm-input-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
-              </svg>
-              {{ search.roll(
-                class="hm-input",
-                id=search.roll.id,
-                placeholder="Roll number (e.g. 322112)",
-                required="required",
-                autocomplete="off"
-              ) }}
-            </div>
-            {% if search.roll.errors %}
-              <small class="hm-error">{{ search.roll.errors[0] }}</small>
+          <!-- Search form -->
+          <form method="POST" class="hm-form">
+            {% if search.hidden_tag %}
+              {{ search.hidden_tag() }}
             {% endif %}
-          </div>
 
-          <button type="submit" class="hm-btn">
-            <span>Search</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </button>
-        </form>
+            <div class="hm-field">
+              <label for="{{ search.roll.id }}" class="hm-sr">Roll Number</label>
+              <div class="hm-input-wrap">
+                <svg class="hm-input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+                </svg>
+                {{ search.roll(
+                  class="hm-input",
+                  id=search.roll.id,
+                  placeholder="Enter your roll number",
+                  required="required",
+                  autocomplete="off"
+                ) }}
+              </div>
+              {% if search.roll.errors %}
+                <small class="hm-error">{{ search.roll.errors[0] }}</small>
+              {% endif %}
+            </div>
 
-        <a href="{{ url_for('login.login') }}" class="hm-link">Staff sign in</a>
-      </div>
+            <!-- Demo roll number: easy to read, tap "Use it" to fill the box -->
+            <div class="hm-demo">
+              <div class="hm-demo-text">
+                <span class="hm-demo-label">Demo roll number</span>
+                <span class="hm-demo-roll">322112</span>
+              </div>
+              <button type="button" class="hm-demo-use" data-roll="322112" aria-label="Use demo roll number 322112">Use it</button>
+            </div>
+
+            <button type="submit" class="hm-btn">
+              <span>Search</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+
+          <a href="{{ url_for('login.login') }}" class="hm-link">Staff sign in</a>
+        </div>
       </section>
 
       <!-- Strip: features + help -->
@@ -102,7 +111,7 @@
           </div>
         </article>
 
-      <article class="hm-cell hm-vert hm-f2">
+        <article class="hm-cell hm-vert hm-f2">
           <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span>
           <div class="hm-text">
             <h3>View your performance</h3>
@@ -110,7 +119,7 @@
           </div>
         </article>
 
-      <article class="hm-cell hm-vert hm-f3">
+        <article class="hm-cell hm-vert hm-f3">
           <span class="hm-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
           <div class="hm-text">
             <h3>Instant access</h3>
@@ -158,6 +167,16 @@
           input.focus();
         }
       });
+
+      // "Use it" fills the box with the demo roll number
+      var demo = form.querySelector('.hm-demo-use');
+      if (demo) {
+        demo.addEventListener('click', function () {
+          input.value = demo.getAttribute('data-roll');
+          input.classList.remove('is-error');
+          input.focus();
+        });
+      }
     });
   </script>
 {% endblock %}

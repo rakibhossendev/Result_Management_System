@@ -139,7 +139,8 @@ body:has(.hm-page) {
 .hm-cell a  { font-weight: 600; color: var(--hm-primary); text-decoration: none; }
 .hm-cell a:hover { color: var(--hm-primary-dark); text-decoration: underline; }
 .hm-cell a:focus-visible,
-.hm-btn:focus-visible { outline: 2px solid var(--hm-primary); outline-offset: 3px; }
+.hm-btn:focus-visible,
+.hm-demo-use:focus-visible { outline: 2px solid var(--hm-primary); outline-offset: 3px; }
 
 /* icon tile: same size and radius everywhere */
 .hm-ic {
@@ -289,6 +290,45 @@ body:has(.hm-page) {
 }
 .hm-error { margin: 0; font-size: .82rem; font-weight: 500; color: var(--hm-danger); }
 
+/* ---------- Demo roll number (easy to read, one tap to use) ---------- */
+.hm-demo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .65rem .7rem .65rem 1rem;
+  text-align: left;
+  background: var(--hm-primary-light);
+  border: 1.5px dashed color-mix(in srgb, var(--hm-primary) 35%, var(--hm-border));
+  border-radius: var(--hm-radius-sm);
+}
+.hm-demo-text { display: flex; flex-direction: column; min-width: 0; }
+.hm-demo-label { font-size: .78rem; font-weight: 600; color: var(--hm-muted); }
+.hm-demo-roll {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .06em;
+  color: var(--hm-primary-dark);
+  font-variant-numeric: tabular-nums;
+}
+.hm-demo-use {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 1.1rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--hm-primary);
+  background: var(--hm-white);
+  border: 1.5px solid var(--hm-primary);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+.hm-demo-use:hover { color: #fff; background: var(--hm-primary); }
+
 .hm-btn {
   display: flex;
   align-items: center;
@@ -343,7 +383,7 @@ body:has(.hm-page) {
   .hm-cell,
   .hm-page .hm-illo, .hm-lens, .hm-check, .hm-fill, .hm-spark,
   .hm-btn, .hm-btn svg { animation: none; }
-  .hm-cell, .hm-btn, .hm-btn svg, .hm-input { transition: none; }
+  .hm-cell, .hm-btn, .hm-btn svg, .hm-input, .hm-demo-use { transition: none; }
   .hm-cell:not(.hm-search):hover, .hm-btn:hover, .hm-btn:hover svg { transform: none; }
 }
 
@@ -412,4 +452,5 @@ body:has(.hm-page) {
   .hm-title { font-size: 1.65rem; }
   .hm-steps li + li { margin-left: 0; }
   .hm-steps li + li::before { display: none; }
+  .hm-demo-roll { font-size: 1.2rem; }
 }
