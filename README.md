@@ -450,6 +450,24 @@ Visit:
 - Home: http://127.0.0.1:5000/
 - Login: http://127.0.0.1:5000/login
 
+## Run with Docker
+
+Build the image from the project directory:
+
+```bash
+docker build -t result-management-system:dev .
+```
+
+Start a temporary container:
+
+```bash
+docker run --rm -p 5000:5000 result-management-system:dev
+```
+
+Open http://127.0.0.1:5000/ to use the application. This first run keeps the
+SQLite database and uploaded PDFs inside the container, so `--rm` deletes them
+when the container stops. Add persistent storage before using it with data.
+
 ---
 
 # Testing The Application
@@ -567,4 +585,3 @@ Eventually, it became much more than a programming project. It taught me how rea
 **GitHub Repository:** [Result Management System](https://github.com/rakibhossendev/Result_Management_System)
 
 **Live Application:** [https://result-management-system-theta.vercel.app/](https://result-management-system-theta.vercel.app/)
-
