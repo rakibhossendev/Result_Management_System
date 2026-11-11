@@ -18,7 +18,9 @@
   <!-- ── HEADER ── -->
   <div class="asd-header asd-slide" style="--delay:.05s">
     <div class="asd-header-left">
-      <span class="asd-header-icon">📚</span>
+      <span class="asd-icon asd-icon-lg">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>
+      </span>
       <div class="asd-header-text">
         <h1 class="asd-title">Assign Subject Dashboard</h1>
         <p class="asd-sub">Set up departments and subjects, then assign them to teachers.</p>
@@ -27,42 +29,46 @@
 
     <div class="asd-header-right">
       <a href="{{ url_for('principal_dashboard.principal_dashboard') }}" class="asd-back">
-        <span>←</span>
+        <span aria-hidden="true">←</span>
         <span>Dashboard</span>
       </a>
     </div>
   </div>
 
-  <!-- ── STATS + WORKFLOW RAIL ── -->
+  <!-- ── WORKFLOW RAIL + COUNTS ── -->
   <div class="asd-stats-row asd-slide" style="--delay:.08s">
-    <div class="asd-rail">
-      <div class="asd-rail-step is-active">
+    <nav class="asd-rail" aria-label="Workflow steps">
+      <a href="#asd-setup" class="asd-rail-step is-active">
         <span class="asd-rail-num">1</span>
         <span>Setup</span>
-      </div>
-      <span class="asd-rail-arrow">→</span>
-      <div class="asd-rail-step">
+      </a>
+      <span class="asd-rail-line" aria-hidden="true"></span>
+      <a href="#asd-assign" class="asd-rail-step">
         <span class="asd-rail-num">2</span>
         <span>Assign</span>
-      </div>
-      <span class="asd-rail-arrow">→</span>
-      <div class="asd-rail-step">
+      </a>
+      <span class="asd-rail-line" aria-hidden="true"></span>
+      <a href="#asd-view" class="asd-rail-step">
         <span class="asd-rail-num">3</span>
         <span>Review</span>
-      </div>
-    </div>
+      </a>
+    </nav>
 
     <div class="asd-chips">
-      <div class="asd-chip asd-chip-subjects">
-        <span class="asd-chip-icon">📚</span>
-        <span>
+      <div class="asd-chip">
+        <span class="asd-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 7h6"/></svg>
+        </span>
+        <span class="asd-chip-text">
           <span class="asd-chip-label">Subjects</span>
           <span class="asd-chip-value">{{total_subject}}</span>
         </span>
       </div>
-      <div class="asd-chip asd-chip-departments">
-        <span class="asd-chip-icon">🏛️</span>
-        <span>
+      <div class="asd-chip">
+        <span class="asd-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-5h6v5"/><path d="M9 11h.01M15 11h.01"/></svg>
+        </span>
+        <span class="asd-chip-text">
           <span class="asd-chip-label">Departments</span>
           <span class="asd-chip-value">{{total_department}}</span>
         </span>
@@ -74,9 +80,11 @@
   <div class="asd-groups">
 
     <!-- Setup -->
-    <section class="asd-group asd-group-setup asd-slide" style="--delay:.16s" aria-label="Setup">
+    <section class="asd-group asd-slide" id="asd-setup" style="--delay:.16s" aria-label="Setup">
       <div class="asd-group-head">
-        <span class="asd-group-icon">🧩</span>
+        <span class="asd-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+        </span>
         <div>
           <h2 class="asd-group-title">Setup</h2>
           <p class="asd-group-desc">Create the building blocks</p>
@@ -84,21 +92,27 @@
       </div>
 
       <a href="{{ url_for('assign_subject.add_department') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Add Department</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Add Department</span>
+          <span class="asd-tile-hint">Create a new department</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ url_for('assign_subject.add_subject') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Add Subject</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Add Subject</span>
+          <span class="asd-tile-hint">Create a new subject</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
     </section>
 
     <!-- Assign -->
-    <section class="asd-group asd-group-assign asd-slide" style="--delay:.22s" aria-label="Assign">
+    <section class="asd-group asd-slide" id="asd-assign" style="--delay:.22s" aria-label="Assign">
       <div class="asd-group-head">
-        <span class="asd-group-icon">🔗</span>
+        <span class="asd-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+        </span>
         <div>
           <h2 class="asd-group-title">Assign</h2>
           <p class="asd-group-desc">Link subjects to teachers</p>
@@ -106,21 +120,27 @@
       </div>
 
       <a href="{{ url_for('assign_subject.assign_subject') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Assign Subject</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Assign Subject</span>
+          <span class="asd-tile-hint">Attach subjects</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ url_for('assign_teacher.assign_teacher') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Assign Teacher</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Assign Teacher</span>
+          <span class="asd-tile-hint">Pick a teacher</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
     </section>
 
     <!-- View -->
-    <section class="asd-group asd-group-view asd-slide" style="--delay:.28s" aria-label="View">
+    <section class="asd-group asd-group-view asd-slide" id="asd-view" style="--delay:.28s" aria-label="View">
       <div class="asd-group-head">
-        <span class="asd-group-icon">👁️</span>
+        <span class="asd-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
         <div>
           <h2 class="asd-group-title">View</h2>
           <p class="asd-group-desc">Check what's already set up</p>
@@ -128,20 +148,25 @@
       </div>
 
       <a href="{{ url_for('show_subjects.show_subjects') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Show Subject</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Show Subject</span>
+          <span class="asd-tile-hint">All subjects</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ url_for('show_subjects.show_department') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Show Department</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Show Department</span>
+          <span class="asd-tile-hint">All departments</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
-
       <a href="{{ url_for('view_assigned.view_assigned') }}" class="asd-tile">
-        <span class="asd-tile-dot"></span>
-        <span class="asd-tile-name">Show Assigned Details</span>
-        <span class="asd-tile-arrow">→</span>
+        <span class="asd-tile-text">
+          <span class="asd-tile-name">Show Assigned Details</span>
+          <span class="asd-tile-hint">Who teaches what</span>
+        </span>
+        <span class="asd-tile-arrow" aria-hidden="true">→</span>
       </a>
     </section>
 
@@ -155,10 +180,25 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // Reveal immediately on load (staggered via each element's --delay)
-    // instead of waiting for scroll into view — avoids elements getting
-    // stuck at opacity:0 when they're already in the viewport on load.
     document.querySelectorAll('.asd-slide').forEach(el => {
       requestAnimationFrame(() => el.classList.add('visible'));
+    });
+
+    // Workflow rail: clicking a step highlights its card (and scrolls to it on small screens)
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const steps = document.querySelectorAll('.asd-rail-step');
+    steps.forEach(step => {
+      step.addEventListener('click', e => {
+        e.preventDefault();
+        steps.forEach(s => s.classList.remove('is-active'));
+        step.classList.add('is-active');
+
+        const target = document.querySelector(step.getAttribute('href'));
+        if (!target) return;
+        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+        target.classList.add('is-spot');
+        setTimeout(() => target.classList.remove('is-spot'), 1400);
+      });
     });
   });
 </script>
