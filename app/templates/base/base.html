@@ -23,27 +23,48 @@
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
-
-  <style>
-    /* Quick reset for Bootstrap conflicts */
-    .container {
-      max-width: 1200px !important;
-    }
-  </style>
 </head>
 <body>
-  <!-- Navigation (Optional - Add your navbar here) -->
+  <!-- Navigation -->
   {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: var(--white); border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-sm);">
-      <div class="container">
-        <a class="navbar-brand" href="{{ url_for('home.home') }}" style="font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--primary-color);">
-         Result Management System
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-    </nav>
+    <header class="rms-nav" id="rms-nav">
+      <nav class="navbar navbar-expand-md rms-nav-bar" aria-label="Main navigation">
+        <div class="container rms-nav-inner">
+
+          <!-- Brand -->
+          <a class="rms-brand" href="{{ url_for('home.home') }}">
+            <span class="rms-brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 20V11"/><path d="M12 20V4"/><path d="M19 20v-6"/></svg>
+            </span>
+            <span class="rms-brand-name">Result Management System</span>
+          </a>
+
+          <!-- Mobile menu button -->
+          <button class="navbar-toggler rms-toggler" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="rms-toggler-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+
+          <!-- Links -->
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto rms-links">
+              <li class="nav-item">
+                <a class="nav-link rms-link {% if request.endpoint == 'home.home' %}is-active{% endif %}" href="{{ url_for('home.home') }}">Home</a>
+              </li>
+              {% block nav_links %}{% endblock %}
+              <li class="nav-item">
+                <a class="nav-link rms-link rms-link-ai" href="/ask">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4"/></svg>
+                  Ask AI
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </nav>
+    </header>
   {% endblock %}
 
 
@@ -105,6 +126,15 @@
         }
       });
     });
+
+    // Navbar: add a soft shadow once the page is scrolled
+    (function () {
+      const nav = document.getElementById('rms-nav');
+      if (!nav) return;
+      const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
   </script>
 
   <!-- ===== AI Assistant Floating Widget ===== -->
