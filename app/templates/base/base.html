@@ -88,17 +88,58 @@
   {% block content %}{% endblock %}
 </main>
 
-  <!-- Footer (Optional) -->
+  <!-- Footer -->
   {% block footer %}
-    <footer style="background-color: var(--off-white); border-top: 1px solid var(--border-light); margin-top: 5rem; padding: 2rem; text-align: center; color: var(--medium-gray);">
+    {# ✏️ EDIT HERE: add each person's name and GitHub username (the part after github.com/) #}
+    {% set team = [
+      {'name': 'Rakib Hossen',    'username': 'rakibhossendev'},
+      {'name': 'Aronno Rahman Arpa', 'username': 'its-Tiktiki'},
+      {'name': 'Muntah Mahfuz Srestho',  'username': 'Srestho0101'}
+    ] %}
+
+    <footer class="rms-footer">
       <div class="container">
-        <p style="margin-bottom: 0.5rem;">
-          &copy; 2026 Result Management System. All rights reserved.
-        </p>
-        <p style="margin-bottom: 0; font-size: 0.9rem;">
-          <a href="#" style="color: var(--primary-color);">Privacy Policy</a> | 
-          <a href="#" style="color: var(--primary-color);">Terms of Service</a>
-        </p>
+
+        <div class="rms-footer-top">
+          <!-- Brand -->
+          <div class="rms-footer-brand">
+            <a class="rms-footer-logo" href="{{ url_for('home.home') }}">
+              <span class="rms-brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 20V11"/><path d="M12 20V4"/><path d="M19 20v-6"/></svg>
+              </span>
+              <span class="rms-footer-name">Result Management System</span>
+            </a>
+            <p class="rms-footer-about">Search and view your academic results in one place.</p>
+          </div>
+
+          <!-- Team GitHub profiles -->
+          <div class="rms-footer-team">
+            <h2 class="rms-footer-heading">Built by</h2>
+            <div class="rms-team">
+              {% for m in team %}
+              <a class="rms-member" href="https://github.com/{{ m.username }}" target="_blank" rel="noopener noreferrer" aria-label="{{ m.name }} on GitHub">
+                <span class="rms-member-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </span>
+                <span class="rms-member-text">
+                  <span class="rms-member-name">{{ m.name }}</span>
+                  <span class="rms-member-user">@{{ m.username }}</span>
+                </span>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="rms-footer-bottom">
+          <span>&copy; 2026 Result Management System. All rights reserved.</span>
+          <span class="rms-footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </span>
+        </div>
+
       </div>
     </footer>
   {% endblock %}
