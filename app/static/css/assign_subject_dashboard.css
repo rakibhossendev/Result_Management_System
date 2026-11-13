@@ -242,7 +242,7 @@
 .asd-group {
   position: relative;
   overflow: hidden;
-  display: flex;
+  display: flex !important;   /* styles.css has .visible { display:block !important } */
   flex-direction: column;
   gap: 12px;
   min-width: 0;

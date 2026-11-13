@@ -129,6 +129,171 @@ p {
 }
 
 /* ============================================
+   NAVBAR (base.html header)
+   Blue gradient bar, rounded bottom corners,
+   sticky, collapses to a menu button on phones.
+   Bootstrap's .container is reset here so the
+   navbar and pages share the same 1200px width.
+   ============================================ */
+
+/* Quick reset for Bootstrap conflicts */
+.container {
+  max-width: 1200px !important;
+}
+
+/* ── Bar ── */
+.rms-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: linear-gradient(90deg, #0062c4 0%, #0080d6 60%, #0096e0 100%);
+  border-radius: 0 0 22px 22px;
+  box-shadow: 0 10px 26px rgba(0, 102, 204, .25);
+  transition: box-shadow .25s ease;
+}
+.rms-nav.is-scrolled { box-shadow: 0 14px 34px rgba(0, 60, 140, .35); }
+
+.rms-nav-bar { padding: 12px 0; }
+.rms-nav-inner { gap: 12px; }
+
+/* ── Brand ── */
+.rms-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  text-decoration: none;
+}
+.rms-brand:hover { text-decoration: none; }
+.rms-brand:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 14px; }
+
+.rms-brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, .2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .25s ease, background .25s ease;
+}
+.rms-brand:hover .rms-brand-mark { transform: rotate(-6deg) scale(1.04); background: rgba(255, 255, 255, .28); }
+.rms-brand-mark svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.rms-brand-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff !important;
+  min-width: 0;
+}
+
+/* ── Links ── */
+.rms-links { gap: 6px; align-items: center; }
+.rms-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px !important;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #fff !important;
+  border-radius: 999px;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.rms-link:hover,
+.rms-link:focus-visible,
+.rms-link.is-active { background: rgba(255, 255, 255, .2); color: #fff !important; }
+.rms-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* "Ask AI" = solid white pill */
+.rms-link-ai {
+  background: #fff;
+  color: #0066cc !important;
+}
+.rms-link-ai:hover,
+.rms-link-ai:focus-visible {
+  background: #f2f8ff;
+  color: #0052a3 !important;
+  transform: translateY(-1px);
+}
+.rms-link-ai svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Mobile menu button (animated hamburger → X) ── */
+.rms-toggler {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rms-toggler:focus { box-shadow: none; }
+.rms-toggler:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.rms-toggler-bars {
+  width: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rms-toggler-bars span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transition: transform .25s ease, opacity .2s ease;
+}
+.rms-toggler[aria-expanded="true"] .rms-toggler-bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.rms-toggler[aria-expanded="true"] .rms-toggler-bars span:nth-child(2) { opacity: 0; }
+.rms-toggler[aria-expanded="true"] .rms-toggler-bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* ── Navbar responsive ── */
+@media (max-width: 767.98px) {
+  .rms-nav { border-radius: 0 0 18px 18px; }
+  .rms-nav-bar { padding: 10px 0; }
+  .rms-brand-mark { width: 38px; height: 38px; border-radius: 12px; }
+  .rms-brand-name { font-size: 1rem; }
+
+  /* opened menu: full-width, easy-to-tap rows */
+  .navbar-collapse { flex-basis: 100%; }
+  .rms-links {
+    align-items: stretch;
+    padding: 12px 0 6px;
+    margin-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, .25);
+  }
+  .rms-link { min-height: 48px; padding: 0 16px !important; border-radius: 14px; }
+  .rms-link-ai { justify-content: center; margin-top: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rms-brand:hover .rms-brand-mark,
+  .rms-link-ai:hover { transform: none; }
+}
+
+/* ============================================
    PAGE WRAPPER & BACKGROUND
    ============================================ */
 
